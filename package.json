@@ -4,6 +4,6 @@
   "description": "Honours Project",
   "author": "Adrian Iwaszkiewicz <adrian@adriani6.co.uk>",
   "dependencies": {
-    "express": "4.2.x"
+    "express": "*"
   }
 }
