@@ -1,0 +1,68 @@
+<div class="site-wrapper">
+
+    <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+
+            <div class="masthead clearfix">
+                <div class="inner">
+                    <h3 class="masthead-brand">TripCards</h3>
+                    <nav>
+                        <ul class="nav masthead-nav">
+                            <li><a href="/#/">Home</a></li>
+                            <li><a href="#features">Features</a></li>
+                            <li><a href="#quickStart">Planner</a></li>
+                            <li class="active"><a href="javascript:void(0)" ng-click="$ctrl.open('sm')">Portal</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="inner cover regform">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h3 style="text-align: left">Create an account.. <br /><small>Create your account, it takes less than a minute and provides a lot of useful features!</small></h3>
+                        <hr />
+                        <form class="form-horizontal" style="padding-left: 15px; padding-right: 15px;" ng-controller="registerCtrl">
+                            <div class="form-group">
+                                <label class="sr-only" for="exampleInputEmail3">First name</label>
+                                <input ng-model="user.firstname" type="text" class="form-control" id="exampleInputEmail3" ng-blur="verify.firstname(user.firstname)" placeholder="First name">
+                                <span style="color: red;">{{errors.firstname}}</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="exampleInputPassword3">Surname</label>
+                                <input ng-model="user.surname" type="text" class="form-control" id="exampleInputPassword3" ng-blur="verify.surname(user.surname)" placeholder="Surname">
+                                <span style="color: red;">{{errors.surname}}</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="exampleInputEmail3">Email address</label>
+                                <input ng-model="user.email" type="email" class="form-control" id="exampleInputEmail3" placeholder="Email">
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="exampleInputEmail3">Password</label>
+                                <input ng-model="user.password" type="password" class="form-control" id="exampleInputEmail3" ng-blur="verify.password(user.password, user.confirmpassword)" placeholder="Password">
+                                <span style="color: red;">{{errors.password}}</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="exampleInputPassword3">Confirm password</label>
+                                <input ng-model="user.confirmpassword" type="password" class="form-control" id="exampleInputPassword3" ng-blur="verify.password(user.password, user.confirmpassword)" placeholder="Confirm Password">
+                                <span style="color: red;">{{errors.confirm}}</span>
+                            </div>
+                            <button type="submit" class="btn btn-success" ng-click="register(user)">Create Account</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mastfoot">
+                <div class="inner">
+                    <p>TripCards <a href="http://tripcards.com">2017</a>, by <a href="https://adriani6.co.uk">Adriani6</a>.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

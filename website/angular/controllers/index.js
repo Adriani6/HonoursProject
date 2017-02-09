@@ -1,4 +1,4 @@
-var index = angular.module("index", ['ui.bootstrap']);
+var index = angular.module("index", ['ui.bootstrap', 'ngRoute']);
 
 index.controller('LoginCtrl', function ($uibModal, $document) {
   var $ctrl = this;

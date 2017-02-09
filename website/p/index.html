@@ -1,34 +1,32 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="index">
+<html lang="en" ng-app="portal">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Index</title>
+    <title>Portal</title>
 
     <script data-require="angular.js@1.x" data-semver="1.4.0" src="https://code.angularjs.org/1.5.8/angular.js"></script>
-    <script src="angular/libs/ui-bootstrap-2.5.0.min.js"></script>
+    <script src="libs/ui-bootstrap-2.5.0.min.js"></script>
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="assets/css/cover.css">
-    <link rel="stylesheet" href="assets/css/timeline.css">
-    <link rel="stylesheet" href="assets/css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.20.1/ol.css">
 </head>
 
-<body ng-controller="LoginCtrl as $ctrl">
-
+<body ng-controller="GlobalCtrl as $ctrl">
+    Portal
     <ng-view>
     </ng-view>
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.js"></script>
-    
-    <script src="angular/controllers/index.js"></script>
-    <script src="angular/controllers/register.js"></script>
 
-    <script src="angular/router/router.js"></script>
+    <script src="controllers/portal.js"></script>
+    <script src="router/portal.js"></script>
+    <script src="controllers/map.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.20.1/ol.js"></script>
 </body>
 
 </html>
