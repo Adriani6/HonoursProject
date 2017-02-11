@@ -17,4 +17,8 @@ portal.controller("mapController", function($scope)
           zoom: 13
         })
       });
+
+      $scope.isNavCollapsed = true;
+    $scope.isCollapsed = false;
+    $scope.isCollapsedHorizontal = false;
 })

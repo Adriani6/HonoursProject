@@ -1,1 +1,174 @@
-<div id="map" class="map" style="height: 500px; width: 500px;"></div>
+<style>
+html, body, .row-offcanvas {
+  height:100%;
+  margin-bottom: -150px;
+}
+
+#sidebar {
+  width: inherit;
+  min-width: 80px;
+  max-width: 80px;
+  background-color:#f5f5f5;
+  float: left;
+  height:100%;
+  position:relative;
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+#main {
+  height:100%;
+  overflow:auto;
+}
+
+.search-res-filter
+{
+  
+}
+
+.popup-bar
+{
+  border: none; z-index: 999; width: 300px; padding: 0;
+  height: 100%;
+  margin-bottom: 0;
+}
+
+.popup-bar > .header
+{
+  height: 100px;
+  background: #00d2ff; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #00d2ff , #3a7bd5); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #00d2ff , #3a7bd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.popup-bar > .header > h3
+{
+  text-align: center; margin-top: 0; padding-top: 20px; color: white;
+}
+
+.popup-bar > .pop-body
+{
+  padding-left: 25px;
+}
+
+.popup-bar > .pop-body > .sectionTitle
+{
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.popup-bar > .pop-body > .sub-header
+{
+  font-size: 14px; font-weight: bold;
+}
+
+.horizontal-override 
+{
+  margin-left: 80px; position: absolute; width: 300px; z-index: 999; height: 100%;
+}
+.checkboxes {
+    columns: 2 2em;
+    list-style: none;
+    margin-left: -20px;
+}
+
+/*
+ * off Canvas sidebar
+ * --------------------------------------------------
+ */
+@media screen and (max-width: 768px) {
+  .row-offcanvas {
+    position: relative;
+    -webkit-transition: all 0.25s ease-out;
+    -moz-transition: all 0.25s ease-out;
+    transition: all 0.25s ease-out;
+    width:calc(100% + 220px);
+  }
+    
+  .row-offcanvas-left
+  {
+    left: -220px;
+  }
+
+  .row-offcanvas-left.active {
+    left: 0;
+  }
+
+  .sidebar-offcanvas {
+    position: absolute;
+    top: 0;
+  }
+  .well {
+     border: none;
+  }
+}
+</style>
+
+<div class="row-offcanvas row-offcanvas-left">
+  <div id="sidebar" class="sidebar-offcanvas">
+      <div class="col-md-12">
+        <h3>Tc</h3>
+        <ul class="nav nav-pills nav-stacked" style="margin-top: 50px;">
+          
+          <li>
+              <i class="fa fa-users" aria-hidden="true" style="width: 100%; font-size: 32px; text-align: center"></i>
+              <div style="width: 100%; text-align: center;">Social</div>
+          </li>
+          <li style="padding-top: 15px;">
+              <i class="fa fa-map-o" aria-hidden="true" style="width: 100%; font-size: 32px; text-align: center" ng-click="isCollapsedHorizontal = !isCollapsedHorizontal"></i>
+              <div style="width: 100%; text-align: center;">Map</div>
+          </li>
+          <li style="padding-top: 15px;">
+              <i class="fa fa-search" aria-hidden="true" style="width: 100%; font-size: 32px; text-align: center"></i>
+              <div style="width: 100%; text-align: center;">Search</div>
+          </li>
+
+        </ul>
+      </div>
+  </div>
+  <div class="horizontal-collapse horizontal-override" uib-collapse="isCollapsedHorizontal" horizontal>
+		<div class="well well-lg popup-bar">
+            <div class="header">
+              <h3>Aberdeen <br /><small>Showing 30 attractions.</small></h3>
+            </div>
+            <div class="pop-body">
+              <h4 class="sectionTitle">Search Filters</h4>
+              <h4 class="sub-header">Types</h4>
+<ul class="checkboxes">
+    <li><label><input class="checkbox-custom" type="checkbox" name="text1" value="value1" />Text 1</label></li>
+    <li><label><input type="checkbox" name="text2" value="value2" />Text 2</label></li>
+    <li><label><input type="checkbox" name="text3" value="value3" />Text 3</label></li>
+    <li><label><input type="checkbox" name="text4" value="value4" />Text 4</label></li>
+    <li><label><input type="checkbox" name="text5" value="value5" />Text 5</label></li>
+    <li><label><input type="checkbox" name="text6" value="value6" />Text 6</label></li>
+    <li><label><input type="checkbox" name="text7" value="value7" />Text 7</label></li>
+    <li><label><input type="checkbox" name="text8" value="value8" />Text 8</label></li>
+</ul>
+            </div>
+        </div>
+	</div>
+  <div id="main">
+      <div class="col-md-12">
+      	  <p class="visible-xs">
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas"><i class="glyphicon glyphicon-chevron-left"></i></button>
+          </p>
+          <h2>Fixed + Fluid Bootstrap Template with Off-canvas Sidebar</h2>
+          <div class="row">
+              <div class="col-md-12"><div class="well"><p>Shrink the browser width to make the sidebar collapse off canvase.</p></div></div>
+          </div>
+          <div class="row">
+              <div class="col-md-4"><div class="well"><p>4 cols</p></div></div>
+              <div class="col-md-4"><div class="well"><p>4 cols</p></div></div>
+              <div class="col-md-4"><div class="well"><p>4 cols</p></div></div>
+          </div>
+          <div class="row">
+              <div class="col-lg-6 col-sm-6"><div class="well"><p>6 cols, 6 small cols</p></div></div>
+              <div class="col-lg-6 col-sm-6"><div class="well"><p>6 cols, 6 small cols</p></div></div>
+          </div>
+          <div class="row">
+              <div class="col-lg-4 col-sm-6"><div class="well">4 cols, 6 small cols</div></div>
+              <div class="col-lg-4 col-sm-6"><div class="well">4 cols, 6 small cols</div></div>
+              <div class="col-lg-4 col-sm-12"><div class="well">4 cols, 12 small cols</div></div>
+          </div>
+      </div>
+  </div>
+</div><!--/row-offcanvas -->

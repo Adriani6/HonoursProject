@@ -1,9 +1,11 @@
 {
-  "name": "TripCards - Site",
+  "name": "TripCards",
   "version": "0.0.1",
   "description": "Honours Project",
   "author": "Adrian Iwaszkiewicz <adrian@adriani6.co.uk>",
   "dependencies": {
-    "express": "*"
+    "express": "*",
+    "mongodb": "*",
+    "crypto": "*"
   }
 }
