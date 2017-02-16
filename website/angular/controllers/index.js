@@ -1,8 +1,12 @@
 var index = angular.module("index", ['ui.bootstrap', 'ngRoute']);
 
-index.controller('LoginCtrl', function ($uibModal, $document) {
+index.controller('LoginCtrl', function ($uibModal, $document, Session) {
   var $ctrl = this;
-  $ctrl.items = ['item1', 'item2', 'item3'];
+  $ctrl.alerts = [];
+
+  $ctrl.closeAlert = function(index) {
+        $ctrl.alerts.splice(index, 1);
+    };
 
   $ctrl.animationsEnabled = true;
 
@@ -29,14 +33,26 @@ index.controller('LoginCtrl', function ($uibModal, $document) {
   
 });
 
-index.controller("ModalInstanceCtrl", function($uibModalInstance)
+index.controller("ModalInstanceCtrl", function($uibModalInstance, Session)
 {
-
     var $ctrl = this;
 
-    $ctrl.login = function()
+    $ctrl.error = "";
+
+    $ctrl.login = function(data)
     {
-        alert("Logging in...");
+      Session.signin(data, function(res)
+      {
+        console.log(res)
+        if(res.status == 200)
+        {
+            $ctrl.error = 0;
+        }
+        else
+        {
+          $ctrl.error = res.data;
+        }
+      })
     }
 
 })

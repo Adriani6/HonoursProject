@@ -206,13 +206,14 @@
 
     <script type="text/ng-template" id="myModalContent.html">
         <div class="login-container">
-            <div id="output"></div>
+            <div id="output">Adr</div>
             <div class="avatar"></div>
+            <div style="color: red">{{$ctrl.error}}</div>
             <div class="form-box">
-                <form action="" method="">
-                    <input name="user" type="text" placeholder="username">
-                    <input type="password" placeholder="password">
-                    <button class="btn btn-info btn-block login" ng-click="$ctrl.login()">Login</button>
+                <form>
+                    <input name="user" type="text" ng-model="data.email" placeholder="username">
+                    <input type="password" ng-model="data.password" placeholder="password">
+                    <button class="btn btn-info btn-block login" ng-click="$ctrl.login(data)">Login</button>
                     <span style="color: #46494C">Don't have a profile?<strong><a href="/#/register" style="color: #46494C"> Register!</a></strong></span>
                 </form>
             </div>

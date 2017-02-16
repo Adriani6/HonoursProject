@@ -22,12 +22,15 @@
 
     <ng-view>
     </ng-view>
+    <div style="position: fixed; bottom: 15px; right: 15px">
+        <div uib-alert ng-repeat="alert in $ctrl.alerts" ng-class="'alert-' + (alert.type || 'warning')" close="$ctrl.closeAlert($index)" dismiss-on-timeout="{{alert.timeout}}">{{alert.msg}}</div>
+    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.js"></script>
     
     <script src="angular/controllers/index.js"></script>
     <script src="angular/controllers/register.js"></script>
-
+    <script src="angular/services/session.js"></script>
     <script src="angular/router/router.js"></script>
 </body>
 

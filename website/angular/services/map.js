@@ -1,13 +1,16 @@
 portal.service('Map', function($http) {
 
-    var markers = [];
+  var map = undefined;
+  var markers = [];
     var 
     vectorSource = new ol.source.Vector(),
     vectorLayer = new ol.layer.Vector({
       source: vectorSource
     })
 
-    var map = new ol.Map({
+  this.loadMap = function()
+  {
+    map = new ol.Map({
         layers: [
           new ol.layer.Tile({
             source: new ol.source.OSM()
@@ -22,9 +25,10 @@ portal.service('Map', function($http) {
         }),
         view: new ol.View({
           center: [-6655.5402445057125, 6709968.258934638],
-          zoom: 13
+          zoom: 5
         })
       });
+  }  
 
     /**
      * @param {double} lon Longitude.
