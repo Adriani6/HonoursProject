@@ -2,6 +2,7 @@
 html, body, .row-offcanvas {
   height:100%;
   margin-bottom: -150px;
+  overflow: hidden;
 }
 
 #sidebar {
@@ -14,15 +15,11 @@ html, body, .row-offcanvas {
   position:relative;
   overflow-y:auto;
   overflow-x:hidden;
+  border-right: 1px solid #A2999E;
 }
 #main {
   height:100%;
   overflow:auto;
-}
-
-.search-res-filter
-{
-  
 }
 
 .popup-bar
@@ -69,6 +66,30 @@ html, body, .row-offcanvas {
     columns: 2 2em;
     list-style: none;
     margin-left: -20px;
+    margin-right: 15px;
+}
+.box {
+    height: calc(100vh - 305px); /*50+60*/
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-left: -25px;
+}
+.box::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 4px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+.box::-webkit-scrollbar
+{
+	width: 6px;
+	background-color: #F5F5F5;
+}
+
+.box::-webkit-scrollbar-thumb
+{
+	background-color: #4F4F4F;
+	border: 2px solid #555555;
 }
 
 /*
@@ -100,6 +121,7 @@ html, body, .row-offcanvas {
   .well {
      border: none;
   }
+  
 }
 </style>
 
@@ -128,21 +150,19 @@ html, body, .row-offcanvas {
   <div class="horizontal-collapse horizontal-override" uib-collapse="isCollapsedHorizontal" horizontal>
 		<div class="well well-lg popup-bar">
             <div class="header">
-              <h3>Aberdeen <br /><small>Showing 30 attractions.</small></h3>
+              <h3>Aberdeen <br /><small>Showing {{foundCount}} attractions.</small></h3>
             </div>
             <div class="pop-body">
               <h4 class="sectionTitle">Search Filters</h4>
               <h4 class="sub-header">Types</h4>
-<ul class="checkboxes">
-    <li><label><input class="checkbox-custom" type="checkbox" name="text1" value="value1" />Text 1</label></li>
-    <li><label><input type="checkbox" name="text2" value="value2" />Text 2</label></li>
-    <li><label><input type="checkbox" name="text3" value="value3" />Text 3</label></li>
-    <li><label><input type="checkbox" name="text4" value="value4" />Text 4</label></li>
-    <li><label><input type="checkbox" name="text5" value="value5" />Text 5</label></li>
-    <li><label><input type="checkbox" name="text6" value="value6" />Text 6</label></li>
-    <li><label><input type="checkbox" name="text7" value="value7" />Text 7</label></li>
-    <li><label><input type="checkbox" name="text8" value="value8" />Text 8</label></li>
-</ul>
+              <ul class="checkboxes">
+                  <li ng-repeat="filter in filters"><label><input type="checkbox" name="text2" value="value2" ng-click="updateFilters(attraction)" />{{filter}}</label></li>
+              </ul>
+              <div style="border-top: 1px solid black; text-align: center; margin-right: 20px;" ng-click="showMoreFilters()">Show More {{filter_count}} Filters</div>
+              <h4 class="sub-header">Attractions</h4>
+              <div class="box list-group">
+                  <div ng-repeat="attraction in attractions" ng-click="selectAttraction(attraction)" class="list-group-item" ng-class="attraction.selected ? 'active' : ''">{{attraction.name}}</div>
+              </div>
             </div>
         </div>
 	</div>
@@ -151,24 +171,19 @@ html, body, .row-offcanvas {
       	  <p class="visible-xs">
             <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas"><i class="glyphicon glyphicon-chevron-left"></i></button>
           </p>
-          <h2>Fixed + Fluid Bootstrap Template with Off-canvas Sidebar</h2>
           <div class="row">
-              <div class="col-md-12"><div class="well"><p>Shrink the browser width to make the sidebar collapse off canvase.</p></div></div>
-          </div>
-          <div class="row">
-              <div class="col-md-4"><div class="well"><p>4 cols</p></div></div>
-              <div class="col-md-4"><div class="well"><p>4 cols</p></div></div>
-              <div class="col-md-4"><div class="well"><p>4 cols</p></div></div>
-          </div>
-          <div class="row">
-              <div class="col-lg-6 col-sm-6"><div class="well"><p>6 cols, 6 small cols</p></div></div>
-              <div class="col-lg-6 col-sm-6"><div class="well"><p>6 cols, 6 small cols</p></div></div>
-          </div>
-          <div class="row">
-              <div class="col-lg-4 col-sm-6"><div class="well">4 cols, 6 small cols</div></div>
-              <div class="col-lg-4 col-sm-6"><div class="well">4 cols, 6 small cols</div></div>
-              <div class="col-lg-4 col-sm-12"><div class="well">4 cols, 12 small cols</div></div>
+              <div class="col-md-12">
+                <div id="map" class="map" style="width: 100%; height: 100%; position:fixed; margin-left: -15px;"></div>
+              </div>
           </div>
       </div>
   </div>
 </div><!--/row-offcanvas -->
+
+    <!-- Angular Templates -->
+
+    <script type="text/ng-template" id="filtersPopup.html">
+      <ul class="checkboxes">
+          <li ng-repeat="filter in filters"><label><input type="checkbox" name="text2" value="value2" />{{filter}}</label></li>
+      </ul>
+    </script>

@@ -24,6 +24,8 @@ router.get("/", function(req, res)
     res.send("API Home Page")
 })
 
+router.get("/search/:location", api.data.searchLocation);
+
 //API END POINTS
 
 //User Requests
