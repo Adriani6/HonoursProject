@@ -6,5 +6,9 @@ portal.config(function($routeProvider) {
     .when("/planner", {
         templateUrl : "views/portal/planner.html",
         controller: "mapController"
+    })
+    .when("/profile/:id", {
+        templateUrl : "views/portal/profile.html",
+        controller: "profile"
     });
 });

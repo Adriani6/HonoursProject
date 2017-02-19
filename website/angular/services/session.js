@@ -17,4 +17,13 @@ angular.module('ng').service("Session", function($http) {
         });
     }
 
+    this.getFollowersActivity = function(callback)
+    {
+        $http.get("/api/user/getFollowersRecentActivity")
+        .then(function(r)
+        {
+            callback(r.data);
+        })
+    }
+
 });

@@ -33,7 +33,7 @@ index.controller('LoginCtrl', function ($uibModal, $document, Session) {
   
 });
 
-index.controller("ModalInstanceCtrl", function($uibModalInstance, Session)
+index.controller("ModalInstanceCtrl", function($uibModalInstance, Session, $window)
 {
     var $ctrl = this;
 
@@ -46,7 +46,7 @@ index.controller("ModalInstanceCtrl", function($uibModalInstance, Session)
         console.log(res)
         if(res.status == 200)
         {
-            $ctrl.error = 0;
+            $window.location = '/portal';
         }
         else
         {

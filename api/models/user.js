@@ -174,4 +174,77 @@ User.prototype.getUserData = function(req, res)
     })
 }
 
+User.prototype.getRecentActivity = function(req, res)
+{
+    console.log(req.query.user)
+
+}
+
+User.prototype.getProfile = function(req, res)
+{
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        //Finish this function
+        db.collection("users").findOne({"_id": new ObjectId(req.query.user)}, function(err, data)
+        {
+            if(err)
+                console.log(err)
+
+            delete data.password;
+
+            res.send(data)
+        })
+    })
+}
+
+User.prototype.getFollowersRecentActivity = function(req, res)
+{
+    //Function to be extended by taking time range checked and gets last 3-6 items per person that populates the feed.
+    var output = [];
+    var togo = 0;
+
+    function fetchActivity(id)
+    {
+        mongo.connect("mongodb://localhost/tripcards", function(err, db)
+        {
+            db.collection("users").findOne({"_id": new ObjectId(id)}, {"activity" : 1, "firstname": 1, "surname" : 1, "profile.photo": 1}, function(err, data)
+            {
+                if(err)
+                    console.log(err)
+
+                output.push(data)
+                togo--;
+
+                if(togo == 0)
+                {
+                    res.send(output)
+                }
+            })
+        })
+    }
+
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        
+        //Finish this function
+        db.collection("users").findOne({"_id": new ObjectId(req.session.user)}, {"following" : 1}, function(err, data)
+        {
+            if(err)
+                console.log(err)
+            else
+            {
+                console.log(data.following)
+                togo = data.following.length;
+
+                for(var i = 0; i < data.following.length; i++)
+                {
+                    console.log(data.following[i])
+                    fetchActivity(data.following[i]);
+                }
+
+            }
+        })
+    })    
+}
+
 module.exports = User;

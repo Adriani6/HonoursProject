@@ -5,6 +5,7 @@ var appApi = require("./api/api.js");
 
 var session = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(session);
+var bodyParser = require('body-parser');
 
 var store = new MongoDBStore(
       {
@@ -33,6 +34,8 @@ var store = new MongoDBStore(
     
     app.use(require('express-session')(storeData));
     router.use(require('express-session')(storeData))
+    router.use(bodyParser.json()); // support json encoded bodies
+    router.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 var api = new appApi();
 
@@ -46,8 +49,15 @@ var server = app.listen(80);
 
 app.get("/portal", function(req, res)
 {
+  if(req.session.user != undefined)
+  {
     res.sendFile(__dirname + '/website/p/index.html');
-    console.log("Verify Here");
+    console.log(req.session.user);
+  }
+  else
+  {
+    console.log("Not logged in");
+  }
 })
 
 router.get("/", function(req, res)
@@ -64,3 +74,6 @@ router.get("/search/:location", api.data.searchLocation);
 router.post("/user/new", api.user.new)
 router.post("/user/signin", api.user.login)
 router.get("/user/session", api.user.getUserData)
+router.get("/user/recentActivity", api.user.getRecentActivity)
+router.get("/user/getProfile", api.user.getProfile)
+router.get("/user/getFollowersRecentActivity", api.user.getFollowersRecentActivity)

@@ -2,8 +2,16 @@ var portal = angular.module("portal", ['ui.bootstrap', 'ngRoute']);
 
 portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Session)
 {
-
+  $scope.followers = []
   // Move Filter function and implement search function inside mapController
+
+  Session.getFollowersActivity(function(d)
+  {
+    console.log(d)
+    $scope.followers = d;
+  })
+
+  Requests.getActivity("589dc479e7dc1c282ccb5596")
 
   var self = this;
   var allFilters = undefined;

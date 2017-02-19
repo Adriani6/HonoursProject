@@ -6,6 +6,8 @@
   "dependencies": {
     "express": "*",
     "mongodb": "*",
-    "crypto": "*"
+    "crypto": "*",
+    "express-session" : "*",
+    "connect-mongodb-session" : "*"
   }
 }
