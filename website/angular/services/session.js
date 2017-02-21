@@ -1,5 +1,5 @@
 angular.module('ng').service("Session", function($http) {
-
+    alert("Loadesd")
     this.retrieve = function(callback)
     {
         $http.get("/api/user/session").then(function(r) {
@@ -9,11 +9,21 @@ angular.module('ng').service("Session", function($http) {
 
     this.signin = function(data, callback)
     {
-        console.log(data)
-        $http.post("/api/user/signin", JSON.stringify(data)).then(function mySucces(response) {
-            callback(response)
-        }, function myError(response) {
-            callback(response)
+        alert("Clicked")
+
+        $http({
+            method: 'POST',
+            url: "/api/user/signin",
+            data: data
+        }).then(function successCallback(response) {
+            alert("Hello")
+            callback(response);
+        }, function errorCallback(response) {
+            console.log(response)
+            alert("Bye")
+            callback(response);
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
         });
     }
 

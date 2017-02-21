@@ -7,7 +7,6 @@ portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Sessi
 
   Session.getFollowersActivity(function(d)
   {
-    console.log(d)
     $scope.followers = d;
   })
 

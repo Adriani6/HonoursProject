@@ -21,12 +21,7 @@ index.controller('LoginCtrl', function ($uibModal, $document, Session) {
       controller: 'ModalInstanceCtrl',
       controllerAs: '$ctrl',
       size: size,
-      appendTo: parentElem,
-      resolve: {
-        items: function () {
-          return $ctrl.items;
-        }
-      }
+      appendTo: parentElem
     });
 
   };
@@ -41,8 +36,10 @@ index.controller("ModalInstanceCtrl", function($uibModalInstance, Session, $wind
 
     $ctrl.login = function(data)
     {
+
       Session.signin(data, function(res)
       {
+        console.log("res")
         console.log(res)
         if(res.status == 200)
         {

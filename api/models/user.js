@@ -55,11 +55,13 @@ User.prototype.new = function(req, res)
 
 User.prototype.login = function(req, res)
 {
+    //res.send("hello")
     if (req.method == 'POST') {
-        var jsonString = '';
+        var jsonString = "";
 
         req.on('data', function (data) {
             jsonString += data;
+            console.log(data)
         });
 
         req.on('end', function () {
@@ -94,6 +96,10 @@ User.prototype.login = function(req, res)
                         {
                             res.status(409).send("Incorrect Email.");
                         }
+                    }
+                    else
+                    {
+                        res.send(err)
                     }
                 });
             })
