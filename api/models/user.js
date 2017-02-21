@@ -56,19 +56,9 @@ User.prototype.new = function(req, res)
 User.prototype.login = function(req, res)
 {
     //res.send("hello")
-    if (req.method == 'POST') {
-        var jsonString = "";
 
-        req.on('data', function (data) {
-            jsonString += data;
-            console.log(data)
-        });
-
-        req.on('end', function () {
-            console.log(jsonString)
-            jsonString = JSON.parse(jsonString)
-            var email = jsonString.email || '';
-            var passw = jsonString.password || '';
+            var email = req.body.email || '';
+            var passw = req.body.password || '';
 
             mongo.connect("mongodb://localhost/tripcards", function(err, db)
             {
@@ -103,8 +93,6 @@ User.prototype.login = function(req, res)
                     }
                 });
             })
-        })
-    }
 
 }
 

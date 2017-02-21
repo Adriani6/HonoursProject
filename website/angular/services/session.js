@@ -1,5 +1,5 @@
 angular.module('ng').service("Session", function($http) {
-    alert("Loadesd")
+    //alert("Loadesd")
     this.retrieve = function(callback)
     {
         $http.get("/api/user/session").then(function(r) {
@@ -9,12 +9,13 @@ angular.module('ng').service("Session", function($http) {
 
     this.signin = function(data, callback)
     {
+        console.log(data)
         alert("Clicked")
 
         $http({
             method: 'POST',
             url: "/api/user/signin",
-            data: data
+            data: JSON.parse(data)
         }).then(function successCallback(response) {
             alert("Hello")
             callback(response);
