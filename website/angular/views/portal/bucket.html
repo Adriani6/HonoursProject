@@ -74,5 +74,16 @@
   </uib-accordion>
 </div>
 <script type="text/ng-template" id="newBucket.html">
-      <h1>New Bucket Window</h1>
+<div class="modal-body" id="modal-body">
+      <form class="form-inline">
+        <div class="form-group">
+            <label class="sr-only" for="exampleInputAmount">Bucket Name</label>
+            <div class="input-group">
+            <input type="text" class="form-control" id="exampleInputAmount" placeholder="Bucket Name" ng-model="bucketName">
+            <div class="input-group-addon">Name</div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" ng-click="create(bucketName)">Create</button>
+        </form>
+    </div>
 </script>

@@ -8,4 +8,5 @@ portal.controller("profile", function($scope, Profile, $routeParams)
         console.log(data)
         $scope.profileData = data;
     })
+
 })

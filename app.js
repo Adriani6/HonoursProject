@@ -75,7 +75,13 @@ router.get("/search/:location", api.data.searchLocation);
 router.post("/user/new", api.user.new)
 router.post("/user/signin", api.user.login)
 router.post("/user/updateBio", api.user.updateDescription)
-router.get("/user/session", api.user.getUserData)
 router.get("/user/recentActivity", api.user.getRecentActivity)
 router.get("/user/getProfile", api.user.getProfile)
 router.get("/user/getFollowersRecentActivity", api.user.getFollowersRecentActivity)
+
+// Buckets
+router.get("/user/retrieveBuckets", api.user.retrieveBuckets)
+router.post("/user/newBucket", api.user.newBucket)
+
+//Session
+router.get("/user/session", api.user.getUserData)

@@ -15,7 +15,7 @@ angular.module('ng').service("Session", function($http) {
         $http({
             method: 'POST',
             url: "/api/user/signin",
-            data: JSON.parse(data)
+            data: data
         }).then(function successCallback(response) {
             callback(response);
         }, function errorCallback(response) {

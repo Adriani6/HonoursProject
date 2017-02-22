@@ -44,7 +44,7 @@ User.prototype.new = function(req, res)
                         });
                     })
 
-                    console.log(data);
+                    //console.log(data);
                     
                 }
             });
@@ -72,7 +72,7 @@ User.prototype.login = function(req, res)
 
                             if(pw1 == pw2)
                             {
-                                console.log(result)
+                                //console.log(result)
                                 req.session.user = result["_id"];
 
                                 res.send("Successfully Logged In.");     
@@ -227,12 +227,12 @@ User.prototype.getFollowersRecentActivity = function(req, res)
                 console.log(err)
             else
             {
-                console.log(data.following)
+                //console.log(data.following)
                 togo = data.following.length;
 
                 for(var i = 0; i < data.following.length; i++)
                 {
-                    console.log(data.following[i])
+                    //console.log(data.following[i])
                     fetchActivity(data.following[i]);
                 }
 
@@ -282,7 +282,31 @@ User.prototype.deleteProfilePicture = function(req, res)
 
 User.prototype.newBucket = function(req, res)
 {
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        db.collection("buckets").insert({"creator": new ObjectId(req.session.user), "name": req.body.name}, function(err, data)
+        {
+            if(err)
+                console.log(err)
+            else
+            {
 
+            }
+        })
+    });
+
+}
+
+User.prototype.retrieveBuckets = function(req, res)
+{
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        db.collection("buckets").find({"creator": new ObjectId(req.session.user)}).toArray(function(err, data)
+        {
+            console.log(data);
+            res.send(data);
+        })
+    })
 }
 
 User.prototype.deleteBucket = function(req, res)

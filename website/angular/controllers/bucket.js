@@ -17,6 +17,16 @@ portal.controller("bucketCtrl", function($scope, $uibModal, $document)
 
 })
 
-portal.controller("ModalInstanceCtrl", function($uibModalInstance)
+portal.controller("ModalInstanceCtrl", function($scope, $uibModalInstance, Profile)
 {
+    $scope.create = function(bucketName)
+    {
+        alert(bucketName);
+        Profile.newBucket(bucketName, function(r)
+        {
+            alert(r);
+        })
+
+    }
+
 });

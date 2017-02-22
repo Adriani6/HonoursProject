@@ -16,4 +16,21 @@ portal.service("Profile", function($http)
             callback(r.data)
         })
     }
+
+    this.getBuckets = function(callback)
+    {
+        $http.get("/api/user/retrieveBuckets").then(function(r)
+        {
+            callback(r.data);
+        })
+    }
+
+    this.newBucket = function(name, callback)
+    {
+        alert("Service: " + name)
+        $http.post("/api/user/newBucket", {name : name}).then(function(r)
+        {
+            callback(r);
+        })
+    }
 })
