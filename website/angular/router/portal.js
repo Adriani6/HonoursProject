@@ -8,7 +8,8 @@ portal.config(function($routeProvider) {
         controller: "mapController"
     })
     .when("/bucket", {
-        templateUrl : "views/portal/bucket.html"
+        templateUrl : "views/portal/bucket.html",
+        controller: "bucketCtrl"
     })
     .when("/profile/:id", {
         templateUrl : "views/portal/profile.html",

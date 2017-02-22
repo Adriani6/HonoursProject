@@ -260,4 +260,44 @@ User.prototype.updateDescription = function(req, res)
     })
 }
 
+User.prototype.updateProfilePicture = function(req, res)
+{
+
+}
+
+User.prototype.newStatus = function(req, res)
+{
+
+}
+
+User.prototype.deleteStatus = function(req, res)
+{
+
+}
+
+User.prototype.deleteProfilePicture = function(req, res)
+{
+
+}
+
+User.prototype.newBucket = function(req, res)
+{
+
+}
+
+User.prototype.deleteBucket = function(req, res)
+{
+
+}
+
+User.prototype.addToBucket = function(req, res)
+{
+
+}
+
+User.prototype.removeFromBucket = function(req, res)
+{
+    
+}
+
 module.exports = User;

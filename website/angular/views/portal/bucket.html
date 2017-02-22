@@ -1,5 +1,5 @@
 <div class="col-md-8 col-md-offset-2">
-    <h2>Here's your bucket lists... <small style="float: right;">New</small></h2>
+    <h2>Here's your bucket lists... <small style="float: right;" ng-click="open('sm')">New</small></h2>
         <uib-accordion close-others="oneAtATime">
     <div uib-accordion-group class="panel-default" heading="Static Header, initially expanded">
       This content is straight in the template.
@@ -73,3 +73,6 @@
     </div>
   </uib-accordion>
 </div>
+<script type="text/ng-template" id="newBucket.html">
+      <h1>New Bucket Window</h1>
+</script>
