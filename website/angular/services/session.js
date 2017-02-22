@@ -17,11 +17,8 @@ angular.module('ng').service("Session", function($http) {
             url: "/api/user/signin",
             data: JSON.parse(data)
         }).then(function successCallback(response) {
-            alert("Hello")
             callback(response);
         }, function errorCallback(response) {
-            console.log(response)
-            alert("Bye")
             callback(response);
             // called asynchronously if an error occurs
             // or server returns response with an error status.

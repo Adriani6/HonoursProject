@@ -241,4 +241,23 @@ User.prototype.getFollowersRecentActivity = function(req, res)
     })    
 }
 
+User.prototype.updateDescription = function(req, res)
+{
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        
+        //Finish this function
+        db.collection("users").update({"_id": new ObjectId(req.session.user)}, {$set : {"profile.bio" : req.body.bio}}, function(err, data)
+        {
+            if(err)
+                console.log(err)
+            else
+            {
+                res.send("Set");
+
+            }
+        })
+    })
+}
+
 module.exports = User;

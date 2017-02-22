@@ -74,6 +74,7 @@ router.get("/search/:location", api.data.searchLocation);
 //User Requests
 router.post("/user/new", api.user.new)
 router.post("/user/signin", api.user.login)
+router.post("/user/updateBio", api.user.updateDescription)
 router.get("/user/session", api.user.getUserData)
 router.get("/user/recentActivity", api.user.getRecentActivity)
 router.get("/user/getProfile", api.user.getProfile)
