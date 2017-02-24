@@ -49,14 +49,15 @@ var server = app.listen(80);
 
 app.get("/portal", function(req, res)
 {
-   res.sendFile(__dirname + '/website/p/index.html');
+   
   if(req.session.user != undefined)
   {
-   
+    res.sendFile(__dirname + '/website/p/index.html');
     console.log(req.session.user);
   }
   else
   {
+    res.redirect("/");
     console.log("Not logged in");
   }
 })
