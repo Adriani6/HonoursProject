@@ -4,11 +4,15 @@ html, body{
     background: #f5f5f5;
 }
 nav{
-    width: 60%;
     margin-left: auto;
     margin-right: auto;
     z-index: 1;
 }
+.navbar{
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
 .navbar-form{width:50%;}
 .navbar-form .input-group{width:420px;}
 .dropdown-menu{width:420px;}
@@ -28,9 +32,23 @@ nav{
 {
   height: 100%;
   z-index: 999;
+  overflow-y: scroll; 
+  overflow-x: hidden;
+}
+
+.plannerContainer
+{
+    position: absolute;
+    padding-top: 50px;
+    height: calc(100% - 150px);
 }
 
 .nav-tabs
 {
   display: none
+}
+
+#map{
+    height: 100%;
+    width: 100%;
 }
