@@ -1,243 +1,95 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="portal">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Portal</title>
-
-    <script data-require="angular.js@1.x" data-semver="1.4.0" src="https://code.angularjs.org/1.5.8/angular.js"></script>
-    <script src="libs/ui-bootstrap-2.5.0.min.js"></script>
-
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.20.1/ol.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/bucket.css">
-</head>
-
-<body ng-controller="GlobalCtrl as $ctrl">
-    <style>
-html, body, .row-offcanvas {
-  height:100%;
-  margin-bottom: -150px;
-  overflow: hidden;
-}
-
-#sidebar {
-  width: inherit;
-  min-width: 80px;
-  max-width: 80px;
-  background-color:#f5f5f5;
-  float: left;
-  height:100%;
-  position:relative;
-  overflow-y:auto;
-  overflow-x:hidden;
-  border-right: 1px solid #A2999E;
-}
-#main {
-  height:100%;
-  overflow:auto;
-}
-
-.popup-bar
-{
-  border: none; z-index: 999; width: 300px; padding: 0;
-  height: 100%;
-  margin-bottom: 0;
-}
-
-.popup-bar > .header
-{
-  height: 100px;
-  background: #00d2ff; /* fallback for old browsers */
-  background: -webkit-linear-gradient(to left, #00d2ff , #3a7bd5); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to left, #00d2ff , #3a7bd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-}
-
-.popup-bar > .header > h3
-{
-  text-align: center; margin-top: 0; padding-top: 20px; color: white;
-}
-
-.popup-bar > .pop-body
-{
-  padding-left: 25px;
-}
-
-.popup-bar > .pop-body > .sectionTitle
-{
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.popup-bar > .pop-body > .sub-header
-{
-  font-size: 14px; font-weight: bold;
-}
-
-.horizontal-override 
-{
-  margin-left: 80px; position: absolute; width: 300px; z-index: 999; height: 100%;
-}
-.checkboxes {
-    columns: 2 2em;
-    list-style: none;
-    margin-left: -20px;
-    margin-right: 15px;
-}
-.box {
-    height: calc(100vh - 305px); /*50+60*/
-    overflow-y: scroll;
-    overflow-x: hidden;
-    margin-left: -25px;
-}
-.box::-webkit-scrollbar-track
-{
-	-webkit-box-shadow: inset 0 0 4px rgba(0,0,0,0.3);
-	background-color: #F5F5F5;
-}
-
-.box::-webkit-scrollbar
-{
-	width: 6px;
-	background-color: #F5F5F5;
-}
-
-.box::-webkit-scrollbar-thumb
-{
-	background-color: #4F4F4F;
-	border: 2px solid #555555;
-}
-
-/*
- * off Canvas sidebar
- * --------------------------------------------------
- */
-@media screen and (max-width: 768px) {
-  .row-offcanvas {
-    position: relative;
-    -webkit-transition: all 0.25s ease-out;
-    -moz-transition: all 0.25s ease-out;
-    transition: all 0.25s ease-out;
-    width:calc(100% + 220px);
-  }
-    
-  .row-offcanvas-left
-  {
-    left: -220px;
-  }
-
-  .row-offcanvas-left.active {
-    left: 0;
-  }
-
-  .sidebar-offcanvas {
-    position: absolute;
-    top: 0;
-  }
-  .well {
-     border: none;
-  }
-  
-}
-</style>
-
-<div class="row-offcanvas row-offcanvas-left">
-  <div id="sidebar" class="sidebar-offcanvas">
-      <div class="col-md-12" style="height: 100%;">
-        <ul class="nav nav-pills nav-stacked" style="height: 100%">
-            <li style="margin-top: 10px;">
-                <h1>TC</h1>
-            </li>
-          <li>
-              <a href="#/" style="text-decoration: none; color: inherit; padding: 0;"><i class="fa fa-users" aria-hidden="true" style="width: 100%; font-size: 32px; text-align: center"></i></a>
-              <div style="width: 100%; text-align: center;">Social</div>
-          </li>
-          <li style="padding-top: 15px;">
-              <a href="#/planner" style="text-decoration: none; color: inherit; padding: 0;"><i class="fa fa-map-o" aria-hidden="true" style="width: 100%; font-size: 32px; text-align: center"></i></a>
-              <div style="width: 100%; text-align: center;">Map</div>
-          </li>
-          <li style="padding-top: 15px;">
-              <a href="#/bucket" style="text-decoration: none; color: inherit; padding: 0;"><i class="fa fa-list-alt" aria-hidden="true" style="width: 100%; font-size: 32px; text-align: center"></i></a>
-              <div style="width: 100%; text-align: center;">Bucket</div>
-          </li>
-          <li style="padding-top: 15px;">
-              <i class="fa fa-bell-o" aria-hidden="true" style="width: 100%; font-size: 32px; text-align: center" ng-click="isCollapsedHorizontal = !isCollapsedHorizontal"></i>
-              <div style="width: 100%; text-align: center;">Alerts</div>
-          </li>
-
-
-          <li style="padding-top: 15px;">
-              <i class="fa fa-cloud" aria-hidden="true" style="width: 100%; font-size: 32px; text-align: center" ng-click="isCollapsedHorizontal = !isCollapsedHorizontal"></i>
-              <div style="width: 100%; text-align: center;">Company</div>
-          </li>
-
-          <li style="bottom: 10px; position: absolute;">
-              <a href="#/" style="text-decoration: none; color: inherit; padding: 0;"><i class="fa fa-sign-out" aria-hidden="true" style="width: 100%; font-size: 32px; text-align: center"></i></a>
-              <div style="width: 100%; text-align: center;">Logout</div>
-          </li>
-
-        </ul>
-      </div>
-  </div>
-  <div class="horizontal-collapse horizontal-override" uib-collapse="isCollapsedHorizontal" horizontal>
-		<div class="well well-lg popup-bar">
-            <div class="header">
-              <h3>Aberdeen <br /><small>Showing {{foundCount}} attractions.</small></h3>
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+      <title>Portal</title>
+      <script data-require="angular.js@1.x" data-semver="1.4.0" src="https://code.angularjs.org/1.5.8/angular.js"></script>
+      <script src="libs/ui-bootstrap-2.5.0.min.js"></script>
+      <!-- Latest compiled and minified CSS -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.20.1/ol.css">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" href="css/bucket.css">
+      <link rel="stylesheet" href="css/profile.css">
+      <link rel="stylesheet" href="css/nav.css">
+   </head>
+   <body ng-controller="GlobalCtrl">
+       
+         <nav class="navbar navbar-default" role="navigation">
+            <div class="container">
+               <!-- Brand and toggle get grouped for better mobile display -->
+               <div class="navbar-header">
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" href="#/">TravelCards</a>
+               </div>
+               <!-- Collect the nav links, forms, and other content for toggling -->
+               <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                  <form class="navbar-form navbar-left" role="search">
+                     <div class="input-group">
+                        <input type="text" class="form-control" placeholder="search people, buckets and organizations">
+                        <span class="input-group-btn">
+                        <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                        </span>
+                     </div>
+                  </form>
+                  <ul class="nav navbar-nav navbar-right" style="font-size: 16px">
+                     <li class="dropdown" tooltip-placement="bottom" uib-tooltip="Planner">
+                        <a href="#/planner" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-map-o" aria-hidden="true"></i></a>
+                     </li>
+                     <li class="dropdown" tooltip-placement="bottom" uib-tooltip="Messages">
+                        <a href="#/" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
+                     </li>
+                     <li class="dropdown" tooltip-placement="bottom" uib-tooltip="Alerts">
+                        <a href="#/" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell-o" aria-hidden="true"></i></a>
+                     </li>
+                     <li class="dropdown" tooltip-placement="bottom" uib-tooltip="Buckets/Goals">
+                        <a href="#/bucket" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-list-alt" aria-hidden="true"></i></a>
+                     </li>
+                     <li class="dropdown" uib-dropdown>
+                        <img ng-src="{{user.profile.photo}}" alt="..." class="img-circle" uib-dropdown-toggle style="height: 40px; margin-top: 5px;">
+                        <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button" style="width: 100px">
+                            <li role="menuitem"><a href="#/profile/{{user._id}}">My Profile</a></li>
+                            <li role="menuitem"><a href="#">Settings</a></li>
+                            <li class="divider"></li>
+                            <li role="menuitem"><a href="#">Organization</a></li>
+                            <li role="menuitem"><a href="#">Logout</a></li>
+                        </ul>
+                     </li>
+                  </ul>
+               </div>
+               <!-- /.navbar-collapse -->
             </div>
-            <div class="pop-body">
-              <h4 class="sectionTitle">Search Filters</h4>
-              <h4 class="sub-header">Types</h4>
-              <ul class="checkboxes">
-                  <li ng-repeat="filter in filters"><label><input type="checkbox" name="text2" value="value2" ng-click="updateFilters(attraction)" />{{filter}}</label></li>
-              </ul>
-              <div style="border-top: 1px solid black; text-align: center; margin-right: 20px;" ng-click="showMoreFilters()">Show More {{filter_count}} Filters</div>
-              <h4 class="sub-header">Attractions</h4>
-              <div class="box list-group">
-                  <div ng-repeat="attraction in attractions" ng-click="selectAttraction(attraction)" class="list-group-item" ng-class="attraction.selected ? 'active' : ''">{{attraction.name}}</div>
-              </div>
-            </div>
-        </div>
-	</div>
-  <div id="main">
-      <div class="col-md-12">
-      	  <p class="visible-xs">
-            <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas"><i class="glyphicon glyphicon-chevron-left"></i></button>
-          </p>
-          <div class="row">
-              <div class="col-md-12">
-                  <ng-view>
-                    </ng-view>
-              </div>
-          </div>
+            <!-- /.container-fluid -->
+         </nav>
       </div>
-  </div>
-</div><!--/row-offcanvas -->
 
-    <!-- Angular Templates -->
+      <ng-view>
+      </ng-view>
 
-    <script type="text/ng-template" id="filtersPopup.html">
-      <ul class="checkboxes">
-          <li ng-repeat="filter in filters"><label><input type="checkbox" name="text2" value="value2" />{{filter}}</label></li>
-      </ul>
-    </script>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.js"></script>
-
-    <script src="controllers/portal.js"></script>
-    <script src="router/portal.js"></script>
-    <script src="controllers/map.js"></script>
-    <script src="controllers/profile.js"></script>
-    <script src="controllers/bucket.js"></script>
-    <script src="services/map.js"></script>
-    <script src="services/requests.js"></script>
-    <script src="services/session.js"></script>
-    <script src="services/profile.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.20.1/ol.js"></script>
-</body>
-
+      <!-- Angular Templates -->
+      <script type="text/ng-template" id="filtersPopup.html">
+         <ul class="checkboxes">
+             <li ng-repeat="filter in filters"><label><input type="checkbox" name="text2" value="value2" />{{filter}}</label></li>
+         </ul>
+      </script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.js"></script>
+      <script src="controllers/portal.js"></script>
+      <script src="router/portal.js"></script>
+      <script src="controllers/map.js"></script>
+      <script src="controllers/profile.js"></script>
+      <script src="controllers/bucket.js"></script>
+      <script src="services/map.js"></script>
+      <script src="services/requests.js"></script>
+      <script src="services/session.js"></script>
+      <script src="services/profile.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.20.1/ol.js"></script>
+   </body>
 </html>

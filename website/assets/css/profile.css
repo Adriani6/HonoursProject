@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css?family=Suez+One');
+
+.profile-Name{
+    font-family: 'Suez One', serif;
+    font-size: 42px;
+}
+
+.profile-Bar
+{
+    margin-top: 30px;
+}
+
+.profile-Bar > .btn-group > .btn-default 
+{
+    border-top: 0; border-bottom: 0;
+}

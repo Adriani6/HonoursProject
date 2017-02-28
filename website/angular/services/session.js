@@ -9,9 +9,6 @@ angular.module('ng').service("Session", function($http) {
 
     this.signin = function(data, callback)
     {
-        console.log(data)
-        alert("Clicked")
-
         $http({
             method: 'POST',
             url: "/api/user/signin",
