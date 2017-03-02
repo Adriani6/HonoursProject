@@ -79,6 +79,7 @@ router.post("/user/updateBio", api.user.updateDescription)
 router.get("/user/recentActivity", api.user.getRecentActivity)
 router.get("/user/getProfile", api.user.getProfile)
 router.get("/user/getFollowersRecentActivity", api.user.getFollowersRecentActivity)
+router.get("/geocode", api.data.geoCode)
 
 // Buckets
 router.get("/user/retrieveBuckets", api.user.retrieveBuckets)

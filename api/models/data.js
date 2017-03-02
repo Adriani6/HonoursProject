@@ -1,4 +1,5 @@
 var mongo = require("mongodb").MongoClient;
+var http = require('http');
 
 var self;
 
@@ -42,6 +43,24 @@ Data.prototype.searchLocation = function(req, res)
             })
         })
     }
+}
+
+Data.prototype.geoCode = function(req, res)
+{
+    console.log(req.query)
+    http.get("http://services.gisgraphy.com//geocoding/geocode?address="+req.query.address+"&country=GB&format=json", function(re){
+        var body = '';
+
+        re.on('data', function(chunk){
+            body += chunk;
+        });
+
+        re.on('end', function(){
+            res.json(body);
+        });
+    }).on('error', function(e){
+        console.log("Got an error: ", e);
+    });
 }
 
 module.exports = Data;

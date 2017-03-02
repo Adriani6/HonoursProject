@@ -72,21 +72,4 @@ portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Sessi
         filters.push(filter)
     }  
 
-    $scope.selectAttraction = function(attraction)
-    {
-      if(attraction.selected == undefined)
-      {
-        attraction.selected = true;
-        Map.addMarker(attraction.name, attraction.geo.location.lat, attraction.geo.location.lng, function(id)
-        {
-          attraction.markerID = id;
-        });
-      }
-      else
-      {
-        delete attraction.selected;
-        Map.removeMarker(attraction.markerID)
-      }
-    }
-
 })

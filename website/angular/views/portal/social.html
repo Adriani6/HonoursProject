@@ -1,16 +1,14 @@
-
-
-            <div class="panel panel-default" style="width: 600px; margin-left: auto; margin-right: auto;" ng-repeat="person in followers">
-                <div class="panel-body">
-                    <div class="col-md-10 col-md-push-2" style="padding-left: 0; height: 60px;">
-                        <dl>
-                            <dt style="width: 100%;"><a href="#/profile/{{person['_id']}}">{{person.firstname + " " + person.surname}}</a> <span style="float: right; font-size: 24px;"><i class="fa fa-paper-plane" aria-hidden="true"></i></span></dt>
-                            <dd style="font-size: 10px">{{person.activity[0].Date}}</dd>
-                            <dd style=""><i class="fa fa-plane" aria-hidden="true" style="font-size: 24px;"></i> Travelled to {{person.activity[0].Location}}</dd>
-                        </dl>
-                    </div>
-                    <div class="col-md-2 col-md-pull-10">
-                        <img ng-src="{{person.profile.photo}}" alt="..." class="img-rounded" style="height: 60px">
-                    </div>
-                </div>
-            </div>
+<div class="panel panel-default" style="margin-top: 20px; width: 600px; margin-left: auto; margin-right: auto;" ng-repeat="person in followers">
+   <div class="panel-body">
+      <div class="col-md-10 col-md-push-2" style="padding-left: 0; height: 60px;">
+         <dl>
+            <dt style="width: 100%;"><a href="#/profile/{{person['_id']}}">{{person.firstname + " " + person.surname}}</a> <span style="float: right; font-size: 24px;"><i class="fa fa-paper-plane" aria-hidden="true"></i></span></dt>
+            <dd style="font-size: 10px">{{person.activity[0].Date}}</dd>
+            <dd><i class="fa fa-plane" aria-hidden="true" style="font-size: 24px;"></i> Travelled to {{person.activity[0].Location}}</dd>
+         </dl>
+      </div>
+      <div class="col-md-2 col-md-pull-10">
+         <img ng-src="{{person.profile.photo}}" alt="..." class="img-rounded" style="height: 60px">
+      </div>
+   </div>
+</div>
