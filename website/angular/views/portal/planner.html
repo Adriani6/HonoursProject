@@ -1,96 +1,187 @@
 <div class="plannerContainer" style="top: 0; height: 100%; width: 100%; z-index: 0; overflow: hidden; display: flex;
-  flex-direction:row; margin-bottom: -150px;">
-  <div class="col-sm-3 col-md-3 col-lg-2 mapNavbar">
-    <uib-tabset active="activeJustified" justified="true">
-      <uib-tab heading="" active="activeJustified == 0">
-        <section style="margin-top: 10px;">
-          <form name="myForm">
-              <div class="form-group">
-                <label for="exampleInputEmail2">Destination</label>
-                <input name="enteredCity" type="text" class="form-control">
-              </div>
-              <button type="submit" class="btn btn-default" ng-click="searchCity()">Search</button>
-          </form>
-        </section>
-        <section style="margin-top: 20px;">
-          <div ng-if="results.length > 0">Results for {{enteredCity}}</div>
-          <div class="panel panel-default" ng-repeat="found in results" ng-click="centerMap(found.coords.y, found.coords.x)">
-            <div class="panel-body">
-              {{found.city}}
-            </div>
-          </div>
-        </section>
-      </uib-tab>
-      <uib-tab heading="" active="activeJustified == 1">
-        <section>
-        <i class="fa fa-arrow-left" aria-hidden="true" style="font-size: 24px; line-height: 48px;" ng-click="goBack()"></i> Back
-          <span style="float: right; font-size: 24px; line-height:48px;">
-            <i class="fa fa-search" aria-hidden="true"></i>
-            <i class="fa fa-filter" aria-hidden="true" ng-click="showMoreFilters()"></i>
-            <i class="fa fa-map-marker" aria-hidden="true">
-              <span style="font-size: 18px">{{selectedAttractionsText}}</span>
-            </i>
-          </span>
-        </section>
-        <section>
-          <div class="box list-group">
-              <div ng-repeat="attraction in attractions" ng-click="selectAttraction(attraction)" class="list-group-item" ng-class="attraction.selected ? 'active' : ''" right-click>{{attraction.name}}</div>
-          </div>
-        </section>
-      </uib-tab>
-    </uib-tabset>
-  </div>
-  <div class="col-md-9 col-lg-10" style="padding: 0; height: 100%;">
-    <div id="map" class="map" ng-init="loadMap()" style="width: 100%; height: 100%; margin-bottom: -100px">
-    </div>
-  </div>
+   flex-direction:row; margin-bottom: -150px;">
+   <div class="col-sm-3 col-md-3 col-lg-2 mapNavbar">
+      <uib-tabset active="activeJustified" justified="true">
+         <uib-tab heading="" active="activeJustified == 0">
+            <section style="margin-top: 10px;">
+               <form name="myForm">
+                  <div class="form-group">
+                     <label for="exampleInputEmail2">Destination</label>
+                     <input name="enteredCity" type="text" class="form-control">
+                  </div>
+                  <button type="submit" class="btn btn-default" ng-click="searchCity()">Search</button>
+               </form>
+            </section>
+            <section style="margin-top: 20px;">
+               <div ng-if="results.length > 0">Results for {{enteredCity}}</div>
+               <div class="panel panel-default" ng-repeat="found in results" ng-click="centerMap(found.coords.y, found.coords.x)">
+                  <div class="panel-body">
+                     {{found.city}}
+                  </div>
+               </div>
+            </section>
+         </uib-tab>
+         <uib-tab heading="" active="activeJustified == 1">
+            <section>
+               <i class="fa fa-arrow-left" aria-hidden="true" style="font-size: 24px; line-height: 48px;" ng-click="goBack()"></i> Back
+               <span style="float: right; font-size: 24px; line-height:48px;">
+               <i class="fa fa-search" aria-hidden="true"></i>
+               <i class="fa fa-filter" aria-hidden="true" ng-click="showMoreFilters()"></i>
+               <i class="fa fa-map-marker" aria-hidden="true" ng-click="openItinerary()">
+               <span style="font-size: 18px">{{selectedAttractionsText}}</span>
+               </i>
+               </span>
+            </section>
+            <section>
+               <div class="box list-group">
+                  <div ng-repeat="attraction in attractions" ng-click="selectAttraction(attraction)" class="list-group-item" ng-class="attraction.selected ? 'active' : ''" right-click>{{attraction.name}}</div>
+               </div>
+            </section>
+         </uib-tab>
+      </uib-tabset>
+   </div>
+   <div class="col-md-9 col-lg-10" style="padding: 0; height: 100%;">
+      <div id="map" class="map" ng-init="loadMap()" style="width: 100%; height: 100%; margin-bottom: -100px">
+      </div>
+   </div>
 </div>
-
 <script type="text/ng-template" id="showAttrDetails.html">
-    <div class="modal-body" id="modal-body">
-      <h3>{{name}} <small>{{location}}</small><span style="float: right; font-size: 14px;">Own this business?</span></h3>
-      <hr />
-      <div class="row">
-        <div class="col-md-6">
-          <address>
-            <strong>{{name}}</strong><br>
-            {{address}}<br>
-            <abbr title="Phone">P:</abbr> (123) 456-7890
-          </address>
-        </div>
-        <div class="col-md-6">
-          <button type="button" class="btn btn-default btn-md">
+   <div class="modal-body" id="modal-body">
+     <h3>{{attraction.name}} <small>
+       <span uib-rating ng-model="rate" max="5" ng-click="alertRating(rate)" read-only="false" on-hover="hoveringOver(value)" on-leave="overStar = null" aria-labelledby="default-rating"></span>  
+     </small><span style="float: right; font-size: 14px;">Own this business? <br /><span ng-click="report({attraction})">Report Error</span></span></h3>
+     <hr />
+     <div class="row">
+       <div class="col-md-6">
+         <address>
+           <strong>{{attraction.name}}</strong><br>
+           {{attraction.address}}<br>
+           <abbr title="Phone">P:</abbr> (123) 456-7890
+         </address>
+       </div>
+       <div class="col-md-6">
+         <div class="btn-group" role="group" aria-label="...">
+          <button type="button" class="btn btn-default btn-md" ng-click="showOnMap(attraction)">
             <i class="fa fa-thumb-tack" aria-hidden="true"></i> Show on Map
           </button>
           <button type="button" class="btn btn-default btn-md">
             <i class="fa fa-plus" aria-hidden="true"></i> Add to Bucket
           </button>
-          <button type="button" class="btn btn-default btn-md">
-            <i class="fa fa-map-marker" aria-hidden="true"></i> Select
+          <button type="button" class="btn btn-default btn-md" ng-click="selectAttraction(attraction)">
+            <i class="fa fa-map-marker" aria-hidden="true"></i> <span ng-if="!attraction.selected">Select</span><span ng-if="attraction.selected">Delete</span>
+          </button>
+          <button type="button" class="btn btn-default btn-md" ng-click="writeReview({attraction})">
+            <i class="fa fa-map-marker" aria-hidden="true"></i> Review
           </button>
         </div>
+       </div>
+     </div>
+     <section style="height: 200px;">
+     <div class="col-xs-6 col-md-3">
+   <a href="#" class="thumbnail">
+     <img src="https://scontent.fman1-1.fna.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" alt="...">
+   </a>
+   </div>
+   <div class="col-xs-6 col-md-3" style="margin-bottom: 20px;">
+   <a href="#" class="thumbnail">
+     <img src="https://scontent.fman1-1.fna.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" alt="...">
+   </a>
+   </div>
+   <div class="col-xs-6 col-md-3" style="margin-bottom: 20px;">
+   <a href="#" class="thumbnail">
+     <img src="https://scontent.fman1-1.fna.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" alt="...">
+   </a>
+   </div>
+   <div class="col-xs-6 col-md-3" style="margin-bottom: 20px;">
+   <a href="#" class="thumbnail">
+     <img src="https://scontent.fman1-1.fna.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" alt="...">
+   </a>
+   </div>
+   </section>
+   <button type="button" class="btn btn-primary btn-lg btn-block" ng-click="showReviews({attraction})">Show Reviews</button>
+   </div>
+</script>
+<script type="text/ng-template" id="reportWindow.html">
+   <div class="modal-header">
+     <h4>Report Type</h4>
+       </div>
+       <div class="modal-body" id="modal-body">
+         
+         <form>
+           <div class="form-group">
+         <div class="checkbox">
+           <label>
+             <input type="checkbox" value="">
+             Wrong Address
+           </label>
+         </div>
+         <div class="checkbox">
+           <label>
+             <input type="checkbox" value="">
+             Wrong Phone Number
+           </label>
+         </div>
+         <div class="checkbox">
+           <label>
+             <input type="checkbox" value="">
+             Inaccurate Map Placement
+           </label>
+         </div>
+         <div class="checkbox">
+           <label>
+             <input type="checkbox" value="">
+             Other
+           </label>
+         </div>
+         </div>
+           <div class="form-group">
+         <button type="submit" class="btn btn-default">Send Report</button>
+     </div>
+   </form>
+       </div>
+</script>
+<script type="text/ng-template" id="reviews.html">
+    <div class="modal-body" id="modal-body">
+      <section ng-repeat="review in reviews">
+        <div class="row">
+          <div class="col-md-2" style="">
+            <img src="https://scontent.fman1-1.fna.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" style="height: 80px;" class="img-rounded">
+          </div>
+          <div class="col-md-10" style="">
+            <h4><a href="#/profile/{{review.posterID}}">{{review.poster}}</a></h4>
+            <div uib-rating ng-model="review.rating" max="5" read-only="true" on-hover="hoveringOver(value)" on-leave="overStar = null" aria-labelledby="default-rating"></div>
+            {{review.message}}
+          </div>
+        </div>
+        <hr />
+      </section>
+      <div class="row">
+        <div class="col-md-12">
+          <ul uib-pagination total-items="100" ng-model="bigCurrentPage" max-size="5" class="pagination-sm" boundary-link-numbers="true" rotate="false"></ul>
+        </div>
       </div>
-      <section style="height: 200px;">
-      <div class="col-xs-6 col-md-3">
-    <a href="#" class="thumbnail">
-      <img src="https://scontent.fman1-1.fna.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" alt="...">
-    </a>
-  </div>
-  <div class="col-xs-6 col-md-3" style="margin-bottom: 20px;">
-    <a href="#" class="thumbnail">
-      <img src="https://scontent.fman1-1.fna.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" alt="...">
-    </a>
-  </div>
-  <div class="col-xs-6 col-md-3" style="margin-bottom: 20px;">
-    <a href="#" class="thumbnail">
-      <img src="https://scontent.fman1-1.fna.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" alt="...">
-    </a>
-  </div>
-  <div class="col-xs-6 col-md-3" style="margin-bottom: 20px;">
-    <a href="#" class="thumbnail">
-      <img src="https://scontent.fman1-1.fna.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" alt="...">
-    </a>
-  </div>
-  </section>
+    </div> 
+</script>
+
+<script type="text/ng-template" id="writeReview.html">
+    <div class="modal-body" id="modal-body">
+      <textarea class="form-control" rows="10"></textarea>
+    </div>
+</script>
+
+<script type="text/ng-template" id="itinerary.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Itinerary
+        <span class="btn-group" uib-dropdown style="float: right;">
+                <button id="btn-append-to-body" type="button" class="btn btn-primary" uib-dropdown-toggle>
+              Sort <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-body">
+              <li role="menuitem"><a href="#">Save</a></li>
+            </ul>
+        </span></h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+      
     </div>
 </script>

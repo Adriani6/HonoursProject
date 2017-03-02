@@ -1,140 +1,270 @@
-portal.controller("mapController", function($scope, Map, Geo)
+portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $uibModal)
 {
-  $scope.states = [{city : "Aberdeen", coords : {y: 57.149651, x: -2.099075}}];
-  $scope.selectedAttractionsText = 0;
-  $scope.selectedAttractionsCounter = 0;
+	$scope.states = [
+	{
+		city: "Aberdeen",
+		coords:
+		{
+			y: 57.149651,
+			x: -2.099075
+		}
+	}];
+	$scope.selectedAttractionsText = 0;
+	$scope.selectedAttractionsCounter = 0;
 
-  $scope.searchCity = function()
-  {
-    $scope.results = [];
-    $scope.enteredCity = myForm.enteredCity.value;
 
-    for(var i = 0; i < $scope.states.length; i++)
-    {
-      console.log($scope.states[i].city)
-      if($scope.states[i].city.toLowerCase().match(myForm.enteredCity.value.toLowerCase()))
-        $scope.results.push($scope.states[i])
-    }
-   // var a = $scope.states.includes(myForm.enteredCity.value);
-    //console.log(a)
-  }
+	$scope.$on('showOnMap', function(event, attraction)
+	{
+		Map.centerMap(attraction.geo.location.lat, attraction.geo.location.lng)
+		$scope.selectAttraction(attraction)
+		Map.setZoom(18);
+		$uibModalStack.dismissAll();
+	});
 
-  $scope.goBack = function()
-  {
-    $scope.activeJustified = $scope.activeJustified - 1;
-  }
+	$scope.$on('SelectAttraction', function(event, attraction)
+	{
+		$scope.selectAttraction(attraction);
+	});
 
-  $scope.loadMap = function()
-  {
-    Map.loadMap(function()
-    {
+	$scope.searchCity = function()
+	{
+		$scope.results = [];
+		$scope.enteredCity = myForm.enteredCity.value;
 
-    });
+		for (var i = 0; i < $scope.states.length; i++)
+		{
+			console.log($scope.states[i].city)
+			if ($scope.states[i].city.toLowerCase().match(myForm.enteredCity.value.toLowerCase()))
+				$scope.results.push($scope.states[i])
+		}
+		// var a = $scope.states.includes(myForm.enteredCity.value);
+		//console.log(a)
+	}
 
-    $scope.centerMap = function(x, y)
-    {
-      Map.centerMap(x, y)
-      $scope.activeJustified = 1;
-      console.log($scope.activeJustified);
-      setTimeout(function()
-      {
-        
-        
-      })
-      
-    }
+	$scope.openItinerary = function()
+	{
+		$uibModal.open(
+		{
+			animation: true,
+			ariaLabelledBy: 'modal-title-top',
+			ariaDescribedBy: 'modal-body-top',
+			templateUrl: 'itinerary.html',
+			size: 'lg',
+			controller: function($scope) {
 
-    $scope.test = function()
-    {
-      alert("Hallo")
-    }
+			}
+		})
+	}
 
-    $scope.selectAttraction = function(attraction)
-    {
-      if(attraction.selected == undefined)
-      {
-        attraction.selected = true;
-        Map.addMarker(attraction.name, attraction.geo.location.lat, attraction.geo.location.lng, function(id)
-        {
-          attraction.markerID = id;
+	$scope.goBack = function()
+	{
+		$scope.activeJustified = $scope.activeJustified - 1;
+	}
 
-          $scope.selectedAttractionsCounter++;
+	$scope.loadMap = function()
+	{
+		Map.loadMap(function() {
 
-          if(typeof $scope.selectedAttractionsText !== 'string')
-          {
-            if($scope.selectedAttractionsCounter > 9)
-              $scope.selectedAttractionsText = "9+";
-            else
-              $scope.selectedAttractionsText++;
-          }    
-        });
-      }
-      else
-      {
-        delete attraction.selected;
-        Map.removeMarker(attraction.markerID)
-        $scope.selectedAttractionsCounter--;
-        if(typeof $scope.selectedAttractionsText === 'string')
-        {
-          if($scope.selectedAttractionsCounter == 9)
-          {
-            $scope.selectedAttractionsText = 9;
-          }
-        }  
+		});
 
-        if($scope.selectedAttractionsCounter < 9)
-          {
-            $scope.selectedAttractionsText--;
-          }        
-      }
-    }
+		$scope.centerMap = function(x, y)
+		{
+			Map.centerMap(x, y)
+			Map.setZoom(11);
 
-    //Obfuscated
-    $scope.getLocation = function()
-    {
-      return $scope.states;
-      /*Geo.getLocations(loc, function(res)
-      {
-        console.log(res)
-        return res;
-      })*/
-    }
-  }
+			$scope.activeJustified = 1;
+		}
+
+		$scope.test = function()
+		{
+			alert("Hallo")
+		}
+
+		$scope.selectAttraction = function(attraction)
+		{
+			if (attraction.selected == undefined)
+			{
+				attraction.selected = true;
+				Map.addMarker(attraction.name, attraction.geo.location.lat, attraction.geo.location.lng, function(id)
+				{
+					attraction.markerID = id;
+
+					$scope.selectedAttractionsCounter++;
+
+					if (typeof $scope.selectedAttractionsText !== 'string')
+					{
+						if ($scope.selectedAttractionsCounter > 9)
+							$scope.selectedAttractionsText = "9+";
+						else
+							$scope.selectedAttractionsText++;
+					}
+				});
+			}
+			else
+			{
+				delete attraction.selected;
+				Map.removeMarker(attraction.markerID)
+				$scope.selectedAttractionsCounter--;
+				if (typeof $scope.selectedAttractionsText === 'string')
+				{
+					if ($scope.selectedAttractionsCounter == 9)
+					{
+						$scope.selectedAttractionsText = 9;
+					}
+				}
+
+				if ($scope.selectedAttractionsCounter < 9)
+				{
+					$scope.selectedAttractionsText--;
+				}
+			}
+		}
+
+		//Obfuscated
+		$scope.getLocation = function()
+		{
+			return $scope.states;
+			/*Geo.getLocations(loc, function(res)
+			{
+			  console.log(res)
+			  return res;
+			})*/
+		}
+	}
 })
 
-portal.directive('myDirective', function (){
-    return {
-        require: 'ngModel',
-        link: function(scope, element, attrs, ngModel) {
-           scope.$watch(function () {
-              return ngModel.$modelValue;
-           }, function(newValue) {
-               console.log(newValue);
-           });
-        }
-     };
+portal.directive('myDirective', function()
+{
+	return {
+		require: 'ngModel',
+		link: function(scope, element, attrs, ngModel)
+		{
+			scope.$watch(function()
+			{
+				return ngModel.$modelValue;
+			}, function(newValue)
+			{
+				console.log(newValue);
+			});
+		}
+	};
 });
 
-portal.directive('rightClick',function($document, $uibModal){
-    document.oncontextmenu = function (e) {
-       if(e.target.hasAttribute('right-click')) {
-           return false;
-       }
-    };
-    return function(scope,el,attrs){
-        el.bind('contextmenu',function(e){
-            $uibModal.open({
-              animation: true,
-              ariaLabelledBy: 'modal-title-top',
-              ariaDescribedBy: 'modal-body-top',
-              templateUrl: 'showAttrDetails.html',
-              size: 'lg',
-              controller: function($scope) {
-                $scope.location = scope.attraction.location;
-                $scope.name = scope.attraction.name;  
-                $scope.address = scope.attraction.address;
-              }
-            });         
-        }) ;
-    }
+portal.directive('rightClick', function($document, $uibModal, Attraction)
+{
+	document.oncontextmenu = function(e)
+	{
+		if (e.target.hasAttribute('right-click'))
+		{
+			return false;
+		}
+	};
+	return function(scope, el, attrs)
+	{
+		el.bind('contextmenu', function(e)
+		{
+			$uibModal.open(
+			{
+				animation: true,
+				ariaLabelledBy: 'modal-title-top',
+				ariaDescribedBy: 'modal-body-top',
+				templateUrl: 'showAttrDetails.html',
+				size: 'lg',
+				controller: function($scope, $rootScope)
+				{
+					$scope.attraction = scope.attraction;
+
+					$scope.selectAttraction = function(att)
+					{
+						$rootScope.$broadcast("SelectAttraction", att);
+					}
+
+					$scope.showOnMap = function(att)
+					{
+						$rootScope.$broadcast('showOnMap', att);
+					}
+
+					$scope.writeReview = function(attraction)
+					{
+						$uibModal.open(
+						{
+							animation: true,
+							ariaLabelledBy: 'modal-title-top',
+							ariaDescribedBy: 'modal-body-top',
+							templateUrl: 'writeReview.html',
+							size: 'md',
+							controller: function($scope) {
+
+							}
+						})
+					}
+
+					$scope.showReviews = function(attraction)
+					{
+						$uibModal.open(
+						{
+							animation: true,
+							ariaLabelledBy: 'modal-title-top',
+							ariaDescribedBy: 'modal-body-top',
+							templateUrl: 'reviews.html',
+							size: 'md',
+							controller: function($scope, Reviews, Profile)
+							{
+								$scope.reviews = [];
+								$scope.bigCurrentPage = 1;
+								Reviews.fetch(attraction.attraction['_id'], function(reviews)
+								{
+
+
+									for (var i = 0; i < reviews.length; i++)
+									{
+										//console.log(reviews[i])
+										mergeReview(reviews[i])
+									}
+								})
+								//console.log(attraction.attraction)
+								function mergeReview(rev)
+								{
+									Profile.getProfileData(rev.poster, function(data)
+									{
+										console.log(rev)
+										$scope.reviews.push(
+										{
+											message: rev.review,
+											poster: data.firstname + " " + data.surname,
+											rating: rev.rating,
+											posterID: rev.poster
+										})
+									})
+								}
+							}
+						})
+					}
+
+					$scope.report = function(attraction)
+					{
+						$uibModal.open(
+						{
+							animation: true,
+							ariaLabelledBy: 'modal-title-top',
+							ariaDescribedBy: 'modal-body-top',
+							templateUrl: 'reportWindow.html',
+							size: 'sm',
+							controller: function($scope)
+							{
+								$scope.alert = function()
+								{
+									alert("Hello");
+								}
+							}
+						})
+					}
+
+					$scope.alertRating = function(r) {
+
+					}
+				}
+			});
+		});
+	}
 });

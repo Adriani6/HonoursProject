@@ -40,7 +40,11 @@ portal.service('Map', function($http) {
     this.centerMap = function(x, y)
     {
         map.getView().setCenter(ol.proj.fromLonLat([y, x]));
-        map.getView().setZoom(11);
+    }
+
+    this.setZoom = function(zoom)
+    {
+        map.getView().setZoom(zoom);
     }
 
     this.getVisible = function()

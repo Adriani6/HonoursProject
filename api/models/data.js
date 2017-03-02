@@ -1,5 +1,6 @@
 var mongo = require("mongodb").MongoClient;
 var http = require('http');
+var ObjectId = require('mongodb').ObjectId; 
 
 var self;
 
@@ -61,6 +62,29 @@ Data.prototype.geoCode = function(req, res)
     }).on('error', function(e){
         console.log("Got an error: ", e);
     });
+}
+
+Data.prototype.gatherReviews = function(req, res)
+{
+    console.log(req.query)
+    var attractionID = req.query.attraction;
+
+    if(attractionID != undefined)
+    {
+        mongo.connect("mongodb://localhost/tripcards", function(err, db)
+        {
+            //Finish this function
+            db.collection("reviews").find({"attraction": new ObjectId(attractionID)}).toArray(function(err, data)
+            {
+                if(err)
+                    console.log(err)
+                else
+                {
+                    res.send(data);
+                }
+            })
+        })
+    }    
 }
 
 module.exports = Data;

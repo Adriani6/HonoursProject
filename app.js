@@ -81,6 +81,8 @@ router.get("/user/getProfile", api.user.getProfile)
 router.get("/user/getFollowersRecentActivity", api.user.getFollowersRecentActivity)
 router.get("/geocode", api.data.geoCode)
 
+router.get("/reviews", api.data.gatherReviews);
+
 // Buckets
 router.get("/user/retrieveBuckets", api.user.retrieveBuckets)
 router.post("/user/newBucket", api.user.newBucket)
