@@ -1,0 +1,89 @@
+<style>
+    .quickName
+    {
+        max-width: 80px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .selected{
+        background: #004899;
+        color: white;
+    }
+    </style>
+
+<div class="col-md-10 col-md-offset-1" style="margin-top: 20px;">
+    <div style="width: 100%; overflow-x: scroll;">
+        <ul >
+            <li style="display: inline-block;" style="height: 100%;">
+                <div class="panel panel-default" style="cursor:pointer;">
+                    <div class="panel-body">
+                        <i class="fa fa-plus-circle" aria-hidden="true" style="font-size: 80px"></i>
+                        <h4 class="quickName" style="text-align: center;">New</h4>
+                    </div>
+                </div>
+            </li>
+            <li style="display: inline-block;" style="height: 100%; top: 0;" ng-repeat="attraction in owned">
+                <div class="panel panel-default" style="cursor:pointer;" ng-class="{'selected': attraction.selected}" ng-click="selectAttraction(attraction._id)">
+                    <div class="panel-body">
+                        <img class="img-circle" style="height: 80px; width: 80px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Tour_Eiffel_Wikimedia_Commons_(cropped).jpg/240px-Tour_Eiffel_Wikimedia_Commons_(cropped).jpg" alt="...">
+                        <h4 class="quickName" style="text-align: center">{{attraction.name}}</h4>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <uib-tabset active="activeJustified" justified="true">
+            <uib-tab index="0" heading="Details">
+                <h3>{{selected.name}} <small>{{selected.location}}</small></h3>
+                <table class="table table-striped">
+                    <th>Property</th><th>Value</th>
+                    <tr>
+                        <td>Name</td><td>{{selected.name}}</td>
+                    </tr>
+                    <tr>
+                        <td>Location</td><td>{{selected.location}}</td>
+                    </tr>
+                    <tr>
+                        <td>Address</td><td>{{selected.address}}</td>
+                    </tr>
+                    <tr>
+                        <td>Place Type</td><td>{{selected.types}}</td>
+                    </tr>
+                    <tr>
+                        <td>Current Offers</td><td>{{selected.offers.length}}</td>
+                    </tr>
+                    <tr>
+                        <td>Future Offers</td><td>{{selected.offers.length}}</td>
+                    </tr>
+                </table>
+            </uib-tab>
+            <uib-tab index="1" heading="Offers & Promotions">
+
+                <table class="table table-bordered">
+                    <th>Live</th><th>Offer Name</th><th>Description</th><th>Created</th><th>Start Date</th><th>End Date</th><th>Options</th>
+                    <tr ng-repeat="offer in selected.offers">
+                        <td style="text-align: center"><span class="label label-success">Live</span></td>
+                        <td>{{offer.name}}</td>
+                        <td>{{offer.description}}</td>
+                        <td>{{offer.stamp}}</td>
+                        <td>{{offer.start}}</td>
+                        <td>{{offer.end}}</td>
+                        <td style="font-size: 18px; text-align: center;">
+                            <i class="fa fa-wrench" aria-hidden="true"></i>
+                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </td>
+                    </tr>
+                </table>
+            </uib-tab>
+            <uib-tab index="2" heading="Settings">
+                
+                        
+            </uib-tab>
+        </uib-tabset>
+    </div>
+</div>

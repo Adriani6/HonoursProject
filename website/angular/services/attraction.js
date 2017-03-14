@@ -7,5 +7,11 @@ portal.service("Attraction", function($http)
         var attraction_id = attraction.attraction['_id'];
     }
 
-    
+    this.getOwned = function(callback)
+    {
+        $http.get("/api/panel/getOwnedAttractions").then(function(data)
+        {
+            callback(data.data);
+        })
+    }
 })

@@ -43,7 +43,7 @@ nav{
     height: calc(100% - 150px);
 }
 
-.nav-tabs
+.mapNavbar .nav-tabs
 {
   display: none
 }

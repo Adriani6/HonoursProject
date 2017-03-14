@@ -14,5 +14,9 @@ portal.config(function($routeProvider) {
     .when("/profile/:id", {
         templateUrl : "views/portal/profile.html",
         controller: "profile"
+    })
+    .when("/panel", {
+        templateUrl : "views/portal/panel.html",
+        controller: "panel"
     });
 });
