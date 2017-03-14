@@ -196,6 +196,42 @@ User.prototype.getFollowersRecentActivity = function(req, res)
     //Function to be extended by taking time range checked and gets last 3-6 items per person that populates the feed.
     var output = [];
     var togo = 0;
+    
+    //alerts
+    var att_following = 0;
+    var offers_checked = 0;
+
+    function checkUpdates(id, lastCheck)
+    {
+        mongo.connect("mongodb://localhost/tripcards", function(err, db)
+        {
+            db.collection("claimed_attractions").findOne({"attr": new ObjectId(id)}, function(err, data)
+            {
+                if(err)
+                    console.log(err)
+                
+                var alerts = [];
+
+                offers_checked += data.offers.length;
+                
+                for(var i = 0; i < data.offers.length; i++)
+                {
+                    if(lastCheck < data.offers[i].stamp)
+                    {
+                        alerts.push(data.offers[i]);
+                        offers_checked--;
+                    }
+
+                    if(att_following == 0 && offers_checked == 0)
+                    {
+                        res.send(alerts)
+                    }
+                    
+                }
+                
+            })
+        })
+    }
 
     function fetchActivity(id)
     {
@@ -221,7 +257,7 @@ User.prototype.getFollowersRecentActivity = function(req, res)
     {
         
         //Finish this function
-        db.collection("users").findOne({"_id": new ObjectId(req.session.user)}, {"following" : 1}, function(err, data)
+        db.collection("users").findOne({"_id": new ObjectId(req.session.user)}, {"checked": 1, "following" : 1, "following_attractions" : 1}, function(err, data)
         {
             if(err)
                 console.log(err)
@@ -230,12 +266,24 @@ User.prototype.getFollowersRecentActivity = function(req, res)
                 //console.log(data.following)
                 togo = data.following.length;
 
-                for(var i = 0; i < data.following.length; i++)
+                if(req.query.type == "feed")
                 {
-                    //console.log(data.following[i])
-                    fetchActivity(data.following[i]);
+                    for(var i = 0; i < data.following.length; i++)
+                    {
+                        //console.log(data.following[i])
+                        fetchActivity(data.following[i]);
+                    }
                 }
+                else if(req.query.type == "alerts")
+                {
+                    att_following = data.following_attractions.length;
 
+                    for(var y = 0; y < data.following_attractions.length; y++)
+                    {
+                        checkUpdates(data.following_attractions[y], data.checked);
+                        att_following--;
+                    }
+                }
             }
         })
     })    

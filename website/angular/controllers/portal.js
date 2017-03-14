@@ -4,11 +4,18 @@ portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Sessi
 {
   $scope.followers = []
   $scope.user = ""
+  $scope.alertsCount = Session.getAlertsCount();
   // Move Filter function and implement search function inside mapController
 
   Session.getFollowersActivity(function(d)
   {
     $scope.followers = d;
+  })
+
+  Session.checkAlerts(function(d)
+  {
+    $scope.alertsCount = Session.getAlertsCount();
+    $scope.alertDetails = d;
   })
 
   Requests.getActivity("589dc479e7dc1c282ccb5596");

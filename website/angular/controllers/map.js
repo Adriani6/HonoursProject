@@ -1,5 +1,7 @@
 portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $uibModal)
 {
+	var attractions = [];
+
 	$scope.states = [
 	{
 		city: "Aberdeen",
@@ -51,7 +53,7 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 			templateUrl: 'itinerary.html',
 			size: 'lg',
 			controller: function($scope) {
-
+				$scope.itineraryItems = attractions;
 			}
 		})
 	}
@@ -85,6 +87,9 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 			if (attraction.selected == undefined)
 			{
 				attraction.selected = true;
+
+				attractions.push(attraction);
+
 				Map.addMarker(attraction.name, attraction.geo.location.lat, attraction.geo.location.lng, function(id)
 				{
 					attraction.markerID = id;

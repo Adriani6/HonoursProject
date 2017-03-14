@@ -1,5 +1,7 @@
 angular.module('ng').service("Session", function($http) {
     //alert("Loadesd")
+    var alerts = [];
+
     this.retrieve = function(callback)
     {
         $http.get("/api/user/session").then(function(r) {
@@ -24,11 +26,26 @@ angular.module('ng').service("Session", function($http) {
 
     this.getFollowersActivity = function(callback)
     {
-        $http.get("/api/user/getFollowersRecentActivity")
+        $http.get("/api/user/getFollowersRecentActivity?type=feed")
         .then(function(r)
         {
             callback(r.data);
         })
+    }
+
+    this.checkAlerts = function(callback)
+    {
+        $http.get("/api/user/getFollowersRecentActivity?type=alerts")
+        .then(function(r)
+        {
+            alerts = r.data;
+            callback(r.data);
+        })
+    }
+
+    this.getAlertsCount = function()
+    {
+        return alerts.length;
     }
 
 });
