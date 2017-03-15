@@ -62,9 +62,9 @@
                 </table>
             </uib-tab>
             <uib-tab index="1" heading="Offers & Promotions">
-
+                <h3>Offers and Promotions <small><button type="button" class="btn btn-primary btn-sm" ng-click="newOffer()">Create New</button></small></h3>
                 <table class="table table-bordered">
-                    <th>Live</th><th>Offer Name</th><th>Description</th><th>Created</th><th>Start Date</th><th>End Date</th><th>Options</th>
+                    <th>Live</th><th>Offer Name</th><th>Description</th><th>Created</th><th>Start Date</th><th>End Date</th><th>Expires</th><th>Options</th>
                     <tr ng-repeat="offer in selected.offers">
                         <td style="text-align: center"><span class="label label-success">Live</span></td>
                         <td>{{offer.name}}</td>
@@ -72,10 +72,11 @@
                         <td>{{offer.stamp}}</td>
                         <td>{{offer.start}}</td>
                         <td>{{offer.end}}</td>
+                        <td>{{offer.expiry}}</td>
                         <td style="font-size: 18px; text-align: center;">
-                            <i class="fa fa-wrench" aria-hidden="true"></i>
-                            <i class="fa fa-info-circle" aria-hidden="true"></i>
-                            <i class="fa fa-trash" aria-hidden="true"></i>
+                            <i class="fa fa-wrench" aria-hidden="true" style="cursor: pointer;"></i>
+                            <i class="fa fa-info-circle" aria-hidden="true" style="cursor: pointer;" ng-click="showDetails(offer)"></i>
+                            <i class="fa fa-trash" aria-hidden="true" style="cursor: pointer;" ng-click="removeOffer(offer)"></i>
                         </td>
                     </tr>
                 </table>
@@ -87,3 +88,73 @@
         </uib-tabset>
     </div>
 </div>
+
+<script type="text/ng-template" id="confirmAction.html">
+        <div class="modal-header">
+            <h3 class="modal-title" id="modal-title-{{name}}">Confirm Action!</h3>
+        </div>
+        <div class="modal-body" id="modal-body-{{name}}" style="text-align: center">
+            <h4>You are about to remove an offer.<br />
+                    <code>{{offer.name}}</code><br />
+                 This action can't be undone.</h4>
+            <button type="button" class="btn btn-danger" ng-click="acceptRemove()">Delete</button> 
+        </div>
+    </script>
+
+<script type="text/ng-template" id="offerDetails.html">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title-{{name}}">Details</h4>
+        </div>
+        <div class="modal-body" id="modal-body-{{name}}" style="text-align: center">
+            <canvas id="bar" class="chart chart-bar"  chart-data="data" chart-labels="labels" chart-series="series"> </canvas>
+        </div>
+    </script>
+
+<script type="text/ng-template" id="newOffer.html">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title-{{name}}">Create Offer</h4>
+        </div>
+        <div class="modal-body" id="modal-body-{{name}}" style="text-align: center">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">Name</label>
+                    <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputEmail3" placeholder="Offer Name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Description</label>
+                    <div class="col-sm-10">
+                    <input type="password" class="form-control" id="inputPassword3" placeholder="Offer Description">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Start Date</label>
+                    <div class="col-sm-10">
+                        <p class="input-group">
+                            <input type="text" class="form-control" uib-datepicker-popup ng-model="dt" is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">End Date</label>
+                    <div class="col-sm-10">
+                        <p class="input-group">
+                            <input type="text" class="form-control" uib-datepicker-popup ng-model="dt" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-default">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>    
