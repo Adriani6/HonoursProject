@@ -1,38 +1,12 @@
-.card-style {
-    display: block;
-    background-color: #fff;
-    height: 100px;
-    margin: 20px 0px;
-    box-shadow: 1px 1px 8px #999;
-    cursor: pointer;
-}
-.card-img {
-    height: 100px;
-    width: 100px;
-}
-.media-heading {
-    margin-top: 10px;
-    color: #444;
-}
-.media-heading:hover, a:link {
-    color: #00C853;
-    text-decoration: none;
-}
-.members {
-    margin-top: 20px;
-    color: #999;
-    float: left;
- }
- .btn-part {
-     display: inline-block;
-     margin: 10px;
-     float: right;
- }
- .badge {
-     display: inline-block;
-     background: #00C853;
-     float: right;
-     padding: 7px;
-     border-radius: 50px;
-     margin: 10px;
- }
+.quickName
+    {
+        max-width: 80px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .selected{
+        background: #004899;
+        color: white;
+    }

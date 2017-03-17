@@ -32,13 +32,4 @@ portal.service('Requests', function($http) {
         callback(types)
     }
 
-    this.getActivity = function(id)
-    {
-        $http({url : "/api/user/recentActivity?user=589dc479e7dc1c282ccb5596", method: 'GET'})
-        .success(function(data)
-        {
-            console.log(data)
-        })
-    }
-
 });

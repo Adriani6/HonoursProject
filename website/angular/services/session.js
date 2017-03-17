@@ -48,4 +48,18 @@ angular.module('ng').service("Session", function($http) {
         return alerts.length;
     }
 
+    this.like = function(data, callback)
+    {
+        data.type = "LIKE";
+
+        $http.post("/api//activity/createAction", data).then(function(data)
+        {
+            //console.log(data)
+            if(data.data == "Deleted" || data.data == "Inserted")
+                callback(true);
+            else
+                callback(false);
+        })
+    }
+
 });

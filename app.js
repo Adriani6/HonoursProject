@@ -76,7 +76,6 @@ router.get("/search/:location", api.data.searchLocation);
 router.post("/user/new", api.user.new)
 router.post("/user/signin", api.user.login)
 router.post("/user/updateBio", api.user.updateDescription)
-router.get("/user/recentActivity", api.user.getRecentActivity)
 router.get("/user/getProfile", api.user.getProfile)
 router.get("/user/getFollowersRecentActivity", api.user.getFollowersRecentActivity)
 router.get("/panel/getOwnedAttractions", api.attraction.getOwned)
@@ -84,9 +83,15 @@ router.get("/geocode", api.data.geoCode)
 
 router.get("/reviews", api.data.gatherReviews);
 
+router.post("/attraction/offer/create", api.attraction.createOffer);
+router.post("/attraction/offer/remove", api.attraction.removeOffer);
+
+router.post("/activity/createAction", api.user.createActivity);
+
 // Buckets
 router.get("/user/retrieveBuckets", api.user.retrieveBuckets)
 router.post("/user/newBucket", api.user.newBucket)
+router.post("/user/addToBucket", api.user.addToBucket);
 
 //Session
 router.get("/user/session", api.user.getUserData)

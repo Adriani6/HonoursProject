@@ -14,4 +14,22 @@ portal.service("Attraction", function($http)
             callback(data.data);
         })
     }
+
+    this.createOffer = function(offer, callback)
+    {  
+        $http.post("/api/attraction/offer/create", offer).then(function(data)
+        {
+            callback(data.data);
+        })
+    }
+
+    this.removeOffer = function(data, callback)
+    {
+        console.log("Hello");
+        $http.post("/api/attraction/offer/remove", data).then(function(data)
+        {
+            callback(data.data);
+        })
+    }
+
 })

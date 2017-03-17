@@ -1,5 +1,11 @@
-portal.controller("bucketCtrl", function($scope, $uibModal, $document)
+portal.controller("bucketCtrl", function($scope, $uibModal, $document, Profile)
 {
+    $scope.buckets = [];
+
+    Profile.getBuckets(function(buckets)
+    {
+        $scope.buckets = buckets;
+    })
 
     $scope.open = function (size, parentSelector) {
         var parentElem = parentSelector ? 

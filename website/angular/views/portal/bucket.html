@@ -1,76 +1,20 @@
 <div class="col-md-8 col-md-offset-2">
     <h2>Here's your bucket lists... <small style="float: right;" ng-click="open('sm')">New</small></h2>
-        <uib-accordion close-others="oneAtATime">
-    <div uib-accordion-group class="panel-default" heading="Static Header, initially expanded">
-      This content is straight in the template.
-    </div>
-    <div uib-accordion-group class="panel-default" heading="Summer 2017">
-      <div class="col-md-10 col-md-offset-1 col-sm-12">
-            <div class="col-md-6 col-sm-12">
-                    <div class="card-style">
-                        <div class="media">
-
-                            <div class="media-left">
-                                <img class="media-object img-thumbnail card-img" src="64/Scotland.png">
-                            </div>
-
-                            <div class="media-body">
-                                <a href="#"><h5 class="media-heading">Aberdeen - Scotland</h5></a>
-                                <div class="members pull-left"><small>1.235 People want to go too</small></div>
-                            </div>
-                        </div>
+    <uib-accordion close-others="oneAtATime">
+        <div ng-repeat="bucket in buckets">
+            <div uib-accordion-group class="panel-default" heading="{{bucket.name}}">
+                <div class="col-sm-6 col-md-2 col-lg-2" ng-repeat="attraction in bucket.attractions">
+                    <div class="thumbnail">
+                    <img src="https://scontent-lhr3-1.xx.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" alt="...">
+                    <div class="caption">
+                        <h4 class="text-center" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 250px">{{attraction.data.name}}</h4>
+                        <p class="text-center" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 250px">{{attraction.data.location}}</p>
+                        <p class="text-center"><a href="#" class="btn btn-danger" role="button">Remove</a></p>
+                    </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-12">
-                    <div class="card-style">
-                        <div class="media">
-
-                            <div class="media-left">
-                                <img class="media-object img-thumbnail card-img" src="https://goo.gl/cJajax">
-                            </div>
-
-                            <div class="media-body">
-                                <a href="#"><h5 class="media-heading">Disc. Programação Internet Rica - 2016.2</h5></a>
-                                <div class="members pull-left"><small>1.235 Members</small></div><div class="btn btn-sm btn-danger pull-right btn-part">Join Group</div>
-                                <div class="btn btn-sm btn-danger pull-right btn-part">+</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-sm-12">
-                    <div class="card-style">
-                        <div class="media">
-
-                            <div class="media-left">
-                                <img class="media-object img-thumbnail card-img" src="https://goo.gl/cJajax">
-                            </div>
-
-                            <div class="media-body">
-                                <a href="#"><h5 class="media-heading">Disc. Programação Internet Rica - 2016.2</h5></a>
-                                <div class="members pull-left"><small>1.235 Members</small></div><div class="btn btn-sm btn-danger pull-right btn-part">Join Group</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-sm-12 col-xs-12">
-                    <div class="card-style">
-                        <div class="media">
-
-                            <div class="media-left">
-                                <img class="media-object img-thumbnail card-img" src="64/Poland.png">
-                            </div>
-
-                            <div class="media-body">
-                                <a href="#"><h5 class="media-heading">Warsaw - Poland</h5></a>
-                                <div class="members pull-left"><small>1.235 Members</small></div><div class="btn btn-sm btn-danger pull-right btn-part">Join Group</div>
-                                <div class="btn btn-sm btn-danger pull-right btn-part">+</div>
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            </div>
         </div>
-    </div>
   </uib-accordion>
 </div>
 <script type="text/ng-template" id="newBucket.html">

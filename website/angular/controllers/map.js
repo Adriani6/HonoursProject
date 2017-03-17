@@ -265,6 +265,48 @@ portal.directive('rightClick', function($document, $uibModal, Attraction)
 						})
 					}
 
+					$scope.selectBucketPrompt = function(a)
+					{
+						var attraction = a;
+
+						$uibModal.open(
+						{
+							animation: true,
+							ariaLabelledBy: 'modal-title-top',
+							ariaDescribedBy: 'modal-body-top',
+							templateUrl: 'selectBucket.html',
+							size: 'md',
+							controller: function($scope, Profile) {
+								$scope.baskets = [];
+								$scope.selected  = undefined;
+								$scope.selectedName = "Nothing Selected";
+
+								Profile.getBuckets(function(b)
+								{
+									$scope.baskets = b;
+								})
+
+								$scope.selectBasket = function(basket)
+								{
+									$scope.selectedName = basket.name;
+									$scope.selected = basket;
+								}
+
+								$scope.save = function()
+								{
+									console.log(attraction)
+									var data = {};
+									data.attraction = attraction._id;
+									data.bucket = $scope.selected._id;
+									Profile.addToBucket(data, function(resp)
+									{
+										console.log(resp);
+									})
+								}
+							}
+						})
+					}
+
 					$scope.alertRating = function(r) {
 
 					}

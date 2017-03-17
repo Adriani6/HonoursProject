@@ -168,12 +168,6 @@ User.prototype.getUserData = function(req, res)
     })
 }
 
-User.prototype.getRecentActivity = function(req, res)
-{
-    console.log(req.query.user)
-
-}
-
 User.prototype.getProfile = function(req, res)
 {
     mongo.connect("mongodb://localhost/tripcards", function(err, db)
@@ -242,13 +236,19 @@ User.prototype.getFollowersRecentActivity = function(req, res)
                 if(err)
                     console.log(err)
 
-                output.push(data)
-                togo--;
-
-                if(togo == 0)
+                db.collection("activity").findOne({"creator": new ObjectId(req.session.user), "receiver" : new ObjectId(id), "activity": new ObjectId(data.activity[0].ID)}, function(err, aData)
                 {
-                    res.send(output)
-                }
+                    data.activity[0].aData = aData;
+                    output.push(data)
+                    togo--;
+
+                    if(togo == 0)
+                    {
+                        res.send(output)
+                    }
+                })
+
+                
             })
         })
     }
@@ -347,14 +347,97 @@ User.prototype.newBucket = function(req, res)
 
 User.prototype.retrieveBuckets = function(req, res)
 {
+    var output = 0;
+    var toSend = undefined;
+    var toGo = 0;
+
+    function getAttractionData(i, y)
+    {
+        mongo.connect("mongodb://localhost/tripcards", function(err, db)
+        {
+            db.collection("attractions").findOne({"_id": new ObjectId(toSend[i].attractions[y].id)}, {"name" : 1, "location" : 1}, function(err, data)
+            {
+                toSend[i].attractions[y].data = data;
+
+                toGo--;
+
+                if(toGo == 0)
+                {
+                    res.send(toSend);
+                }
+            })
+        })
+    }
+
     mongo.connect("mongodb://localhost/tripcards", function(err, db)
     {
         db.collection("buckets").find({"creator": new ObjectId(req.session.user)}).toArray(function(err, data)
         {
-            console.log(data);
-            res.send(data);
+            toSend = data;
+
+            for(var i = 0; i < data.length; i++)
+            {
+                if(data[i].attractions != undefined)
+                {
+                    toGo += data[i].attractions.length;
+
+                    for(var y = 0; y < data[i].attractions.length; y++)
+                    {
+                        getAttractionData(i, y);
+                    }
+                }
+                else if(toGo == 0 && i == data.length - 1)
+                {
+                    res.send(toSend);
+                }
+            }
+
+            //res.send(data);
         })
     })
+}
+
+User.prototype.createActivity = function(req, res)
+{
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        db.collection("activity").findOne({"creator" : new ObjectId(req.session.user), "receiver" : new ObjectId(req.body.receiver), "activity": new ObjectId(req.body.activity)}, function(err, data)
+        {
+            if(err)
+                res.send("Error");
+            else
+            {
+                if(data !== null)
+                {
+                    console.log("Removing")
+                    db.collection("activity").remove({"creator" : new ObjectId(req.session.user), "receiver" : new ObjectId(req.body.receiver), "activity": new ObjectId(req.body.activity)}, function(err, d)
+                    {
+                        if(err)
+                            res.send("Error");
+                        else
+                            res.send("Deleted");
+                    });
+                }
+                else
+                {
+                    console.log("Inserting")
+                    req.body.creator = new ObjectId(req.session.user);
+                    req.body.activity = new ObjectId(req.body.activity);
+                    req.body.receiver = new ObjectId(req.body.receiver);
+
+                    db.collection("activity").insert(req.body, function(err, data)
+                    {
+                        if(err)
+                            res.send("Error")
+                        else
+                        {
+                            res.send("Inserted");
+                        }
+                    })
+                }
+            }
+        })
+    });
 }
 
 User.prototype.deleteBucket = function(req, res)
@@ -364,12 +447,24 @@ User.prototype.deleteBucket = function(req, res)
 
 User.prototype.addToBucket = function(req, res)
 {
-
+    console.log(req.body)
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        db.collection("buckets").update(
+            { creator: new ObjectId(req.session.user), "_id": new ObjectId(req.body.bucket) }, 
+            {$push: {'attractions': {"id" : new ObjectId(req.body.attraction)}}}
+        )
+    });
 }
 
 User.prototype.removeFromBucket = function(req, res)
 {
     
+}
+
+User.prototype.checkActivity = function(req, res)
+{
+
 }
 
 module.exports = User;

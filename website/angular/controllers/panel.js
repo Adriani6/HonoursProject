@@ -1,4 +1,4 @@
-portal.controller("panel", function($scope, Attraction, $uibModal)
+portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
 {
     $scope.owned = [];
     $scope.selected = undefined;
@@ -25,45 +25,17 @@ portal.controller("panel", function($scope, Attraction, $uibModal)
                         var startDate = new Date($scope.selected.offers[j].start);
                         var endDate = new Date($scope.selected.offers[j].end);
 
-                        var date = new Date($scope.selected.offers[j].stamp).toISOString().split("T");
-                        var time = date[1].slice(0, 5);
-                        var amPM = time[0].split(":")[0] < 12 ? 'am' : 'pm';
+                        $scope.selected.offers[j].originalStamp = $scope.selected.offers[j].stamp;
 
-                        $scope.selected.offers[j].stamp = date[0] + " (at " + time + amPM + ")";
+                        $scope.selected.offers[j].stamp = Tool.preciseDate($scope.selected.offers[j].stamp);
 
-                        date = new Date($scope.selected.offers[j].start).toISOString().split("T");
-                        time = date[1].slice(0,5);
-                        amPM = time[0].split(":")[0] < 12 ? 'am' : 'pm';
+                        $scope.selected.offers[j].start = Tool.preciseDate($scope.selected.offers[j].start);
 
-                        $scope.selected.offers[j].start = date[0] + " (at " + time + amPM + ")";
+                        $scope.selected.offers[j].end = Tool.preciseDate($scope.selected.offers[j].end);
 
-                        date = new Date($scope.selected.offers[j].end).toISOString().split("T");
-                        time = date[1].slice(0,5);
-                        amPM = time.split(":")[0] < 12 ? 'am' : 'pm';
+                        
 
-                        $scope.selected.offers[j].end = date[0] + " (at " + time + amPM + ")";
-
-                        var delta = Math.abs(endDate - startDate) / 1000;
-
-                        // calculate (and subtract) whole days
-                        var days = Math.floor(delta / 86400);
-                        delta -= days * 86400;
-
-                        // calculate (and subtract) whole hours
-                        var hours = Math.floor(delta / 3600) % 24;
-                        delta -= hours * 3600;
-
-                        // calculate (and subtract) whole minutes
-                        var minutes = Math.floor(delta / 60) % 60;
-                        delta -= minutes * 60;
-
-                        var string = "";
-
-                        string += days > 0 ? days + " days, " : '';
-                        string += hours > 0 ? hours + " hours " : '';
-                        string += minutes > 0 ? minutes + " minutes" : '';
-
-                        $scope.selected.offers[j].expiry = string;
+                        $scope.selected.offers[j].expiry = Tool.calculateRemainingTime(startDate, endDate);
                     }
                 }  
                 else
@@ -83,6 +55,8 @@ portal.controller("panel", function($scope, Attraction, $uibModal)
 
     $scope.newOffer = function()
     {
+        var selected = $scope.selected;
+
         $uibModal.open({
             animation: true,
             ariaLabelledBy: 'modal-title-top',
@@ -90,6 +64,40 @@ portal.controller("panel", function($scope, Attraction, $uibModal)
             templateUrl: 'newOffer.html',
             size: 'lg',
             controller: function($scope) {
+                //$scope.newOffer = {};
+
+                $scope.createOffer = function(offer)
+                {
+                    if(offer != undefined && offer.start != undefined && offer.end != undefined && offer.time.start.hour != undefined && offer.time.start.minute != undefined && offer.time.end.hour != undefined && offer.time.end.minute != undefined)
+                    {
+                        var startDate = new Date(offer.start);
+                        startDate.setHours(offer.time.start.hour);
+                        startDate.setMinutes(offer.time.start.minute);
+
+                        var endDate = new Date(offer.end);
+                        endDate.setHours(offer.time.end.hour);
+                        endDate.setMinutes(offer.time.end.minute);
+                        
+                        offer.start = startDate.getTime();
+                        offer.end = endDate.getTime();
+
+                        delete offer.time;
+                        offer.attraction = selected._id;
+
+                        console.log(offer);
+
+                        Attraction.createOffer(offer, function(data)
+                        {
+
+                        })
+                    }
+                    else
+                    {
+                        alert("There are empty fields!");
+                    }
+                    
+                }
+
                 $scope.popup2 = {
                     opened: false
                 };
@@ -109,19 +117,20 @@ portal.controller("panel", function($scope, Attraction, $uibModal)
 
     $scope.removeOffer = function(offer)
     {
-        
+        var selected = $scope.selected;
+
         $uibModal.open({
             animation: true,
             ariaLabelledBy: 'modal-title-top',
             ariaDescribedBy: 'modal-body-top',
             templateUrl: 'confirmAction.html',
             size: 'sm',
-            controller: function($scope) {
+            controller: function($scope, Attraction) {
                 $scope.offer = offer;
 
                 $scope.acceptRemove = function()
                 {
-                    console.log($scope.offer)
+                    Attraction.removeOffer({attr: selected["_id"], stamp: $scope.offer.originalStamp});
                 } 
             }
         });

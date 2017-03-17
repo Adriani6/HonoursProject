@@ -7,7 +7,7 @@
                <form name="myForm">
                   <div class="form-group">
                      <label for="exampleInputEmail2">Destination</label>
-                     <input name="enteredCity" type="text" class="form-control">
+                     <input name="enteredCity" type="text" class="form-control" autocomplete="off">
                   </div>
                   <button type="submit" class="btn btn-default" ng-click="searchCity()">Search</button>
                </form>
@@ -45,6 +45,8 @@
       </div>
    </div>
 </div>
+
+
 <script type="text/ng-template" id="showAttrDetails.html">
    <div class="modal-body" id="modal-body">
      <h3>{{attraction.name}} <small>
@@ -64,7 +66,7 @@
           <button type="button" class="btn btn-default btn-md" ng-click="showOnMap(attraction)">
             <i class="fa fa-thumb-tack" aria-hidden="true"></i> Show on Map
           </button>
-          <button type="button" class="btn btn-default btn-md">
+          <button type="button" class="btn btn-default btn-md" ng-click="selectBucketPrompt(attraction)">
             <i class="fa fa-plus" aria-hidden="true"></i> Add to Bucket
           </button>
           <button type="button" class="btn btn-default btn-md" ng-click="selectAttraction(attraction)">
@@ -140,6 +142,7 @@
    </form>
        </div>
 </script>
+
 <script type="text/ng-template" id="reviews.html">
     <div class="modal-body" id="modal-body">
       <section ng-repeat="review in reviews">
@@ -211,5 +214,20 @@
                 </div>
             </div>
             </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="selectBucket.html">
+    <div class="modal-body" id="modal-body">
+      <h3>Select Basket to add attraction to</h3>
+      <div class="btn-group" uib-dropdown is-open="status.isopen">
+        <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
+          {{selectedName}} <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+          <li role="menuitem" ng-repeat="basket in baskets"><a href="javascript:void(0)" ng-click="selectBasket(basket)">{{basket.name}}</a></li>
+        </ul>
+      </div>
+      <button type="button" class="btn btn-success" ng-click="save()">Add to {{selectedName}}</button>
     </div>
 </script>

@@ -52,4 +52,34 @@ Attraction.prototype.getOwned = function(req, res)
     })
 }
 
+Attraction.prototype.createOffer = function(req, res)
+{
+    var attraction = req.body.attraction;
+
+    delete req.body.attraction;
+
+    req.body.stamp = new Date().getTime();
+
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        db.collection("claimed_attractions").update(
+            { user: new ObjectId(req.body.attraction), user: new ObjectId(req.session.user) }, 
+            {$push: {'offers': req.body}}
+        )
+    })
+
+    res.send("Success");
+}
+
+Attraction.prototype.removeOffer = function(req, res)
+{
+    console.log(req.body);
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        db.collection("claimed_attractions").update({"user": new ObjectId(req.session.user), attr: new ObjectId(req.body.attr)}, { $pull: { 'offers': { stamp: req.body.stamp } } });
+    })
+
+    res.send("Success");
+}
+
 module.exports = Attraction;

@@ -34,4 +34,11 @@ portal.service("Profile", function($http)
         })
     }
 
+    this.addToBucket = function(data, callback)
+    {
+        $http.post("/api/user/addToBucket", data).then(function(r)
+        {
+            callback(r);
+        })
+    }
 })

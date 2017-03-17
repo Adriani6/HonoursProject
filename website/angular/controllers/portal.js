@@ -9,7 +9,20 @@ portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Sessi
 
   Session.getFollowersActivity(function(d)
   {
+    for(var i = 0; i < d.length; i++)
+    {
+      if(!d[i].activity[0].aData)
+      {
+        d[i].activity[0].tooltipTxt = "Like Activity";
+      }
+      else
+      {
+        d[i].activity[0].tooltipTxt = "Unlike Activity";
+      }
+    }
+    
     $scope.followers = d;
+    console.log(d)
   })
 
   Session.checkAlerts(function(d)
@@ -18,12 +31,40 @@ portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Sessi
     $scope.alertDetails = d;
   })
 
-  Requests.getActivity("589dc479e7dc1c282ccb5596");
-
   Session.retrieve(function(r)
   {
     $scope.user = r.data;
   })
+
+  $scope.like = function(a, p)
+  {
+    var obj = {};
+    obj.activity =  a.ID;
+    obj.receiver = p._id;
+
+    if(!a.aData)
+    {  
+      Session.like(obj, function(success)
+      {
+        if(success)
+        {
+          a.aData = true;   
+          a.tooltipTxt = "Unlike Activity";
+        }
+      }) 
+    }
+    else
+    {
+      Session.like(obj, function(success)
+      {
+        if(success)
+        {
+          a.aData = null;
+          a.tooltipTxt = "Like Activity";
+        }
+      }) 
+    }
+  }
 
   var self = this;
   var allFilters = undefined;
