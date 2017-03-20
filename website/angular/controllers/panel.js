@@ -10,6 +10,9 @@ portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
 
     $scope.selectAttraction = function(id)
     {
+        $scope.futureOffers = 0;
+        $scope.liveOffers = 0;
+
         for(var i = 0; i < $scope.owned.length; i++)
         {
 
@@ -33,9 +36,34 @@ portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
 
                         $scope.selected.offers[j].end = Tool.preciseDate($scope.selected.offers[j].end);
 
-                        
+                        $scope.selected.offers[j].status = {};
 
-                        $scope.selected.offers[j].expiry = Tool.calculateRemainingTime(startDate, endDate);
+                        Tool.isOfferLive(startDate, endDate, function(text, label)
+                        {
+                            if(text == "Future")
+                            {
+                                $scope.futureOffers++;
+                            }
+
+                            if(text == "Live")
+                            {
+                                $scope.liveOffers++;
+                            }
+
+                            if(text != "Ended")
+                            {
+                                $scope.selected.offers[j].expiry = Tool.calculateRemainingTime(endDate);
+                            }
+                            else
+                            {
+                                $scope.selected.offers[j].expiry = "Expired";
+                            }
+                            
+                            $scope.selected.offers[j].status.text = text;
+                            $scope.selected.offers[j].status.color = label;
+                        });
+                        
+                        
                     }
                 }  
                 else
@@ -55,6 +83,7 @@ portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
 
     $scope.newOffer = function()
     {
+        var scope = $scope;
         var selected = $scope.selected;
 
         $uibModal.open({
@@ -63,37 +92,50 @@ portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
             ariaDescribedBy: 'modal-body-top',
             templateUrl: 'newOffer.html',
             size: 'lg',
-            controller: function($scope) {
+            controller: function($scope, Tool) {
                 //$scope.newOffer = {};
 
                 $scope.createOffer = function(offer)
                 {
-                    if(offer != undefined && offer.start != undefined && offer.end != undefined && offer.time.start.hour != undefined && offer.time.start.minute != undefined && offer.time.end.hour != undefined && offer.time.end.minute != undefined)
+                    if(selected != undefined)
                     {
-                        var startDate = new Date(offer.start);
-                        startDate.setHours(offer.time.start.hour);
-                        startDate.setMinutes(offer.time.start.minute);
-
-                        var endDate = new Date(offer.end);
-                        endDate.setHours(offer.time.end.hour);
-                        endDate.setMinutes(offer.time.end.minute);
-                        
-                        offer.start = startDate.getTime();
-                        offer.end = endDate.getTime();
-
-                        delete offer.time;
-                        offer.attraction = selected._id;
-
-                        console.log(offer);
-
-                        Attraction.createOffer(offer, function(data)
+                        if(offer != undefined && offer.start != undefined && offer.end != undefined && offer.time.start.hour != undefined && offer.time.start.minute != undefined && offer.time.end.hour != undefined && offer.time.end.minute != undefined)
                         {
+                            if(offer.time.start.hour <= 24 && offer.time.start.hour >= 0 && offer.time.start.minute <= 59 && offer.time.start.minute >= 0 && offer.time.end.hour <= 24 && offer.time.end.hour >= 0 && offer.time.end.minute <= 59 && offer.time.end.minute >= 0)
+                            {
+                                var startDate = new Date(offer.start);
+                                startDate.setHours(offer.time.start.hour);
+                                startDate.setMinutes(offer.time.start.minute);
 
-                        })
+                                var endDate = new Date(offer.end);
+                                endDate.setHours(offer.time.end.hour);
+                                endDate.setMinutes(offer.time.end.minute);
+                                
+                                offer.start = startDate.getTime();
+                                offer.end = endDate.getTime();
+
+                                delete offer.time;
+                                offer.attraction = selected._id;
+
+                                Attraction.createOffer(offer, function(data)
+                                {
+                                    scope.selectAttraction(selected._id);
+                                    alert(data);
+                                })
+                            }
+                            else
+                            {
+                                alert("Invalid Times");
+                            }
+                        }
+                        else
+                        {
+                            alert("There are empty fields!");
+                        }
                     }
                     else
                     {
-                        alert("There are empty fields!");
+                        alert("Select Place to apply offer to.");
                     }
                     
                 }
@@ -130,7 +172,10 @@ portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
 
                 $scope.acceptRemove = function()
                 {
-                    Attraction.removeOffer({attr: selected["_id"], stamp: $scope.offer.originalStamp});
+                    Attraction.removeOffer({attr: selected["_id"], stamp: $scope.offer.originalStamp}, function(res)
+                    {
+                        alert(res);
+                    });
                 } 
             }
         });

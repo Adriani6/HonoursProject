@@ -69,12 +69,13 @@
                         <a href="#/bucket" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-list-alt" aria-hidden="true"></i></a>
                      </li>
                      <li class="dropdown" uib-dropdown>
-                        <img ng-src="{{user.profile.photo}}" alt="..." class="img-circle" uib-dropdown-toggle style="height: 40px; margin-top: 5px;">
+                        <img ng-src="../uploads/profile/{{user.profile.photo}}" alt="..." class="img-circle" uib-dropdown-toggle style="height: 40px; width: 40px; margin-top: 5px;">
                         <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button" style="width: 100px">
                             <li role="menuitem"><a href="#/profile/{{user._id}}">My Profile</a></li>
                             <li role="menuitem"><a href="#">Settings</a></li>
                             <li class="divider"></li>
-                            <li role="menuitem"><a href="#/panel">Organization</a></li>
+                            <li role="menuitem"><a href="#/panel">My Places</a></li>
+                            <li role="menuitem"><a href="#/organization">My Organizations</a></li>
                             <li role="menuitem"><a href="#">Logout</a></li>
                         </ul>
                      </li>
@@ -88,6 +89,19 @@
 
       <ng-view>
       </ng-view>
+
+      <script type="text/ng-template" id="imageUpload.html">
+        <form ng-app="fileUpload" name="form">
+        Single Image with validations
+        <div class="button" ngf-select ng-model="file" name="file" ngf-pattern="'image/*'"
+            ngf-accept="'image/*'" ngf-max-size="20MB" ngf-min-height="100"
+            ngf-resize="{width: 100, height: 100}">Select</div>
+        Multiple files
+        <div class="button" ngf-select ng-model="files" ngf-multiple="true">Select</div>
+        Drop files: <div ngf-drop ng-model="files" class="drop-box">Drop</div>
+        <button type="submit" ng-click="submit()">submit</button>
+        </form>
+      </script>
 
       <!-- Angular Templates -->
       <script type="text/ng-template" id="filtersPopup.html">
@@ -114,5 +128,6 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.20.1/ol.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
       <script src="libs/angular-chart.min.js"></script>
+      <script src="libs/ng-file-upload.min.js"></script>
    </body>
 </html>

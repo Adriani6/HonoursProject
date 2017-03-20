@@ -1,4 +1,4 @@
-var portal = angular.module("portal", ['ui.bootstrap', 'ngRoute', 'ngAnimate', 'chart.js']);
+var portal = angular.module("portal", ['ui.bootstrap', 'ngRoute', 'ngAnimate', 'chart.js', 'ngFileUpload']);
 
 portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Session)
 {

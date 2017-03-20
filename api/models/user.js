@@ -450,10 +450,24 @@ User.prototype.addToBucket = function(req, res)
     console.log(req.body)
     mongo.connect("mongodb://localhost/tripcards", function(err, db)
     {
-        db.collection("buckets").update(
-            { creator: new ObjectId(req.session.user), "_id": new ObjectId(req.body.bucket) }, 
-            {$push: {'attractions': {"id" : new ObjectId(req.body.attraction)}}}
-        )
+        db.collection("buckets").findOne({creator: new ObjectId(req.session.user), "_id": new ObjectId(req.body.bucket), 'attractions.id': new ObjectId(req.body.attraction)}, function(err, data)
+        {
+            if(data == null)
+            {
+                db.collection("buckets").update(
+                    { creator: new ObjectId(req.session.user), "_id": new ObjectId(req.body.bucket) }, 
+                    {$push: {'attractions': {"id" : new ObjectId(req.body.attraction)}}}, function(err, res)
+                    {
+                        if(err)
+                            res.send("There was an issue adding to bucket");
+                        else
+                            res.send("Attraction added to bucket");
+                    }
+                )
+            }
+            else
+                res.send("Attraction already in bucket.");
+        })
     });
 }
 
@@ -465,6 +479,32 @@ User.prototype.removeFromBucket = function(req, res)
 User.prototype.checkActivity = function(req, res)
 {
 
+}
+
+User.prototype.getComplateAlbums = function(req, res)
+{
+    console.log(req.query);
+
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        db.collection("photos").find({owner: new ObjectId(req.query.user)}).toArray(function(err, data)
+        {
+            res.send(data);
+        });
+    });
+}
+
+User.prototype.createAlbum = function(req, res)
+{
+    var album = req.body.album;
+
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        db.collection("photos").insert({"owner": new ObjectId(req.session.user), "album" : album}, function(err, data)
+        {
+            res.send(data);
+        });
+    });
 }
 
 module.exports = User;

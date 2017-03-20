@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var app = express();
 var appApi = require("./api/api.js");
+var assert = require('assert')
 
 var session = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(session);
@@ -95,3 +96,14 @@ router.post("/user/addToBucket", api.user.addToBucket);
 
 //Session
 router.get("/user/session", api.user.getUserData)
+
+//Organizations
+router.post("/org/new", api.org.create);
+router.get("/org/getMine", api.org.getOwned);
+
+//Uploads
+router.post("/user/newProfilePic", api.upload.newUserPhoto);
+
+//Photos
+router.get("/user/photos/album/getAll", api.user.getComplateAlbums)
+router.post("/user/photos/album/create", api.user.createAlbum);

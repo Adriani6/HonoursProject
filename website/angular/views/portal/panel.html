@@ -39,10 +39,13 @@
                         <td>Place Type</td><td>{{selected.types}}</td>
                     </tr>
                     <tr>
-                        <td>Current Offers</td><td>{{selected.offers.length}}</td>
+                        <td>Total Offers</td><td>{{selected.offers.length}}</td>
                     </tr>
                     <tr>
-                        <td>Future Offers</td><td>{{selected.offers.length}}</td>
+                        <td>Future Offers</td><td>{{futureOffers}}</td>
+                    </tr>
+                    <tr>
+                        <td>Live Offers</td><td>{{liveOffers}}</td>
                     </tr>
                 </table>
             </uib-tab>
@@ -51,7 +54,7 @@
                 <table class="table table-bordered">
                     <th>Live</th><th>Offer Name</th><th>Description</th><th>Created</th><th>Start Date</th><th>End Date</th><th>Expires</th><th>Options</th>
                     <tr ng-repeat="offer in selected.offers">
-                        <td style="text-align: center"><span class="label label-success">Live</span></td>
+                        <td style="text-align: center"><span class="label {{offer.status.color}}">{{offer.status.text}}</span></td>
                         <td>{{offer.name}}</td>
                         <td>{{offer.description}}</td>
                         <td>{{offer.stamp}}</td>

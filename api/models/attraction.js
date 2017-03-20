@@ -54,21 +54,32 @@ Attraction.prototype.getOwned = function(req, res)
 
 Attraction.prototype.createOffer = function(req, res)
 {
-    var attraction = req.body.attraction;
+    var data = req.body;
 
-    delete req.body.attraction;
-
-    req.body.stamp = new Date().getTime();
-
-    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    if(data.name != undefined && data.description != undefined && data.start != undefined && data.end != undefined && data.attraction != undefined)
     {
-        db.collection("claimed_attractions").update(
-            { user: new ObjectId(req.body.attraction), user: new ObjectId(req.session.user) }, 
-            {$push: {'offers': req.body}}
-        )
-    })
+        var attraction = req.body.attraction;
 
-    res.send("Success");
+        delete req.body.attraction;
+
+        req.body.stamp = new Date().getTime();
+
+        mongo.connect("mongodb://localhost/tripcards", function(err, db)
+        {
+            db.collection("claimed_attractions").update(
+                { user: new ObjectId(req.body.attraction), user: new ObjectId(req.session.user) }, 
+                {$push: {'offers': req.body}}
+            )
+        })
+
+        res.send("Success");
+    }
+    else
+    {
+        res.send("Error");
+    }
+
+    
 }
 
 Attraction.prototype.removeOffer = function(req, res)

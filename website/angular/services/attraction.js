@@ -17,6 +17,8 @@ portal.service("Attraction", function($http)
 
     this.createOffer = function(offer, callback)
     {  
+        console.log(offer);
+        //if(offer.start)
         $http.post("/api/attraction/offer/create", offer).then(function(data)
         {
             callback(data.data);

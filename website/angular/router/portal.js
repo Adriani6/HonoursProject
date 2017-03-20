@@ -18,5 +18,9 @@ portal.config(function($routeProvider) {
     .when("/panel", {
         templateUrl : "views/portal/panel.html",
         controller: "panel"
+    })
+    .when("/organization", {
+        templateUrl : "views/portal/organizations_portal.html",
+        controller: "panel"
     });
 });

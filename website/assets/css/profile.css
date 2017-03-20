@@ -1,16 +1,19 @@
 @import url('https://fonts.googleapis.com/css?family=Suez+One');
 
-.profile-Name{
-    font-family: 'Suez One', serif;
-    font-size: 42px;
+.post-content {
+    margin-left:58px;
 }
 
-.profile-Bar
-{
-    margin-top: 30px;
+#profileTabs .nav>li {
+    position: relative;
+    display: none;
 }
 
-.profile-Bar > .btn-group > .btn-default 
-{
-    border-top: 0; border-bottom: 0;
+#profileTabs .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+    color: #555;
+    cursor: default;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-bottom-color: transparent;
+    display: none;
 }

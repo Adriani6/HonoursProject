@@ -6,11 +6,36 @@ portal.service("Tool", function()
         var time = date[1].slice(0, 5);
         var amPM = time[0].split(":")[0] < 12 ? 'am' : 'pm';
 
-        return date[0] + " (at " + time + amPM + ")";;
+        return date[0] + " (at " + time + ")";
     }
 
-    this.calculateRemainingTime = function(startDate, endDate)
+    this.isOfferLive = function(startDate, endDate, callback)
     {
+        var currentDate = new Date();
+        var live = false;
+
+        if(startDate > currentDate)
+        {
+            callback("Future", "label-warning");
+            return;
+        }
+
+        if(startDate <= currentDate && endDate > currentDate)
+        {
+            callback("Live", "label-success");
+            return;
+        }
+        else
+        {
+            callback("Ended", "label-danger");
+            return;
+        }
+    }
+
+    this.calculateRemainingTime = function(endDate)
+    {
+        var startDate = new Date();
+        
         var delta = Math.abs(endDate - startDate) / 1000;
 
         // calculate (and subtract) whole days
