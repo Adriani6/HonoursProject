@@ -3,7 +3,10 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
     $scope.active = 1;
     $scope.profileData = {};
     $scope.album = undefined;
+    $scope.imageCount = 0;
     var userid = $routeParams.id;
+    $scope.selectedFilter = "Users";
+    $scope.followingList = undefined;
 
     $uibModalStack.dismissAll();
 
@@ -12,6 +15,40 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
         console.log(album)
         $scope.album = album;
         $scope.active = 6;
+    }
+
+    $scope.filterList = function(filter)
+    {
+        $scope.selectedFilter = filter;
+
+        if(filter == "Users")
+        {
+            $scope.followingList = $scope.profileData.following;
+        }
+        else if(filter == "Places")
+        {
+            $scope.followingList = $scope.profileData.following_attractions;
+        }
+    }
+
+    $scope.backToAlbums = function()
+    {
+        $scope.active = 2;
+    }
+
+    $scope.showImage = function(img)
+    {
+        $uibModal.open({
+            animation: true,
+            ariaLabelledBy: 'modal-title-top',
+            ariaDescribedBy: 'modal-body-top',
+            templateUrl: 'showImage.html',
+            size: 'md',
+            controller: function($scope) {
+                img.time = new Date(img.time)
+                $scope.photo = img;
+            }
+        });
     }
 
     $scope.uploadPhotos = function(album)
@@ -50,22 +87,25 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
     {
         console.log(data)
         $scope.profileData = data;
+        $scope.followingList = data.following;
+        Profile.fetchAlbums(userid, function(data)
+        {
+            $scope.albums = data;
+            console.log(data);
+            for(var i = 0; i < data.length; i++)
+            {
+                if(data[i].photos != undefined)
+                    $scope.imageCount += data[i].photos.length;
+            }
+        })
     })
 
     $scope.$watch("active", function()
     {
         if($scope.active == 2)
         {
-            //Photos tab displaying
-            Session.retrieve(function(sesh)
-            {
-                console.log(sesh)
-                Profile.fetchAlbums(sesh.data._id, function(data)
-                {
-                    $scope.albums = data;
-                })
-            })
-        }
+           //Albums screen is displayed
+        }       
     })
 
     $scope.newAlbum = function()
