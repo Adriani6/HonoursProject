@@ -103,6 +103,7 @@ router.get("/org/getMine", api.org.getOwned);
 
 //Uploads
 router.post("/user/newProfilePic", api.upload.newUserPhoto);
+router.post("/user/photos/upload", api.upload.uploadImage)
 
 //Photos
 router.get("/user/photos/album/getAll", api.user.getComplateAlbums)

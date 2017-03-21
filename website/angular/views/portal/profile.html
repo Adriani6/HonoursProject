@@ -125,13 +125,34 @@
         <uib-tab index="2">
           <button type="button" class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: 5px; float: right;" ng-click="newAlbum()">New Album</button>
           <section ng-repeat="album in albums">
-            <h3>{{album.album}}</h3>
+            <h3 ng-click="showAlbum(album)">{{album.album}}</h3>
 
           </section>
         </uib-tab>
         <uib-tab index="3">Vertical content 2</uib-tab>
         <uib-tab index="4">Vertical content 2</uib-tab>
         <uib-tab index="5">Vertical content 2</uib-tab>
+        <uib-tab index="6">
+          <button type="button" class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: 5px; float: right;" ng-click="uploadPhotos()">Upload Photos</button>
+        </uib-tab>
       </uib-tabset>
     </div>    
 </div>
+<script type="text/ng-template" id="createAlbum.html">
+  <div class="modal-body" id="modal-body">
+    <div class="form-group">
+      <label for="exampleInputName2">New Album name</label>
+      <input type="text" class="form-control" ng-model="albumName" placeholder="Album Name">
+    </div>
+    <button type="submit" ng-click="submit(albumName)" class="btn btn-default">Create</button>
+  </div>
+</script>
+
+<script type="text/ng-template" id="uploadPhotos.html">
+  <div class="modal-body" id="modal-body" ngf-drop="uploadImages($files)" class="drop-box" ngf-drag-over-class="'dragover'" ngf-multiple="true"  ngf-pattern="'image/*'">
+    <h2 class="text-center">Drag & Drop Images to upload</h2>
+    <section class="text-center" style="font-size: 64px;">
+      <i class="fa fa-file-image-o" aria-hidden="true"></i>
+    </section>
+  </div>
+</script>

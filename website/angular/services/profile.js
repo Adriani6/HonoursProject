@@ -59,7 +59,7 @@ portal.service("Profile", function($http, Upload)
 
     this.createAlbum = function(album, callback)
     {
-        $http.post("/api/user/photos/album/create", {album: "Aberdeen"}).then(function(r)
+        $http.post("/api/user/photos/album/create", {album: album}).then(function(r)
         {
             callback(r.data);
         })
