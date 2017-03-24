@@ -189,11 +189,52 @@ User.prototype.getFollowersRecentActivity = function(req, res)
 {
     //Function to be extended by taking time range checked and gets last 3-6 items per person that populates the feed.
     var output = [];
+    var alerts = [];
     var togo = 0;
+
+    var lastCheck = 0;
     
     //alerts
     var att_following = 0;
     var offers_checked = 0;
+
+    function checkActivityTable(callback)
+    {
+        //Check alerts for likes etc.
+        mongo.connect("mongodb://localhost/tripcards", function(err, db)
+        {
+            db.collection("activity").find({"receiver": new ObjectId(req.session.user), "stamp" : {$gt : lastCheck}}).toArray(function(err, data)
+            {
+                var toGet = data.length;
+
+                for(var i = 0; i < data.length; i++)
+                {
+                    (function () {
+                        var d = data[i];
+                        self.local.getName(data[i].creator, function(name)
+                        {
+                            //Find type of like and get data
+                            /*
+                                
+                            */
+                            toGet--;
+                            console.log(name);
+                            var userData = {
+                                id : name._id, 
+                                title : name.firstname + " " + name.surname + " likes your " + d.liked, 
+                                type : "LIKE"
+                            };
+                            
+                            alerts.push(userData);
+
+                            if(toGet == 0)
+                                callback(data)
+                        });
+                    })();
+                }  
+            })
+        })
+    }
 
     function checkUpdates(id, lastCheck)
     {
@@ -203,8 +244,6 @@ User.prototype.getFollowersRecentActivity = function(req, res)
             {
                 if(err)
                     console.log(err)
-                
-                var alerts = [];
 
                 offers_checked += data.offers.length;
                 
@@ -212,7 +251,8 @@ User.prototype.getFollowersRecentActivity = function(req, res)
                 {
                     if(lastCheck < data.offers[i].stamp)
                     {
-                        alerts.push(data.offers[i]);
+                        //console.log(data)
+                        alerts.push({title: "New Offer: " + data.offers[i].name, data: data.offers[i], type: "OFFER"});
                         offers_checked--;
                     }
 
@@ -238,6 +278,8 @@ User.prototype.getFollowersRecentActivity = function(req, res)
 
                 db.collection("activity").findOne({"creator": new ObjectId(req.session.user), "receiver" : new ObjectId(id), "activity": new ObjectId(data.activity[0].ID)}, function(err, aData)
                 {
+
+                    //aData ?
                     data.activity[0].aData = aData;
                     output.push(data)
                     togo--;
@@ -263,6 +305,8 @@ User.prototype.getFollowersRecentActivity = function(req, res)
                 console.log(err)
             else
             {
+                lastCheck = data.checked;
+                console.log(lastCheck)
                 //console.log(data.following)
                 togo = data.following.length;
 
@@ -276,13 +320,18 @@ User.prototype.getFollowersRecentActivity = function(req, res)
                 }
                 else if(req.query.type == "alerts")
                 {
-                    att_following = data.following_attractions.length;
-
-                    for(var y = 0; y < data.following_attractions.length; y++)
+                    checkActivityTable(function(likeAlerts)
                     {
-                        checkUpdates(data.following_attractions[y], data.checked);
-                        att_following--;
-                    }
+                        //alerts = likeAlerts;
+
+                        att_following = data.following_attractions.length;
+
+                        for(var y = 0; y < data.following_attractions.length; y++)
+                        {
+                            checkUpdates(data.following_attractions[y], data.checked);
+                            att_following--;
+                        }
+                    });
                 }
             }
         })
@@ -420,10 +469,12 @@ User.prototype.createActivity = function(req, res)
                 }
                 else
                 {
+                    // Status, Bucket,
                     console.log("Inserting")
                     req.body.creator = new ObjectId(req.session.user);
                     req.body.activity = new ObjectId(req.body.activity);
                     req.body.receiver = new ObjectId(req.body.receiver);
+                    req.body.stamp = new Date().getTime();
 
                     db.collection("activity").insert(req.body, function(err, data)
                     {
@@ -505,6 +556,20 @@ User.prototype.createAlbum = function(req, res)
             res.send(data);
         });
     });
+}
+
+User.prototype.local = {
+
+    getName : function(uID, callback)
+    {
+        mongo.connect("mongodb://localhost/tripcards", function(err, db)
+        {
+            db.collection("users").findOne({"_id": new ObjectId(uID)}, {firstname : 1, surname: 1}, function(err, data)
+            {
+                callback(data);
+            });
+        });
+    }
 }
 
 module.exports = User;

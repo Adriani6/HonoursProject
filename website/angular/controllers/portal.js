@@ -31,6 +31,11 @@ portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Sessi
     $scope.alertDetails = d;
   })
 
+  $scope.previewOffer = function(alert)
+  {
+    console.log(alert.data.id);
+  }
+
   Session.retrieve(function(r)
   {
     $scope.user = r.data;

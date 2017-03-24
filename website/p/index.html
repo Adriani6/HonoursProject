@@ -52,15 +52,13 @@
                         <a href="#/" class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle><i class="fa fa-bell-o" aria-hidden="true">
                             <div ng-if="alertsCount > 0" style="position: absolute; background: red; height: 15px; width: 15px; bottom: 8px; right: 8px; text-align: center; color: white; line-height: 15px; font-size: 10px;">{{alertsCount}}</div>
                             </i></a>
-                            <ul class="dropdown-menu" uib-dropdown-menu role="alertsDpwn" aria-labelledby="single-button" style="width: 250px">
+                            <ul class="dropdown-menu" uib-dropdown-menu role="alertsDpwn" aria-labelledby="single-button" style="padding-top: 0; border-top: 0; border-right: 0; border-left: 0;">
                                 <div class="list-group">
-                                    <a href="#" class="list-group-item active" ng-repeat="alert in alertDetails">
-                                        <h4 class="list-group-item-heading">{{alert.name}} <span class="badge">New</span></h4>
-                                        <p class="list-group-item-text">...</p>
+                                    <a href="javascript:void(0)" ng-click="previewOffer(alert)" class="list-group-item" ng-repeat="alert in alertDetails">
+                                        <h5 ng-if="alert.type == 'LIKE'" class="list-group-item-heading"><b>{{alert.title}}</b></h5>
+                                        <h5 ng-if="alert.type == 'OFFER'" class="list-group-item-heading"><b>{{alert.title}}</b></h5>
+                                        <p class="list-group-item-text">{{alert.data.description}}</p>
                                     </a>
-                                    <a href="#" class="list-group-item">Morbi leo risus</a>
-                                    <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-                                    <a href="#" class="list-group-item">Vestibulum at eros</a>
                                 </div>                              
 
                             </ul>

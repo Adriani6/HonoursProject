@@ -63,6 +63,7 @@ Attraction.prototype.createOffer = function(req, res)
         delete req.body.attraction;
 
         req.body.stamp = new Date().getTime();
+        req.body.id = new ObjectId();
 
         mongo.connect("mongodb://localhost/tripcards", function(err, db)
         {
