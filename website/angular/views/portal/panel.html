@@ -12,7 +12,7 @@
             <li style="display: inline-block;" style="height: 100%; top: 0;" ng-repeat="attraction in owned">
                 <div class="panel panel-default" style="cursor:pointer;" ng-class="{'selected': attraction.selected}" ng-click="selectAttraction(attraction._id)">
                     <div class="panel-body">
-                        <img class="img-circle" style="height: 80px; width: 80px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Tour_Eiffel_Wikimedia_Commons_(cropped).jpg/240px-Tour_Eiffel_Wikimedia_Commons_(cropped).jpg" alt="...">
+                        <img class="img-circle" style="height: 80px; width: 80px;" ng-src="../uploads/places/profile/{{attraction.profile.photo}}" alt="...">
                         <h4 class="quickName" style="text-align: center">{{attraction.name}}</h4>
                     </div>
                 </div>
@@ -70,7 +70,93 @@
                 </table>
             </uib-tab>
             <uib-tab index="2" heading="Settings">
-                
+                <div style="padding-top:50px;"> </div>
+                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 col-md-offset-1">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <h1 class="panel-title pull-left" style="font-size:30px;">Settings for {{selected.name}}</h1>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <h3 class="panel-title pull-left">Place</h3>
+                                <br><br>
+                                <form class="form-horizontal">
+                                    <label for="First_name">Name</label>
+                                    <input type="text" class="form-control" id="First_name" placeholder="{{selected.name}}">
+                                    <label for="Last_name">City</label>
+                                    <input type="text" class="form-control" id="Last_name" placeholder="{{selected.location}}">
+                                    <label for="Last_name">Full Address</label>
+                                    <input type="text" class="form-control" id="Last_name" placeholder="{{selected.address}}">
+                                </form>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <h3 class="panel-title pull-left">Describe yourself in 5 words</h3>
+                                <br><br>
+                                <form class="form-horizontal">
+                                    <input type="text" class="form-control" id="keywords" placeholder="Like #movies #kittens #travel #teacher #newyork">
+                                </form>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <h3 class="panel-title pull-left">Your photo</h3>
+                                <br><br>
+                                <div align="center">
+                                    <div class="col-lg-12 col-md-12">
+                                        <img class="img-thumbnail img-responsive" ng-src="../uploads/places/profile/{{selected.profile.photo}}" width="300px" height="300px">
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <button class="btn btn-primary" ngf-select="uploadNewProfilePhoto($file)" ngf-pattern="'image/*'" ngf-accept="'image/*'" ngf-max-size="20MB" ngf-min-height="100"><i class="fa fa-upload" aria-hidden="true"></i> Upload a new profile photo!</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <h3 class="panel-title pull-left">My extended profile</h3>
+                                <br /> <br />
+                                <uib-accordion close-others="true">
+                                    <div uib-accordion-group class="panel-default" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
+                                        <uib-accordion-heading><span style="color: red;">Delete</span> {{selected.name}}</uib-accordion-heading>
+                                        
+                                        This action is irreversable. Make sure you really mean to DELETE this place from the database permanently.
+                                    </div>
+                                    <div uib-accordion-group class="panel-default">
+                                        <uib-accordion-heading><span style="color: red;">Unclaim</span> {{selected.name}}</uib-accordion-heading>
+                                        
+                                        This action is irreversable. Make sure you really mean to UNCLAIM this place.
+                                    </div>
+                                </uib-accordion>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <h3 class="panel-title pull-left">Profile settings</h3>
+                                <br><br>
+                                <h4>Search</h4>
+                                <div class="well checkbox">
+                                    <label class="checkbox-inline" for="profile_searchable"><input type="checkbox" name="profile[searchable]" id="profile_searchable" value="true" checked="checked">
+                                        Allow for people to search for you within diaspora*
+                                    </label>
+                                </div>
+                                <br>
+                                <h4>NSFW</h4>
+                                <p>NSFW (“not safe for work”) is diaspora*’s self-governing community standard for content which may not be suitable to view while at work. If you plan to share such material frequently, please check this option so that everything you share will be hidden from people’s streams unless they choose to view them.</p>
+                                <div class="well checkbox">
+                                    <label class="checkbox-inline" for="profile_nsfw"><input type="checkbox" name="profile[nsfw]" id="profile_nsfw" value="true">
+                                        Mark everything I share as NSFW
+                                    </label>
+                                </div>
+                                <p class="text-danger"><strong><i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i> If you choose not to select this option, please add the #nsfw tag each time you share such material.</strong></p>
+                                <button class="btn btn-default"><i class="fa fa-fw fa-times" aria-hidden="true"></i> Cancel</button>
+                                <button class="btn btn-primary"><i class="fa fa-fw fa-check" aria-hidden="true"></i> Update Profile</button>
+                            </div>
+                        </div>
+                    </div>
                         
             </uib-tab>
         </uib-tabset>

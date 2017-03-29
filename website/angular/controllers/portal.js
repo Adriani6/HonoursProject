@@ -22,7 +22,7 @@ portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Sessi
     }
     
     $scope.followers = d;
-    console.log(d)
+    //console.log(d)
   })
 
   Session.checkAlerts(function(d)
@@ -31,9 +31,43 @@ portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Sessi
     $scope.alertDetails = d;
   })
 
-  $scope.previewOffer = function(alert)
+  $scope.previewAlert = function(data)
   {
-    console.log(alert.data.id);
+    if(data.data != undefined && data.type == "OFFER")
+    {
+      $uibModal.open({
+            animation: true,
+            ariaLabelledBy: 'modal-title-top',
+            ariaDescribedBy: 'modal-body-top',
+            templateUrl: 'previewOffer.html',
+            size: 'md',
+            controller: function($scope, Tool) {
+                $scope.data = data;
+                $scope.validFrom = Tool.preciseDate(data.data.start);
+                $scope.validTill = Tool.preciseDate(data.data.end);
+            }
+        }); 
+    }
+    else if(data.title.indexOf("basket") > 0)
+    {
+        //Basket was liked
+    }
+    else if(data.title.indexOf("status") > 0)
+    {
+      //status
+      $uibModal.open({
+            animation: true,
+            ariaLabelledBy: 'modal-title-top',
+            ariaDescribedBy: 'modal-body-top',
+            templateUrl: 'previewStatus.html',
+            size: 'md',
+            controller: function($scope) {
+                $scope.data = data;
+            }
+        }); 
+    }
+    
+    console.log(data);
   }
 
   Session.retrieve(function(r)
@@ -41,11 +75,12 @@ portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Sessi
     $scope.user = r.data;
   })
 
-  $scope.like = function(a, p)
+  $scope.like = function(a, p, type)
   {
     var obj = {};
     obj.activity =  a.ID;
     obj.receiver = p._id;
+    obj.liked = type;
 
     if(!a.aData)
     {  

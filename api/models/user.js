@@ -155,6 +155,7 @@ User.prototype.getUserData = function(req, res)
 {
     mongo.connect("mongodb://localhost/tripcards", function(err, db)
     {
+        console.log("Getting user data")
         //Finish this function
         db.collection("users").findOne({"_id": req.session.user}, function(err, data)
         {
@@ -168,16 +169,30 @@ User.prototype.getUserData = function(req, res)
     })
 }
 
+User.prototype.fetchFollowers = function(req, res)
+{
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        db.collection("users").find({"following": req.query.user}).toArray(function(err, followers)
+        {
+            //Get names and push them as JSON objects into array to reduce later operations.
+            res.send(followers);
+        });
+    });
+}
+
 User.prototype.getProfile = function(req, res)
 {
     mongo.connect("mongodb://localhost/tripcards", function(err, db)
     {
+        
+        var followers = [];
         //Finish this function
         db.collection("users").findOne({"_id": new ObjectId(req.query.user)}, function(err, data)
         {
             if(err)
                 console.log(err)
-
+            
             delete data.password;
 
             res.send(data)
@@ -213,22 +228,42 @@ User.prototype.getFollowersRecentActivity = function(req, res)
                         var d = data[i];
                         self.local.getName(data[i].creator, function(name)
                         {
-                            //Find type of like and get data
-                            /*
-                                
-                            */
-                            toGet--;
-                            console.log(name);
+
                             var userData = {
                                 id : name._id, 
+                                activityID: d.activity,
                                 title : name.firstname + " " + name.surname + " likes your " + d.liked, 
                                 type : "LIKE"
                             };
-                            
-                            alerts.push(userData);
 
-                            if(toGet == 0)
-                                callback(data)
+                            if(d.liked == "status")
+                            {
+                                db.collection("users").findOne({"activity.id": new ObjectId(d.activity)}, {"activity.$": 1}, function(err, data)
+                                {
+                                    userData.details = data.activity[0];
+                                    toGet--;
+
+                                    alerts.push(userData);
+
+                                    if(toGet == 0)
+                                        callback(alerts)
+                                })
+                            }
+                            else if(d.liked == "basket")
+                            {
+                                //Operations to find basket
+                                db.collection("buckets").findOne({"_id": new ObjectId(d.activity)}, {"name": 1}, function(err, data)
+                                {
+                                    userData.details = data;
+                                    toGet--;
+
+                                    alerts.push(userData);
+
+                                    if(toGet == 0)
+                                        callback(alerts)
+                                })
+                            }
+                                                        
                         });
                     })();
                 }  
@@ -446,6 +481,34 @@ User.prototype.retrieveBuckets = function(req, res)
     })
 }
 
+User.prototype.isFollowing = function(req, res)
+{
+    if(req.session.user == req.query.user)
+    {
+        res.send("self");
+    }
+    else
+    {
+        mongo.connect("mongodb://localhost/tripcards", function(err, db)
+        {
+            db.collection("users").findOne({"_id" : new ObjectId(req.session.user), "following" : req.query.user}, function(err, data)
+            {
+                if(err)
+                    res.send("error");
+
+                if(data != null)
+                {
+                    res.send(true);
+                }
+                else
+                {
+                    res.send(false);
+                }
+            })
+        })
+    }
+}
+
 User.prototype.createActivity = function(req, res)
 {
     mongo.connect("mongodb://localhost/tripcards", function(err, db)
@@ -507,7 +570,7 @@ User.prototype.addToBucket = function(req, res)
             {
                 db.collection("buckets").update(
                     { creator: new ObjectId(req.session.user), "_id": new ObjectId(req.body.bucket) }, 
-                    {$push: {'attractions': {"id" : new ObjectId(req.body.attraction)}}}, function(err, res)
+                    {$push: {'attractions': {"id" : new ObjectId(req.body.attraction)}}}, function(err, results)
                     {
                         if(err)
                             res.send("There was an issue adding to bucket");
@@ -558,6 +621,46 @@ User.prototype.createAlbum = function(req, res)
     });
 }
 
+User.prototype.updateProfileData = function(req, res)
+{
+    var sentData = req.body;
+    var preparedStatement = {};
+
+    var allowedAttributes = {
+        "bio" : "profile.bio",
+        "gender" : "profile.gender",
+        "location" : "profile.location",
+        "firstname" : "firstname",
+        "surname" : "surname",
+        "year" : "profile.dob.year",
+        "month" : "profile.dob.month",
+        "day" : "profile.dob.day",
+        "tags" : "profile.tags"
+    }
+    
+    for(var key in Object.keys(sentData))
+    {
+        console.log(Object.keys(sentData)[key]);
+        if(allowedAttributes[Object.keys(sentData)[key]])
+        {
+            preparedStatement[allowedAttributes[Object.keys(sentData)[key]]] = sentData[Object.keys(sentData)[key]];
+            console.log(preparedStatement)
+        }
+        else
+        {
+            console.log("Byet")
+        }
+    }
+
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        db.collection("users").updateOne({"_id": new ObjectId(req.session.user)}, {$set: preparedStatement}, function(err, data)
+        {
+            res.send(data);
+        });
+    });
+}
+
 User.prototype.local = {
 
     getName : function(uID, callback)
@@ -569,6 +672,30 @@ User.prototype.local = {
                 callback(data);
             });
         });
+    }
+}
+
+User.prototype.newJourney = function(req, res)
+{
+    if(req.session != undefined && req.session.user != undefined)
+    {
+        if(req.body != undefined && req.body.name != undefined && req.body.places.length > 1)
+        {
+            mongo.connect("mongodb://localhost/tripcards", function(err, db)
+            {
+                db.collection("journeys").insert(req.body, function(err, data)
+                {
+                    var journeyID = data["ops"][0]["_id"];
+                    db.collection("users").update({"_id" : new ObjectId(req.session.user)},{$push : {journeys: journeyID}}, function(err, data)
+                    {
+                        if(err)
+                            console.log(err)
+                        else
+                            res.send("Journey Created");
+                    })
+                });
+            });
+        }
     }
 }
 

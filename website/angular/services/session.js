@@ -51,6 +51,7 @@ angular.module('ng').service("Session", function($http) {
     this.like = function(data, callback)
     {
         data.type = "LIKE";
+        console.log(data);
 
         $http.post("/api//activity/createAction", data).then(function(data)
         {

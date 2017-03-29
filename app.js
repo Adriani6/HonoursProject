@@ -76,16 +76,21 @@ router.get("/search/:location", api.data.searchLocation);
 //User Requests
 router.post("/user/new", api.user.new)
 router.post("/user/signin", api.user.login)
-router.post("/user/updateBio", api.user.updateDescription)
+//router.post("/user/updateBio", api.user.updateDescription)
 router.get("/user/getProfile", api.user.getProfile)
 router.get("/user/getFollowersRecentActivity", api.user.getFollowersRecentActivity)
 router.get("/panel/getOwnedAttractions", api.attraction.getOwned)
 router.get("/geocode", api.data.geoCode)
+router.get("/user/getFollowers", api.user.fetchFollowers);
+router.get("/user/isFollowing", api.user.isFollowing);
+router.post("/user/updateProfile", api.user.updateProfileData);
 
 router.get("/reviews", api.data.gatherReviews);
 
 router.post("/attraction/offer/create", api.attraction.createOffer);
 router.post("/attraction/offer/remove", api.attraction.removeOffer);
+router.post("/attraction/offer/get", api.attraction.fetchOffer);
+router.get("/attraction/getName", api.attraction.getName);
 
 router.post("/activity/createAction", api.user.createActivity);
 
@@ -97,9 +102,10 @@ router.post("/user/addToBucket", api.user.addToBucket);
 //Session
 router.get("/user/session", api.user.getUserData)
 
-//Organizations
+//Places (Oragnizations temporary)
 router.post("/org/new", api.org.create);
 router.get("/org/getMine", api.org.getOwned);
+router.post("/org/photo/profile", api.org.uploadProfilePic)
 
 //Uploads
 router.post("/user/newProfilePic", api.upload.newUserPhoto);
@@ -108,3 +114,9 @@ router.post("/user/photos/upload", api.upload.uploadImage)
 //Photos
 router.get("/user/photos/album/getAll", api.user.getComplateAlbums)
 router.post("/user/photos/album/create", api.user.createAlbum);
+
+//Journeys
+router.post("/user/journey/new", api.user.newJourney);
+
+//Routes
+router.get("/route/distance", api.route.getDistance);

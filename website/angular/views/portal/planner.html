@@ -180,7 +180,9 @@
               Sort <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-body">
-              <li role="menuitem"><a href="#">Save</a></li>
+              <li role="menuitem" ng-click="sort()"><a href="javascript:void(0)">Most Efficient</a></li>
+              <li role="menuitem" ng-click="savePlanner()"><a href="javascript:void(0)">Save</a></li>
+              <li role="menuitem"><a href="javascript:void(0)">Save</a></li>
             </ul>
         </span></h3>
     </div>
@@ -199,15 +201,15 @@
                                 <h4>{{it.name}}</h4>
                             </div>
                             <div class="timeline-body">
-                                <p>Money transfer. By Alex, Wallet ID: 1234567890, Amount: 10$</p>
+                                <p>3 Offers</p>
                             </div>
                             <div class="timeline-footer">
-                                <p class="text-right">17.03.2016 10:00</p>
+                                <p class="text-right">{{it.distanceToNext}}</p>
                             </div>
                         </div>
                     </div>
                     <span class="timeline-label">
-                        <a href="#" class="btn btn-default" title="More...">
+                        <a ng-click="sort()" href="javascript:void(0)" class="btn btn-default" title="More...">
                             <i class="fa fa-fw fa-history"></i>
                         </a>
                     </span>
@@ -229,5 +231,37 @@
         </ul>
       </div>
       <button type="button" class="btn btn-success" ng-click="save()">Add to {{selectedName}}</button>
+    </div>
+</script>
+
+
+<script type="text/ng-template" id="saveJourney.html">
+    <div class="modal-body" id="modal-title">
+      Save Journey
+    </div>
+    <div class="modal-body" id="modal-body">
+      <form class="form-horizontal">
+        <div class="form-group">
+          <label for="inputEmail3" class="col-sm-2 control-label">Name</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" ng-model="journey.name" placeholder="Journey Name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Make Public</label>
+          <div class="col-sm-10">
+            <div class="checkbox">
+              <label>
+                <input ng-model="journey.public" type="checkbox"> Other users will be able see the planner and unregisteres users will be able to use it.
+              </label>
+            </div>
+          </div>
+        </div>
+      </form>
+      
+    </div>
+    <div class="modal-body" id="modal-footer">
+    
+      <button type="button" class="btn btn-success" ng-click="save()">Save Journey</button>
     </div>
 </script>

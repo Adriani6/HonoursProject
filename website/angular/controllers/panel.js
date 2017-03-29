@@ -181,6 +181,15 @@ portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
         });
     }
 
+    $scope.uploadNewProfilePhoto = function(file)
+    {
+        console.log($scope.selected._id)
+        Attraction.uploadProfilePic($scope.selected._id, file, function(data)
+        {
+            alert(data);
+        })
+    }
+
     $scope.showDetails = function(offer)
     {
         $uibModal.open({

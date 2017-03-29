@@ -54,7 +54,7 @@
                             </i></a>
                             <ul class="dropdown-menu" uib-dropdown-menu role="alertsDpwn" aria-labelledby="single-button" style="padding-top: 0; border-top: 0; border-right: 0; border-left: 0;">
                                 <div class="list-group">
-                                    <a href="javascript:void(0)" ng-click="previewOffer(alert)" class="list-group-item" ng-repeat="alert in alertDetails">
+                                    <a href="javascript:void(0)" ng-click="previewAlert(alert)" class="list-group-item" ng-repeat="alert in alertDetails">
                                         <h5 ng-if="alert.type == 'LIKE'" class="list-group-item-heading"><b>{{alert.title}}</b></h5>
                                         <h5 ng-if="alert.type == 'OFFER'" class="list-group-item-heading"><b>{{alert.title}}</b></h5>
                                         <p class="list-group-item-text">{{alert.data.description}}</p>
@@ -70,7 +70,7 @@
                         <img ng-src="../uploads/profile/{{user.profile.photo}}" alt="..." class="img-circle" uib-dropdown-toggle style="height: 40px; width: 40px; margin-top: 5px;">
                         <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button" style="width: 100px">
                             <li role="menuitem"><a href="#/profile/{{user._id}}">My Profile</a></li>
-                            <li role="menuitem"><a href="#">Settings</a></li>
+                            <li role="menuitem"><a href="#/settings">Settings</a></li>
                             <li class="divider"></li>
                             <li role="menuitem"><a href="#/panel">My Places</a></li>
                             <li role="menuitem"><a href="#/organization">My Organizations</a></li>
@@ -107,6 +107,30 @@
              <li ng-repeat="filter in filters"><label><input type="checkbox" name="text2" value="value2" />{{filter}}</label></li>
          </ul>
       </script>
+
+      <script type="text/ng-template" id="previewOffer.html">
+         <div class="modal-header">
+            <h3 class="modal-title" >{{data.title}}</h3>
+        </div>
+        <div class="modal-body" ng-if="data.data.description">
+            {{data.data.description}}
+        </div>
+        <div class="modal-footer">
+            Valid From {{validFrom}} till {{validTill}}
+        </div>
+      </script>
+
+      <script type="text/ng-template" id="previewStatus.html">
+        <div class="modal-body">
+            <div ng-if="data.details.Type == 'Travel'">Travelled to {{data.details.Location}}</div >
+            {{data.details}}
+        </div>
+        <div class="modal-footer">
+            
+        </div>
+      </script>
+
+
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular-animate.min.js"></script>
       <script src="controllers/portal.js"></script>
@@ -115,6 +139,7 @@
       <script src="controllers/profile.js"></script>
       <script src="controllers/bucket.js"></script>
       <script src="controllers/panel.js"></script>
+      <script src="controllers/settings.js"></script>
       <script src="services/map.js"></script>
       <script src="services/attraction.js"></script>
       <script src="services/tool.js"></script>

@@ -2,6 +2,8 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 {
 	var attractions = [];
 
+	Map.apiDistance(57.118955,-2.137666,57.158683,-2.1090497);
+
 	$scope.states = [
 	{
 		city: "Aberdeen",
@@ -13,6 +15,35 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 	}];
 	$scope.selectedAttractionsText = 0;
 	$scope.selectedAttractionsCounter = 0;
+
+	$scope.$on('filter', function(event, type, cb)
+	{
+
+		if(type == 'efficient')
+		{
+			Map.filter.efficient(function(data)
+			{
+				var orderedList = [];
+
+				while(data.length > 0)
+				{
+					var toPush = data[0];
+
+					for(var i = 0; i < attractions.length; i++)
+					{
+						if(attractions[i].markerID == toPush)
+						{
+							orderedList.push(attractions[i]);
+							data.splice(0, 1);
+						}
+					}
+				}
+
+				cb(orderedList);
+			});
+			
+		}
+	});
 
 
 	$scope.$on('showOnMap', function(event, attraction)
@@ -52,8 +83,73 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 			ariaDescribedBy: 'modal-body-top',
 			templateUrl: 'itinerary.html',
 			size: 'lg',
-			controller: function($scope) {
+			controller: function($scope, $rootScope) {
 				$scope.itineraryItems = attractions;
+
+				$scope.savePlanner = function()
+				{
+					var scopeItinerary = $scope.itineraryItems;
+					var places = [];
+					$uibModal.open(
+					{
+						animation: true,
+						ariaLabelledBy: 'modal-title-top',
+						ariaDescribedBy: 'modal-body-top',
+						templateUrl: 'saveJourney.html',
+						size: 'md',
+						controller: function($scope) {
+							$scope.save = function()
+							{
+								for(var i = 0; i < scopeItinerary.length; i++)
+								{
+									places.push({id: scopeItinerary[i]._id, distance: scopeItinerary[i].distanceToNext});
+								}
+
+								$scope.journey.places = places;
+								Map.savePlannedJourney($scope.journey, function(r)
+								{
+									//console.log(r)
+								})
+							}
+						}
+					})
+				}
+
+				$scope.sort = function()
+				{
+					$rootScope.$broadcast("filter", "efficient", function(s)
+					{
+						$scope.itineraryItems = s;
+
+						for(var i = 0; i < $scope.itineraryItems.length; i++)
+						{
+							if($scope.itineraryItems.length - 1 != i || i == 0)
+							{
+								var loc = $scope.itineraryItems[i].geo.location;
+								var nextLoc = $scope.itineraryItems[i + 1].geo.location;
+
+								var wgs84Sphere= new ol.Sphere(6378137);
+								var dis = wgs84Sphere.haversineDistance([loc.lat, loc.lng], [nextLoc.lat, nextLoc.lng]); 
+
+								var output;
+								if (dis > 1000) {
+									output = (Math.round(dis / 1000 * 100) / 100) +
+									' ' + 'km';
+								} else {
+									output = (Math.round(dis * 100) / 100) +
+									' ' + 'm';
+								}
+								
+								$scope.itineraryItems[i].distanceToNext = output;
+
+								console.log($scope.itineraryItems[i].distanceToNext)
+							}
+
+						}
+						
+					});
+					//console.log(t);
+				}
 			}
 		})
 	}

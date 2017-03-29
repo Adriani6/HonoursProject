@@ -1,4 +1,4 @@
-portal.controller("profile", function($scope, Profile, $routeParams, $uibModalStack, $uibModal, Upload, Session)
+portal.controller("profile", function($scope, Profile, $routeParams, $uibModalStack, $uibModal, Upload, Session, Attraction)
 {
     $scope.active = 1;
     $scope.profileData = {};
@@ -85,8 +85,43 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
 
     Profile.getProfileData(userid, function(data)
     {
-        console.log(data)
+        function setAttractionName(i, id)
+        {
+            Attraction.getData(data.following_attractions[i], function(data)
+            {
+                $scope.profileData.following_attractions[i] = data;
+            })
+        }
+
+        function setUserName(i, id)
+        {
+            Profile.getProfileData(data.following[i], function(data)
+            {
+                var d = {};
+                d.name = data.firstname + " " + data.surname;
+                d.location = data.location;
+                $scope.profileData.following[i] = d;
+            })
+        }
+
         $scope.profileData = data;
+
+        if(data.following_attractions != undefined)
+        {
+            for(var i = 0; i < data.following_attractions.length; i++)
+            {
+                setAttractionName(i, data.following_attractions[i])
+            }
+        }
+
+        if(data.following != undefined)
+        {
+            for(var i = 0; i < data.following.length; i++)
+            {
+                setUserName(i, data.following[i]);
+            }
+        }
+
         $scope.followingList = data.following;
         Profile.fetchAlbums(userid, function(data)
         {
@@ -98,6 +133,16 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
                     $scope.imageCount += data[i].photos.length;
             }
         })
+
+        Profile.fetchFollowers(userid, function(data)
+        {
+            $scope.followers = data;
+        })
+
+        Profile.isFollowing(userid, function(is)
+        {
+            $scope.followBtn = is;
+        })
     })
 
     $scope.$watch("active", function()
@@ -107,6 +152,16 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
            //Albums screen is displayed
         }       
     })
+
+    $scope.unfollow = function(id)
+    {
+        alert(id);
+    }
+
+    $scope.follow = function(id)
+    {
+        alert(id);
+    }
 
     $scope.newAlbum = function()
     {

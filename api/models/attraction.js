@@ -94,4 +94,30 @@ Attraction.prototype.removeOffer = function(req, res)
     res.send("Success");
 }
 
+Attraction.prototype.fetchOffer = function(req, res)
+{
+    if(req.query.offer != undefined)
+    {
+        mongo.connect("mongodb://localhost/tripcards", function(err, db)
+        {
+            db.collection("claimed_attractions").findOne({"_id": new ObjectId(req.query.offer)}, function(err, data)
+            {
+                res.send(data)
+            });
+        })
+    }
+}
+
+Attraction.prototype.getName = function(req, res)
+{
+    console.log(req.query.attraction)
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        db.collection("attractions").findOne({"_id": new ObjectId(req.query.attraction) }, {name: 1, location: 1}, function(err, data)
+        {
+            res.send(data)
+        });
+    })
+}
+
 module.exports = Attraction;

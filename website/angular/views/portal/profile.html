@@ -29,13 +29,19 @@
     <div class="panel panel-default">
         <div class="panel-body">
           <span>
-              <h1 class="panel-title pull-left" style="font-size:30px;">{{profileData.firstname + " " + profileData.surname}} <small>{{profileData.email}}</small> <i class="fa fa-check text-success" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="John Doe is sharing with you"></i></h1>
+              <h1 class="panel-title pull-left" style="font-size:30px;">{{profileData.firstname + " " + profileData.surname}} <small>{{profileData.email}}</small> <i class="fa fa-check text-success" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="John Doe is sharing with you"></i></h1>                
               <div class="btn-group pull-right" uib-dropdown>
-                <button id="single-button " type="button" class="btn btn-primary" uib-dropdown-toggle>
-                  Following <span class="caret"></span>
+                <button ng-if="!followBtn && followBtn != 'self'" ng-click="follow(profileData._id)" id="single-button " type="button" class="btn btn-primary">
+                  <span ng-if="!followBtn && followBtn != 'self'">Follow</span>
+                </button>
+
+                <button ng-if="followBtn && followBtn != 'self'" id="single-button " type="button" class="btn btn-primary" uib-dropdown-toggle>
+                  <span ng-if="followBtn && followBtn != 'self'">Following </span>
+                  <span ng-if="!followBtn && followBtn != 'self'">Follow</span>
+                    <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                  <li role="menuitem"><a href="#">Unfollow</a></li>
+                  <li role="menuitem" ng-if="followBtn"><a href="javascript:void(0)" ng-click="unfollow(profileData._id)">Unfollow</a></li>
                 </ul>
               </div>
               
@@ -48,7 +54,7 @@
           <a href="javascript:void(0)" ng-click="active = 1" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-fw fa-files-o" aria-hidden="true"></i> Posts</a>
           <a href="javascript:void(0)" ng-click="active = 2" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-fw fa-picture-o" aria-hidden="true"></i> Photos <span class="badge">{{imageCount}}</span></a>
           <a href="javascript:void(0)" ng-click="active = 3" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-fw fa-users" aria-hidden="true"></i> Following <span class="badge">{{profileData.following.length + profileData.following_attractions.length}}</span></a>
-          <a href="javascript:void(0)" ng-click="active = 4" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-user" aria-hidden="true"></i> Followers <span class="badge">42</span></a>
+          <a href="javascript:void(0)" ng-click="active = 4" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-user" aria-hidden="true"></i> Followers <span class="badge">{{followers.length}}</span></a>
           <a href="javascript:void(0)" ng-click="active = 5" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-suitcase" aria-hidden="true"></i> Journeys <span class="badge">42</span></a>
           </span>
           <span class="pull-right">
@@ -145,15 +151,14 @@
           </section>
 
             <div class="block-update-card status" ng-repeat="fol in followingList">
-              {{fol}}
               <div class="update-card-body">
                 <div class="update-card-body">
                   <div class="col-xs-3">
                     <img src="https://scontent-lhr3-1.xx.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=f4a3bfa198b93ebed661599f3850b31a&oe=59519DC0" style="width: 100%;">
                   </div>
                   <div class="col-xs-9">
-                    <h4>Vinothbabu K</h4>
-                    <p>User from Aberdeen</p>
+                    <h4>{{fol.name}}</h4>
+                    <p>User <span ng-if="fol.location">from {{fol.location}}</span></p>
                   </div>
                   
                   
@@ -166,7 +171,28 @@
               </div>
           </div>
         </uib-tab>
-        <uib-tab index="4">Vertical content 2</uib-tab>
+        <uib-tab index="4">
+          <div class="block-update-card status" ng-repeat="fol in followers">
+              <div class="update-card-body">
+                <div class="update-card-body">
+                  <div class="col-xs-3">
+                    <img src="https://scontent-lhr3-1.xx.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=f4a3bfa198b93ebed661599f3850b31a&oe=59519DC0" style="width: 100%;">
+                  </div>
+                  <div class="col-xs-9">
+                    <h4>{{fol.name}}</h4>
+                    <p>User <span ng-if="fol.location">from {{fol.location}}</span></p>
+                  </div>
+                  
+                  
+                </div>
+              </div>
+              <div class="card-action-pellet btn-toolbar pull-right" role="toolbar">
+                <div class="btn-group fa fa-map-marker"></div>
+                <div class="btn-group fa fa-magic"></div>
+                <div class="btn-group fa fa-photo"></div>
+              </div>
+          </div>
+        </uib-tab>
         <uib-tab index="5">Vertical content 2</uib-tab>
         <uib-tab index="6">
           <div style="padding-bottom: 50px;">

@@ -17,6 +17,15 @@ portal.service("Profile", function($http, Upload)
         })
     }
 
+    this.fetchFollowers = function(id, callback)
+    {
+        $http.get("/api/user/getFollowers?user="+id).then(function(r)
+        {
+            console.log(r.data)
+            callback(r.data)
+        })
+    }
+
     this.getBuckets = function(callback)
     {
         $http.get("/api/user/retrieveBuckets").then(function(r)
@@ -68,6 +77,22 @@ portal.service("Profile", function($http, Upload)
     this.fetchAlbums = function(id, callback)
     {
         $http.get("/api/user/photos/album/getAll?user=" + id).then(function(r)
+        {
+            callback(r.data);
+        })
+    }
+
+    this.isFollowing = function(id, callback)
+    {     
+        $http.get("/api/user/isFollowing?user=" + id).then(function(r)
+        {
+            callback(r.data);
+        })
+    }
+
+    this.updateProfileData = function(data, callback)
+    {
+        $http.post("/api/user/updateProfile", data).then(function(r)
         {
             callback(r.data);
         })
