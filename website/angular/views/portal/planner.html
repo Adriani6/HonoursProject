@@ -79,26 +79,26 @@
        </div>
      </div>
      <section style="height: 200px;">
-     <div class="col-xs-6 col-md-3">
-   <a href="#" class="thumbnail">
-     <img src="https://scontent.fman1-1.fna.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" alt="...">
-   </a>
-   </div>
-   <div class="col-xs-6 col-md-3" style="margin-bottom: 20px;">
-   <a href="#" class="thumbnail">
-     <img src="https://scontent.fman1-1.fna.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" alt="...">
-   </a>
-   </div>
-   <div class="col-xs-6 col-md-3" style="margin-bottom: 20px;">
-   <a href="#" class="thumbnail">
-     <img src="https://scontent.fman1-1.fna.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" alt="...">
-   </a>
-   </div>
-   <div class="col-xs-6 col-md-3" style="margin-bottom: 20px;">
-   <a href="#" class="thumbnail">
-     <img src="https://scontent.fman1-1.fna.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" alt="...">
-   </a>
-   </div>
+      <div class="col-xs-6 col-md-3" ng-if="attraction.profile.photo">
+        <a href="#" class="thumbnail">
+          <img ng-src="../uploads/places/profile/{{attraction.profile.photo}}" alt="...">
+        </a>
+        </div>
+        <div class="col-xs-6 col-md-3" style="margin-bottom: 20px;">
+        <a href="#" class="thumbnail">
+          <img src="https://scontent.fman1-1.fna.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" alt="...">
+        </a>
+        </div>
+        <div class="col-xs-6 col-md-3" style="margin-bottom: 20px;">
+        <a href="#" class="thumbnail">
+          <img src="https://scontent.fman1-1.fna.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" alt="...">
+        </a>
+        </div>
+        <div class="col-xs-6 col-md-3" style="margin-bottom: 20px;">
+        <a href="#" class="thumbnail">
+          <img src="https://scontent.fman1-1.fna.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=944dd5edd7e075ac9db4204fa5d1ce65&oe=592A10C0" alt="...">
+        </a>
+      </div>
    </section>
    <button type="button" class="btn btn-primary btn-lg btn-block" ng-click="showReviews({attraction})">Show Reviews</button>
    </div>
@@ -182,7 +182,6 @@
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-body">
               <li role="menuitem" ng-click="sort()"><a href="javascript:void(0)">Most Efficient</a></li>
               <li role="menuitem" ng-click="savePlanner()"><a href="javascript:void(0)">Save</a></li>
-              <li role="menuitem"><a href="javascript:void(0)">Save</a></li>
             </ul>
         </span></h3>
     </div>
@@ -190,7 +189,7 @@
             <div class="row center-block" style="width: 60%;">
                 <div class="timeline timeline-line-dotted">
                     <span class="timeline-label">
-                        <span class="label label-primary">17.03.2016</span>
+                        <span class="label label-primary">Distances are approximate</span>
                     </span>
                     <div class="timeline-item" ng-repeat="it in itineraryItems">
                         <div class="timeline-point timeline-point-success">
@@ -204,7 +203,7 @@
                                 <p>3 Offers</p>
                             </div>
                             <div class="timeline-footer">
-                                <p class="text-right">{{it.distanceToNext}}</p>
+                                <p class="text-right">{{it.distance}}</p>
                             </div>
                         </div>
                     </div>

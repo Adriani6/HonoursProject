@@ -62,7 +62,7 @@ Org.prototype.uploadProfilePic = function(req, res)
 
                     form.on('file', function(field, file) {
                         var date = new Date();
-                        fileName = crypto.createHmac('sha256', date.getTime() + req.session.user).digest('hex');
+                        fileName = req.query.attraction;
 
                         var fileFormat = file.name.split(".");
                         fileName += "." + fileFormat[fileFormat.length - 1];

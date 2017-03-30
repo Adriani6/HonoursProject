@@ -134,12 +134,12 @@ portal.service('Map', function($http) {
         delete markers[id];
     }
 
-    this.apiDistance = function(flat, flng, tlat, tlng)
+    this.apiDistance = function(flat, flng, tlat, tlng, callback)
     {
-        $http.get("/api/route/distance?flat="+flat+"&flng="+flng+"&tlat="+tlat+"&tlng="+tlng+"").then(function(d)
+        return $http.get("/api/route/distance?flat="+flat+"&flng="+flng+"&tlat="+tlat+"&tlng="+tlng+"").then(function(d)
         {
             console.log(d.data.distance)
-            return d.data.distance
+            callback(parseInt(d.data.distance))
         })
     }
 
@@ -160,77 +160,27 @@ portal.service('Map', function($http) {
         return length;
     }
 
-    this.filter = 
-    {
-        efficient : function(callback)
-        {
-            var points = markers.slice();
-            var bestMatch = points[0];
-            var bestDisnace = undefined;
-            var bestIndex = 0;
-            var out = [];
-            
-            out.push(bestMatch.markerID)
-            points.splice(0, 1);
-
-            while(points.length > 0)
-            {
-                var found = null;
-                var foundIndex = null;
-
-                for(var i = 0; i < points.length; i++)
-                {
-                    //console.log(i);
-                    if(bestDisnace == undefined)
-                    {
-                        found = points[i];
-                        foundIndex = i;
-                        //bestDisnace = self.getDistanceBetween(bestMatch.getGeometry().getCoordinates(), points[i].getGeometry().getCoordinates());
-                        bestDisnace = parseInt(self.apiDistance(bestMatch.getGeometry().getCoordinates()[0], bestMatch.getGeometry().getCoordinates()[1], points[i].getGeometry().getCoordinates()[0], points[i].getGeometry().getCoordinates()[1]))
-                        console.log(bestDisnace)
-                    }
-                    else
-                    {
-                        //var newDistance = self.getDistanceBetween(bestMatch.getGeometry().getCoordinates(), points[i].getGeometry().getCoordinates());
-                        var newDistance = parseInt(self.apiDistance(bestMatch.getGeometry().getCoordinates()[0], bestMatch.getGeometry().getCoordinates()[1], points[i].getGeometry().getCoordinates()[0], points[i].getGeometry().getCoordinates()[1]))
-                        if(bestDisnace > newDistance)
-                        {
-                            //console.log(newDistance)
-                            found = points[i];
-                            foundIndex = i;
-                        }
-
-                        if(i >= points.length - 1)
-                        {
-                            if(found != null)
-                            {
-                                //console.log(points.length - 1)
-                                bestMatch = found;
-                                bestIndex = foundIndex;
-                                bestDisnace = undefined;
-                                out.push(bestMatch.markerID);
-                                //console.log("Removed " + i)
-                                points.splice(foundIndex, 1);
-
-                                if(points.length == 1)
-                                {
-                                    out.push(points[0].markerID);
-                                    points.splice(0, 1);
-                                    //Note to self... 6 hours, 3x coffees and 2x 500ml Monsters... it works...
-                                }
-                            }
-                        }
-                    }
-                }
-            } 
-
-            callback(out);                                                             
-        }
-    }
-
     this.savePlannedJourney = function(journey, callback)
     {
         $http.post("/api/user/journey/new", journey).then(function(r)
+        {
+            console.log(r.data);
+            callback(r.data);
+        })
+    }
+
+    this.sortRoutes = function(callback)
+    {
+        console.log("Running")
+        var toSend = [];
+
+        for(var i = 0; i < markers.length; i++)
+        {
+            //console.log(ol.proj.transform(markers[i].getGeometry().getCoordinates(), 'EPSG:3857', 'EPSG:4326'))
+            toSend.push({id: i, coords: ol.proj.transform(markers[i].getGeometry().getCoordinates(), 'EPSG:3857', 'EPSG:4326')});
+        }
+
+        $http.post("/api/route/sortRoute", toSend).then(function(r)
         {
             console.log(r.data);
             callback(r.data);

@@ -1,4 +1,4 @@
-portal.controller("profile", function($scope, Profile, $routeParams, $uibModalStack, $uibModal, Upload, Session, Attraction)
+portal.controller("profile", function($scope, Profile, $routeParams, $uibModalStack, $uibModal, Upload, Session, Attraction, Route)
 {
     $scope.active = 1;
     $scope.profileData = {};
@@ -143,13 +143,64 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
         {
             $scope.followBtn = is;
         })
+
+        // Get Data for Routes
+        Route.getAllUsersRoutes(userid, function(data)
+        {
+            $scope.routeCounter = data.length;
+            $scope.routes = data;
+        })
     })
+
+    $scope.showRoute = function(route)
+    {
+        $uibModal.open({
+            animation: true,
+            ariaLabelledBy: 'modal-title-top',
+            ariaDescribedBy: 'modal-body-top',
+            templateUrl: 'showRoute.html',
+            size: 'lg',
+            controller: function($scope, Map) {
+                $scope.loadMap = function()
+                {
+                    Map.loadMap(function() {
+
+                    });
+                }
+                $scope.route = route;
+            }
+        });
+        
+    }
 
     $scope.$watch("active", function()
     {
         if($scope.active == 2)
         {
            //Albums screen is displayed
+        }
+
+        if($scope.active == 5)
+        {
+            for(var i = 0; i < $scope.routes.length; i++)
+            {
+                for(var j = 0; j < $scope.routes[i].places.length; j++)
+                {
+                    addPhoto(i, j);
+                }
+            }
+
+            function addPhoto(i, j)
+            {
+                console.log(i, j)
+                Attraction.getData($scope.routes[i].places[j].id, function(data)
+                {
+                    if(data.profile != undefined && data.profile.photo != undefined)
+                        $scope.routes[i].places[j].photo = data.profile.photo;
+
+                    $scope.routes[i].places[j].name = data.name;
+                })
+            }
         }       
     })
 

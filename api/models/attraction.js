@@ -113,7 +113,7 @@ Attraction.prototype.getName = function(req, res)
     console.log(req.query.attraction)
     mongo.connect("mongodb://localhost/tripcards", function(err, db)
     {
-        db.collection("attractions").findOne({"_id": new ObjectId(req.query.attraction) }, {name: 1, location: 1}, function(err, data)
+        db.collection("attractions").findOne({"_id": new ObjectId(req.query.attraction) }, {name: 1, location: 1, "profile.photo": 1}, function(err, data)
         {
             res.send(data)
         });

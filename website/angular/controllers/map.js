@@ -2,8 +2,6 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 {
 	var attractions = [];
 
-	Map.apiDistance(57.118955,-2.137666,57.158683,-2.1090497);
-
 	$scope.states = [
 	{
 		city: "Aberdeen",
@@ -21,6 +19,38 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 
 		if(type == 'efficient')
 		{
+			Map.sortRoutes(function(data)
+			{
+				var orderedList = [];
+
+				while(data.length > 0)
+				{
+					var toPush = data[0];
+
+					for(var i = 0; i < attractions.length; i++)
+					{
+						if(attractions[i].markerID == toPush.id)
+						{
+							if(toPush.distance != undefined)
+							{
+								//attractions[i].distance = (1000 * toPush.distance.toFixed(2));
+								if(toPush.distance > 1)
+								{
+									attractions[i].distance = toPush.distance.toFixed(2) + "km";
+								}
+								else
+									attractions[i].distance = (1000 * toPush.distance.toFixed(2)) + "m";
+							}
+								
+							console.log(toPush, attractions[i])
+							orderedList.push(attractions[i]);
+							data.splice(0, 1);
+						}
+					}
+				}
+				cb(orderedList);
+			});
+			/*
 			Map.filter.efficient(function(data)
 			{
 				var orderedList = [];
@@ -40,7 +70,7 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 				}
 
 				cb(orderedList);
-			});
+			});*/
 			
 		}
 	});
@@ -89,7 +119,7 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 				$scope.savePlanner = function()
 				{
 					var scopeItinerary = $scope.itineraryItems;
-					var places = [];
+					
 					$uibModal.open(
 					{
 						animation: true,
@@ -100,11 +130,13 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 						controller: function($scope) {
 							$scope.save = function()
 							{
+								var places = [];
 								for(var i = 0; i < scopeItinerary.length; i++)
 								{
-									places.push({id: scopeItinerary[i]._id, distance: scopeItinerary[i].distanceToNext});
+									places.push({marker: scopeItinerary[i].markerID, id: scopeItinerary[i]._id, distance: scopeItinerary[i].distance});
 								}
-
+								console.log(places);
+								
 								$scope.journey.places = places;
 								Map.savePlannedJourney($scope.journey, function(r)
 								{
@@ -119,6 +151,7 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 				{
 					$rootScope.$broadcast("filter", "efficient", function(s)
 					{
+						console.log("S", s)
 						$scope.itineraryItems = s;
 
 						for(var i = 0; i < $scope.itineraryItems.length; i++)
@@ -128,7 +161,7 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 								var loc = $scope.itineraryItems[i].geo.location;
 								var nextLoc = $scope.itineraryItems[i + 1].geo.location;
 
-								var wgs84Sphere= new ol.Sphere(6378137);
+								/*var wgs84Sphere= new ol.Sphere(6378137);
 								var dis = wgs84Sphere.haversineDistance([loc.lat, loc.lng], [nextLoc.lat, nextLoc.lng]); 
 
 								var output;
@@ -142,7 +175,7 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 								
 								$scope.itineraryItems[i].distanceToNext = output;
 
-								console.log($scope.itineraryItems[i].distanceToNext)
+								console.log($scope.itineraryItems[i].distanceToNext)*/
 							}
 
 						}

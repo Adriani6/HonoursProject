@@ -679,19 +679,21 @@ User.prototype.newJourney = function(req, res)
 {
     if(req.session != undefined && req.session.user != undefined)
     {
+        req.body.creator = req.session.user;
+        
         if(req.body != undefined && req.body.name != undefined && req.body.places.length > 1)
         {
             mongo.connect("mongodb://localhost/tripcards", function(err, db)
             {
-                db.collection("journeys").insert(req.body, function(err, data)
+                db.collection("routes").insert(req.body, function(err, data)
                 {
-                    var journeyID = data["ops"][0]["_id"];
-                    db.collection("users").update({"_id" : new ObjectId(req.session.user)},{$push : {journeys: journeyID}}, function(err, data)
+                    var routeID = data["ops"][0]["_id"];
+                    db.collection("users").update({"_id" : new ObjectId(req.session.user)},{$push : {routes: routeID}}, function(err, data)
                     {
                         if(err)
                             console.log(err)
                         else
-                            res.send("Journey Created");
+                            res.send("Route Created");
                     })
                 });
             });
