@@ -122,3 +122,6 @@ router.post("/user/journey/new", api.user.newJourney);
 router.get("/route/distance", api.route.getDistance);
 router.post("/route/sortRoute", api.route.sortRoute);
 router.get("/user/routes/get", api.route.getUserRoutes);
+
+//Reverse Image Search
+router.post("/places/revSearch", api.upload.revSearchReq);

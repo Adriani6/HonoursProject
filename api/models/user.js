@@ -637,14 +637,14 @@ User.prototype.updateProfileData = function(req, res)
         "day" : "profile.dob.day",
         "tags" : "profile.tags"
     }
-    
+    console.log(sentData)
     for(var key in Object.keys(sentData))
     {
         console.log(Object.keys(sentData)[key]);
         if(allowedAttributes[Object.keys(sentData)[key]])
         {
             preparedStatement[allowedAttributes[Object.keys(sentData)[key]]] = sentData[Object.keys(sentData)[key]];
-            console.log(preparedStatement)
+            //console.log(preparedStatement)
         }
         else
         {

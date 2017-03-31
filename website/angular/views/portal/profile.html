@@ -7,19 +7,27 @@
               <div align="center">
                 <img class="thumbnail img-responsive" ng-src="../uploads/profile/{{profileData.profile.photo}}" ng-click="changeProfilePhoto()" style="width: 300px; height: 300px;">
               </div>
-              <div class="media-body">
-                <hr>
-                <h3><strong>Bio</strong></h3>
-                <p>{{profileData}}</p>
-                <hr>
-                <h3><strong>Location</strong></h3>
-                <p>Earth</p>
-                <hr>
-                <h3><strong>Gender</strong></h3>
-                <p>Unknown</p>
-                <hr>
-                <h3><strong>Birthday</strong></h3>
-                <p>January 01 1901</p>
+              <div class="media-body" style="overflow-wrap: normal; width: 100%">
+                <div ng-if="profileData.profile.bio">
+                  <hr>
+                  <h3><strong>Bio</strong></h3>
+                  <p>{{profileData.profile.bio}}</p>
+                </div>
+                <div ng-if="profileData.profile.location">
+                  <hr>
+                  <h3><strong>Location</strong></h3>
+                  <p>{{profileData.profile.location}}</p>
+                </div>
+                <div ng-if="profileData.profile.gender">
+                  <hr>
+                  <h3><strong>Gender</strong></h3>
+                  <p>{{profileData.profile.gender}}</p>
+                </div>
+                <div ng-if="profileData.profile.dob.day && profileData.profile.dob.month && profileData.profile.dob.year">
+                  <hr>
+                  <h3><strong>Birthday</strong></h3>
+                  <p>{{profileData.profile.dob.day +" "+ profileData.profile.dob.month +" "+ profileData.profile.dob.year}}</p>
+                </div>
               </div>
           </div>
         </div>
@@ -47,7 +55,7 @@
               
           </span>
           <br><br>
-          Lonewolf, Family holiday and Business Traveller
+          {{profileData.profile.tags}}
           <br><br>
           <input type="text" class="form-control" placeholder="Status Update" style="border: 0; border-bottom: 1px solid #ddd; border-radius: 0; -webkit-box-shadow: none;">
           <span class="pull-left">
@@ -129,11 +137,18 @@
           </div>
         </uib-tab>
         <uib-tab index="2">
+          <section style="width: 100%; height: 50px;">
           <button type="button" class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: 5px; float: right;" ng-click="newAlbum()">New Album</button>
-          <section ng-repeat="album in albums">
-            <h3 ng-click="showAlbum(album)">{{album.album}} <span ng-if="album.photos.length > 0" class="label label-default">{{album.photos.length}} photos</span></h3>
-
           </section>
+          <div class="col-sm-4 col-md-3" ng-repeat="album in albums" ng-click="showAlbum(album)">
+            <div class="thumbnail" album-right-click oncontextmenu="return false">
+              <img ng-src="../uploads/photos/{{album.photos[0].file}}" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="..." style="width: 100%; height: 280px;">
+              <div class="caption">
+                <h3 ng-click="showAlbum(album)" class="text-center">{{album.album}}</h3>
+                <p class="text-center"><span ng-if="album.photos.length > 0" class="label label-default">{{album.photos.length}} photos</span><span ng-if="!album.photos" class="label label-default">No photos yet</span></p>
+              </div>
+            </div>
+          </div>
         </uib-tab>
         <uib-tab index="3">
           <section style="width: 100%; height: 40px;">
@@ -193,6 +208,20 @@
               </div>
           </div>
         </uib-tab>
+        <uib-tab index="6">
+          <div style="padding-bottom: 50px;">
+          <h3 ng-click="backToAlbums()" style="float: left;"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</h3>
+          <button type="button" class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: 5px; float: right;" ng-click="uploadPhotos()">Upload Photos</button>
+          </div>
+          <div ng-repeat="photo in album.photos">
+            <div class="col-xs-6 col-md-3">
+              <a href="javascript:void(0)" class="thumbnail">
+                <img src="../uploads/photos/{{photo.file}}" alt="..." ng-click="showImage(photo)">
+              </a>
+            </div>
+            
+          </div>
+        </uib-tab>
         <uib-tab index="5">
           <uib-accordion close-others="oneAtATime">
             <div ng-repeat="route in routes" uib-accordion-group class="panel-default" heading="{{route.name + ' ('+route.places.length+' places)'}}" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
@@ -219,24 +248,13 @@
                             <span class="label label-primary" ng-if="route.places[$index + 1].name">{{route.places[$index + 1].distance}} to {{route.places[$index + 1].name}}</span>
                         </span>
                       </div>
+                      <span class="timeline-label">
+                          <span class="label label-primary">End of Route</span>
+                      </span>
                   </div>
               </div>
           </div>
           </uib-accordion>
-        </uib-tab>
-        <uib-tab index="6">
-          <div style="padding-bottom: 50px;">
-          <h3 ng-click="backToAlbums()" style="float: left;"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</h3>
-          <button type="button" class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: 5px; float: right;" ng-click="uploadPhotos()">Upload Photos</button>
-          </div>
-          <div ng-repeat="photo in album.photos">
-            <div class="col-xs-6 col-md-3">
-              <a href="javascript:void(0)" class="thumbnail">
-                <img src="../uploads/photos/{{photo.file}}" alt="..." ng-click="showImage(photo)">
-              </a>
-            </div>
-            
-          </div>
         </uib-tab>
       </uib-tabset>
     </div>    

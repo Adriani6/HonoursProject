@@ -1,4 +1,4 @@
-portal.service('Requests', function($http) {
+portal.service('Requests', function($http, Upload) {
 
     this.getAttractionsByLocation = function(loc, callback)
     {
@@ -30,6 +30,21 @@ portal.service('Requests', function($http) {
         }
 
         callback(types)
+    }
+
+    this.revImageSearch = function(file, callback)
+    {
+        Upload.upload({
+            url: '/api/places/revSearch',
+            data: {file: file}
+        }).then(function (resp) {
+            console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
+        }, function (resp) {
+            console.log('Error status: ' + resp.status);
+        }, function (evt) {
+            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+            console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+        });
     }
 
 });

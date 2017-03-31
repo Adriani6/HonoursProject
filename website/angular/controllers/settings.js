@@ -8,6 +8,7 @@ portal.controller("settings", function($scope, Profile)
         Profile.updateProfileData($scope.data, function(r)
         {
             console.log(r);
+            alert("Check Console For response and put it into Alert.")
         })
         console.log($scope.data);
     }
@@ -16,7 +17,8 @@ portal.controller("settings", function($scope, Profile)
     {
         Profile.uploadProfilePicture(file, function(res)
         {
-            alert(res);
+            console.log(res)
+            alert("Check Console For response and put it into Alert.")
         })
     }
 

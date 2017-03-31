@@ -10,6 +10,7 @@ index.controller('LoginCtrl', function ($uibModal, $document, Session) {
 
   $ctrl.animationsEnabled = true;
 
+
   $ctrl.open = function (size, parentSelector) {
     var parentElem = parentSelector ? 
       angular.element($document[0].querySelector('.modal-demo ' + parentSelector)) : undefined;

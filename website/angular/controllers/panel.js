@@ -120,7 +120,8 @@ portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
                                 Attraction.createOffer(offer, function(data)
                                 {
                                     scope.selectAttraction(selected._id);
-                                    alert(data);
+                                    console.log(data);
+                                    alert("Check Console For response and put it into Alert.")
                                 })
                             }
                             else
@@ -174,7 +175,8 @@ portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
                 {
                     Attraction.removeOffer({attr: selected["_id"], stamp: $scope.offer.originalStamp}, function(res)
                     {
-                        alert(res);
+                        console.log(res);
+                        alert("Check Console For response and put it into Alert.")
                     });
                 } 
             }
@@ -186,7 +188,8 @@ portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
         console.log($scope.selected._id)
         Attraction.uploadProfilePic($scope.selected._id, file, function(data)
         {
-            alert(data);
+            console.log(data);
+            alert("Check Console For response and put it into Alert.")
         })
     }
 

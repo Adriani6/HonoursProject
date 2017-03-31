@@ -115,6 +115,7 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 			size: 'lg',
 			controller: function($scope, $rootScope) {
 				$scope.itineraryItems = attractions;
+				$scope.isLoading = false;
 
 				$scope.savePlanner = function()
 				{
@@ -140,7 +141,9 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 								$scope.journey.places = places;
 								Map.savePlannedJourney($scope.journey, function(r)
 								{
-									//console.log(r)
+									alert("Check Console For response and put it into Alert.")
+									//Close all Modals on Success too.
+									console.log(r)
 								})
 							}
 						}
@@ -149,6 +152,7 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 
 				$scope.sort = function()
 				{
+					$scope.isLoading = true;
 					$rootScope.$broadcast("filter", "efficient", function(s)
 					{
 						console.log("S", s)
@@ -179,7 +183,7 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 							}
 
 						}
-						
+						$scope.isLoading = false;
 					});
 					//console.log(t);
 				}
@@ -423,12 +427,12 @@ portal.directive('rightClick', function($document, $uibModal, Attraction)
 
 								$scope.save = function()
 								{
-									console.log(attraction)
 									var data = {};
 									data.attraction = attraction._id;
 									data.bucket = $scope.selected._id;
 									Profile.addToBucket(data, function(resp)
 									{
+										alert("Check Console For response and put it into Alert.")
 										console.log(resp);
 									})
 								}

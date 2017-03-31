@@ -18,6 +18,11 @@
       <link rel="stylesheet" href="css/itenary.css">
    </head>
    <body ng-controller="GlobalCtrl">
+       <div style="position: fixed; right: 0; bottom: 0; width: 20%;">
+        <div ng-repeat="alert in alerts" class="oaerror {{alert.type}}" ng-init="removeAlert(alert)">
+            <strong>{{alert.title}}</strong> - {{alert.message}}
+          </div>
+       </div>
        
          <nav class="navbar navbar-default" role="navigation">
             <div class="container">
@@ -65,6 +70,9 @@
                      </li>
                      <li class="dropdown" tooltip-placement="bottom" uib-tooltip="Buckets/Goals">
                         <a href="#/bucket" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-list-alt" aria-hidden="true"></i></a>
+                     </li>
+                     <li class="dropdown" tooltip-placement="bottom" uib-tooltip="Search Place By Image">
+                        <a href="javascript:void(0)" ng-click="revSearchDialog()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-search" aria-hidden="true"></i></a>
                      </li>
                      <li class="dropdown" uib-dropdown>
                         <img ng-src="../uploads/profile/{{user.profile.photo}}" alt="..." class="img-circle" uib-dropdown-toggle style="height: 40px; width: 40px; margin-top: 5px;">
@@ -123,6 +131,21 @@
         <div class="modal-body">
             <div ng-if="data.details.Type == 'Travel'">Travelled to {{data.details.Location}}</div >
             {{data.details}}
+        </div>
+        <div class="modal-footer">
+            
+        </div>
+      </script>
+
+      <script type="text/ng-template" id="revSearchDialog.html">
+        <div class="modal-body" style="height: 120px;">
+            <div style="height: 100%; width: 100%; background: white; position: absolute; left: 0; top: 0; z-index: 999; text-align: center;" ngf-drop="uploadImage($file)" class="drop-box" ngf-drag-over-class="'dragover'" ngf-multiple="false"  ngf-pattern="'image/*'">
+                <i class="fa fa-picture-o" aria-hidden="true" style="font-size: 64px; margin-top: 30px;"></i>
+            </div>
+            <div style="height: 100%; width: 100%; background: white; position: absolute; left: 0; top: 0; z-index: 9999;" ng-if="isLoading == true">
+                <img class="center-block" src="https://secure.static.tumblr.com/08d783f35e5603fda59ab5a0f13e2484/vskr0co/RRenfgky5/tumblr_static_tumblr_static_6tm9c97yf8o48wo4oko0cc4kc_640.gif" style="height 30px; width: 160px;">
+                <h4 class="text-center">Wait, searching for place...</h4>
+            </div>
         </div>
         <div class="modal-footer">
             

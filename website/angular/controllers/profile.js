@@ -1,4 +1,4 @@
-portal.controller("profile", function($scope, Profile, $routeParams, $uibModalStack, $uibModal, Upload, Session, Attraction, Route)
+portal.controller("profile", function($scope, Profile, $routeParams, $uibModalStack, $uibModal, Upload, Session, Attraction, Route, Tool)
 {
     $scope.active = 1;
     $scope.profileData = {};
@@ -78,6 +78,9 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
                             });
                         }
                     }
+
+                    //Create a loading toolbar
+                    alert("Check Console For response and put it into Alert.")
                 }
             }
         }); 
@@ -85,6 +88,7 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
 
     Profile.getProfileData(userid, function(data)
     {
+        data.profile.dob.month = Tool.getMonthText(data.profile.dob.month);
         function setAttractionName(i, id)
         {
             Attraction.getData(data.following_attractions[i], function(data)
@@ -150,6 +154,8 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
             $scope.routeCounter = data.length;
             $scope.routes = data;
         })
+
+            console.log($scope.profileData)
     })
 
     $scope.showRoute = function(route)
@@ -206,11 +212,13 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
 
     $scope.unfollow = function(id)
     {
+        //Implement Function
         alert(id);
     }
 
     $scope.follow = function(id)
     {
+        //Implement Function
         alert(id);
     }
 
@@ -222,14 +230,17 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
             ariaDescribedBy: 'modal-body-top',
             templateUrl: 'createAlbum.html',
             size: 'md',
-            controller: function($scope, Profile) {
+            controller: function($scope, Profile, $rootScope) {
                 $scope.submit = function(a)
                 {
                     console.log(a)
                     
                     Profile.createAlbum(a, function(respo)
                     {
-                        alert(respo);
+                        if(respo != undefined && respo.insertedCount > 0)
+                        {
+                            $rootScope.$broadcast("pushAlert", {type : "info", title : "Success" , message: "Album Created"});
+                        }
                         //Complete this function to take album name as a parameter
                     })
                 }
@@ -252,7 +263,8 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
 
                     Profile.uploadProfilePicture($scope.file, function(d)
                     {
-
+                        console.log(d);
+                        alert("Check Console For response and put it into Alert.")
                     })
                 }
             }

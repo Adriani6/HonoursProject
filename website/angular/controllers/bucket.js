@@ -27,10 +27,11 @@ portal.controller("ModalInstanceCtrl", function($scope, $uibModalInstance, Profi
 {
     $scope.create = function(bucketName)
     {
-        alert(bucketName);
         Profile.newBucket(bucketName, function(r)
         {
-            alert(r);
+            //Close All modals
+            alert("Check Console For response and put it into Alert.")
+            console.log(r);
         })
 
     }

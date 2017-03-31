@@ -65,7 +65,8 @@ index.controller("registerCtrl", function($scope, $http)
                 $http({method: 'post', url: "/api/user/new", data: JSON.stringify(user)}).then(
                     function succ(res)
                     {
-                        alert("sent")
+                        console.log(res)
+                        alert("Check Console For response and put it into Alert.")
                     },
                     function err(err)
                     {

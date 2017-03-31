@@ -81,7 +81,7 @@
      <section style="height: 200px;">
       <div class="col-xs-6 col-md-3" ng-if="attraction.profile.photo">
         <a href="#" class="thumbnail">
-          <img ng-src="../uploads/places/profile/{{attraction.profile.photo}}" alt="...">
+          <img ng-src="../uploads/places/profile/{{attraction.profile.photo}}" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="...">
         </a>
         </div>
         <div class="col-xs-6 col-md-3" style="margin-bottom: 20px;">
@@ -175,9 +175,9 @@
 <script type="text/ng-template" id="itinerary.html">
     <div class="modal-header">
         <h3 class="modal-title">Itinerary
-        <span class="btn-group" uib-dropdown style="float: right;">
+        <span class="btn-group" uib-dropdown style="float: right;" ng-if="isLoading == false">
                 <button id="btn-append-to-body" type="button" class="btn btn-primary" uib-dropdown-toggle>
-              Sort <span class="caret"></span>
+              Options <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-body">
               <li role="menuitem" ng-click="sort()"><a href="javascript:void(0)">Most Efficient</a></li>
@@ -186,6 +186,10 @@
         </span></h3>
     </div>
     <div class="modal-body" id="modal-body">
+        <div style="height: 100%; width: 100%; background: white; position: absolute; left: 0; top: 0; z-index: 9999;" ng-if="isLoading == true">
+          <img class="center-block" src="https://secure.static.tumblr.com/08d783f35e5603fda59ab5a0f13e2484/vskr0co/RRenfgky5/tumblr_static_tumblr_static_6tm9c97yf8o48wo4oko0cc4kc_640.gif">
+          <h2 class="text-center">Wait, we're sorting the route for you</h2>
+        </div>
             <div class="row center-block" style="width: 60%;">
                 <div class="timeline timeline-line-dotted">
                     <span class="timeline-label">
