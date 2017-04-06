@@ -54,7 +54,51 @@ Routes.prototype.newRoute = function(req, res)
 
 Routes.prototype.retrieveRoute = function(req, res)
 {
-    
+    var send = [];
+
+    var length = 1;
+
+    if(req.query != undefined)
+    {
+        var routeUID = req.query.uid;
+        if(routeUID != undefined)
+        {
+            mongo.connect("mongodb://localhost/tripcards", function(err, db)
+            {
+                db.collection("routes").findOne({"uid": routeUID}, function(err, data)
+                {
+                    if(err)
+                        console.log(err)
+                    
+                    send = data;
+                    length = data.places.length;
+
+                    for(var i = 0; i < data.places.length; i++)
+                    {
+                        sendData(i)
+                    }
+                })
+            })
+        }
+    }
+
+    function sendData(i)
+    {
+        mongo.connect("mongodb://localhost/tripcards", function(err, db)
+        {
+            db.collection("attractions").findOne({"_id": new ObjectId(send.places[i].id)}, function(err, data)
+            {
+                if(err)
+                    console.log(err)
+
+                send.places[i].data = data;
+                length--;
+
+                if(length == 0)
+                    res.send(send);
+            })
+        })
+    }
 }
 
 Routes.prototype.getDistance = function(req, res)

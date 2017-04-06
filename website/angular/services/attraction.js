@@ -1,7 +1,5 @@
 portal.service("Attraction", function($http, Upload)
 {
-    var reportTypes = Object.freeze({Address: 0, Phone: 1, MapInaccurate: 2, Other: 3});
-
     this.getData = function(attraction, callback)
     {
         $http.get("/api/attraction/getName?attraction="+attraction).then(function(data)
@@ -10,6 +8,8 @@ portal.service("Attraction", function($http, Upload)
             callback(data.data);
         })
     }
+
+        var reportTypes = Object.freeze({Address: 0, Phone: 1, MapInaccurate: 2, Other: 3});
 
     this.report = function(attraction, type)
     {

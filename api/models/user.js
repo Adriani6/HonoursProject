@@ -683,6 +683,12 @@ User.prototype.newJourney = function(req, res)
         
         if(req.body != undefined && req.body.name != undefined && req.body.places.length > 1)
         {
+            var firstPart = (Math.random() * 46656) | 0;
+            var secondPart = (Math.random() * 46656) | 0;
+            firstPart = ("000" + firstPart.toString(36)).slice(-3);
+            secondPart = ("000" + secondPart.toString(36)).slice(-3);
+            req.body.uid = firstPart + secondPart;
+            
             mongo.connect("mongodb://localhost/tripcards", function(err, db)
             {
                 db.collection("routes").insert(req.body, function(err, data)
@@ -693,7 +699,7 @@ User.prototype.newJourney = function(req, res)
                         if(err)
                             console.log(err)
                         else
-                            res.send("Route Created");
+                            res.send("Route Created: " + req.body.uid);
                     })
                 });
             });
