@@ -76,7 +76,14 @@ Uploads.prototype.newUserPhoto = function(req, res)
 
 Uploads.prototype.reverseSearch = function(url, callback)
 {
-  http.get("https://images.google.com/searchbyimage?image_url="+url, function(re){
+  console.log("Function fired")
+  var options = {
+    host: "http://images.google.com/searchbyimage?image_url="+url,
+    //This is the only line that is new. `headers` is an object with the headers to request
+    headers: {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0',
+    'Content-Type' : 'application/x-www-form-urlencoded'  }
+  };
+  http.get(options, function(re){
         var body = '';
 
         re.on('data', function(chunk){
@@ -84,8 +91,9 @@ Uploads.prototype.reverseSearch = function(url, callback)
         });
 
         re.on('end', function(){
-            var html = $.parseHTML(body);
-            $(html).find("#topstuff").each(function()
+            //var html = $.parseHTML(body);
+            callback(body)
+            /*$(html).find("#topstuff").each(function()
             {
               $(this).find(".card-section").each(function()
               {
@@ -95,9 +103,10 @@ Uploads.prototype.reverseSearch = function(url, callback)
                   callback($(this).find("a").first().text())
                 })
               })
-            })
+            })*/
         });
     }).on('error', function(e){
+      console.log("Error")
         console.log("Got an error: ", e);
     });
 }
@@ -196,7 +205,8 @@ Uploads.prototype.revSearchReq = function(req, res)
       });
 
       form.on('end', function() {
-        self.reverseSearch("_WHOLE IMAGE URL GOES HERE WITH NAME", function(response)
+        console.log("Finished Uploading Rev Search")
+        self.reverseSearch("http://193.70.114.144/uploads/revSearch/"+fileName, function(response)
         {
           res.send(response);
         })

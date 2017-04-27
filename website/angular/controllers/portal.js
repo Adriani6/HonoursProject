@@ -2,7 +2,7 @@ var portal = angular.module("portal", ['ui.bootstrap', 'ngRoute', 'ngAnimate', '
 
 portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Session, $timeout)
 {
-  $scope.alerts = [{type : "info", title : "Success" , message: "Settings Updated"}]
+  $scope.alerts = [{type : "info", title : "" , message: "Successfully logged in."}]
   $scope.followers = []
   $scope.user = ""
   $scope.alertsCount = Session.getAlertsCount();
