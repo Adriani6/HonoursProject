@@ -1,15 +1,25 @@
 portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
 {
     $scope.owned = [];
-    $scope.selected = undefined;
+    $scope.selected = $scope.owned[0];
+    var id = 0;
 
-    Attraction.getOwned(function(data)
+    function getOwned()
     {
-        $scope.owned = data;
-    });
+        Attraction.getOwned(function(data)
+        {
+            $scope.owned = data;
+        });
+    }
 
     $scope.selectAttraction = function(id)
     {
+        selectAttraction(id);
+    }
+
+    function selectAttraction(idParam)
+    {
+        id = idParam;
         $scope.futureOffers = 0;
         $scope.liveOffers = 0;
 
@@ -81,6 +91,8 @@ portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
         }
     }
 
+    getOwned();
+
     $scope.newOffer = function()
     {
         var scope = $scope;
@@ -92,7 +104,7 @@ portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
             ariaDescribedBy: 'modal-body-top',
             templateUrl: 'newOffer.html',
             size: 'lg',
-            controller: function($scope, Tool) {
+            controller: function($scope, Tool, $rootScope, $uibModalStack) {
                 //$scope.newOffer = {};
 
                 $scope.createOffer = function(offer)
@@ -119,9 +131,13 @@ portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
 
                                 Attraction.createOffer(offer, function(data)
                                 {
-                                    scope.selectAttraction(selected._id);
                                     console.log(data);
-                                    alert("Check Console For response and put it into Alert.")
+                                    $rootScope.$broadcast("pushAlert", {type : "info", title : "Success" , message: "Offer created."});
+                                    $uibModalStack.dismissAll();
+                                    getOwned()
+                                    console.log(id)
+                                    selectAttraction(id);
+                                    //alert("Check Console For response and put it into Alert.")
                                 })
                             }
                             else
@@ -168,7 +184,7 @@ portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
             ariaDescribedBy: 'modal-body-top',
             templateUrl: 'confirmAction.html',
             size: 'sm',
-            controller: function($scope, Attraction) {
+            controller: function($scope, $rootScope, Attraction, $uibModalStack) {
                 $scope.offer = offer;
 
                 $scope.acceptRemove = function()
@@ -176,7 +192,9 @@ portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
                     Attraction.removeOffer({attr: selected["_id"], stamp: $scope.offer.originalStamp}, function(res)
                     {
                         console.log(res);
-                        alert("Check Console For response and put it into Alert.")
+                        $rootScope.$broadcast("pushAlert", {type : "info", title : "Success" , message: "Offer removed."});
+                        $uibModalStack.dismissAll();
+                        //alert("Check Console For response and put it into Alert.")
                     });
                 } 
             }
@@ -188,8 +206,9 @@ portal.controller("panel", function($scope, Attraction, $uibModal, Tool)
         console.log($scope.selected._id)
         Attraction.uploadProfilePic($scope.selected._id, file, function(data)
         {
+            $rootScope.$broadcast("pushAlert", {type : "info", title : "Success" , message: "Picture updated."});
             console.log(data);
-            alert("Check Console For response and put it into Alert.")
+            //alert("Check Console For response and put it into Alert.")
         })
     }
 

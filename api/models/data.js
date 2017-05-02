@@ -87,4 +87,63 @@ Data.prototype.gatherReviews = function(req, res)
     }    
 }
 
+Data.prototype.getReports = function(req, res)
+{
+    if(req.session && req.session.user == "589dc479e7dc1c282ccb5596")
+    {
+        mongo.connect("mongodb://localhost/tripcards", function(err, db)
+        {
+            //Finish this function
+            db.collection("reports").find({}).toArray(function(err, data)
+            {
+                if(err)
+                    console.log(err)
+                else
+                {
+                    res.send(data);
+                }
+            })
+        })
+    }
+}
+
+Data.prototype.createReport = function(req, res)
+{
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        req.body.data.creator = req.session.user;
+        req.body.data.stamp = new Date().getTime();
+        //Finish this function
+        db.collection("reports").insert(req.body.data, function(err, data)
+        {
+            if(err)
+                console.log(err)
+            else
+            {
+                res.send("Success");
+            }
+        })
+    })
+}
+
+Data.prototype.resolveReport = function(req, res)
+{
+    if(req.session.user == "589dc479e7dc1c282ccb5596")
+    {
+        mongo.connect("mongodb://localhost/tripcards", function(err, db)
+        {
+            //Finish this function
+            db.collection("reports").remove({"_id" : new ObjectId(req.body.data)}, function(err, data)
+            {
+                if(err)
+                    console.log(err)
+                else
+                {
+                    res.send(data);
+                }
+            })
+        })
+    }
+}
+
 module.exports = Data;

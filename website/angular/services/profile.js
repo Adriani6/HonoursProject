@@ -36,7 +36,6 @@ portal.service("Profile", function($http, Upload)
 
     this.newBucket = function(name, callback)
     {
-        alert("Service: " + name)
         $http.post("/api/user/newBucket", {name : name}).then(function(r)
         {
             callback(r);
@@ -57,18 +56,34 @@ portal.service("Profile", function($http, Upload)
             url: '/api/user/newProfilePic',
             data: {file: file}
         }).then(function (resp) {
-            console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
+            callback("Profile picture changed successfully.", false);
         }, function (resp) {
-            console.log('Error status: ' + resp.status);
+            callback("There was an issue uploading photo.", true);
         }, function (evt) {
             var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-            console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+            callback(progressPercentage)
         });
     }
 
     this.createAlbum = function(album, callback)
     {
         $http.post("/api/user/photos/album/create", {album: album}).then(function(r)
+        {
+            callback(r.data);
+        })
+    }
+
+    this.follow = function(id, callback)
+    {
+        $http.post("/api/user/follow", {id: id, type : "following"}).then(function(r)
+        {
+            callback(r.data);
+        })
+    }
+
+    this.Unfollow = function(id, callback)
+    {
+        $http.post("/api/user/unfollow", {id: id}).then(function(r)
         {
             callback(r.data);
         })
@@ -93,6 +108,14 @@ portal.service("Profile", function($http, Upload)
     this.updateProfileData = function(data, callback)
     {
         $http.post("/api/user/updateProfile", data).then(function(r)
+        {
+            callback(r.data);
+        })
+    }
+
+    this.newStatus = function(status, callback)
+    {
+        $http.post("/api/user/status/create", {statusText: status}).then(function(r)
         {
             callback(r.data);
         })

@@ -26,5 +26,18 @@ portal.config(function($routeProvider) {
     .when("/settings", {
         templateUrl : "views/portal/settings.html",
         controller: "settings"
+    })
+    .when("/admin", {
+        templateUrl : "views/admin/index.html",
+        controller: "admin"
+    })
+    .when("/admin/reports", {
+        templateUrl : "views/admin/reports.html",
+        controller: "admin"
+    })
+    .when("/userList", {
+        templateUrl : "views/portal/userList.html",
+        controller: "userList"
     });
 });
+

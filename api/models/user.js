@@ -13,15 +13,7 @@ function User()
 User.prototype.new = function(req, res)
 {
 
-    if (req.method == 'POST') {
-        var jsonString = '';
-
-        req.on('data', function (data) {
-            jsonString += data;
-        });
-
-        req.on('end', function () {
-            var data = JSON.parse(jsonString);
+    var data = req.body;
 
             self.verifyRegistrationData(data, function(err)
             {
@@ -34,14 +26,25 @@ User.prototype.new = function(req, res)
 
                     mongo.connect("mongodb://localhost/tripcards", function(err, db)
                     {
-                        db.collection('users').insert(data, function(err, result)
+                        db.collection('users').findOne({email: data.email}, function(err, existance)
                         {
-                            if(!err)
+                            if(existance == null)
                             {
-                                res.status(200).send("Registration completed successfully!");
-                                req.session.user = result._id;
+                                db.collection('users').insert(data, function(err, result)
+                                {
+                                    if(!err)
+                                    {
+                                        res.status(200).send("Registration completed successfully!");
+                                        req.session.user = result._id;
+                                    }
+                                });
                             }
-                        });
+                            else
+                            {
+                                res.status(400).send("User already exists!");
+                            }
+                        })
+                        
                     })
 
                     //console.log(data);
@@ -49,8 +52,6 @@ User.prototype.new = function(req, res)
                 }
             });
             //console.log(JSON.parse(jsonString));
-        });
-    }
 }
 
 User.prototype.login = function(req, res)
@@ -161,10 +162,20 @@ User.prototype.getUserData = function(req, res)
         {
             if(err)
                 console.log(err)
+            else
+            {
+                self.getFollowersByUserId(req.session.user, function(followers)
+                {
+                    if(followers)
+                    {
+                        data.followers = followers
+                        delete data.password;
 
-            delete data.password;
-
-            res.send(data)
+                        res.send(data)
+                    }
+                })
+            }
+       
         })
     })
 }
@@ -192,10 +203,19 @@ User.prototype.getProfile = function(req, res)
         {
             if(err)
                 console.log(err)
-            
-            delete data.password;
+            else
+            {
+                self.getFollowersByUserId(req.query.user, function(followers)
+                {
+                    if(followers)
+                    {
+                        data.followers = followers
+                        delete data.password;
 
-            res.send(data)
+                        res.send(data)
+                    }
+                })
+            }
         })
     })
 }
@@ -206,12 +226,71 @@ User.prototype.getFollowersRecentActivity = function(req, res)
     var output = [];
     var alerts = [];
     var togo = 0;
+    var toGet = 0;
 
     var lastCheck = 0;
     
     //alerts
     var att_following = 0;
     var offers_checked = 0;
+
+     function processAlerts(data, i, callback) {
+                                var d = data[i];
+                                self.local.getName(data[i].creator, function(name)
+                                {
+
+                                    var userData = {
+                                        id : name._id, 
+                                        activityID: d.activity,
+                                        title : name.firstname + " " + name.surname + " likes your " + d.liked, 
+                                        type : "LIKE"
+                                    };
+                                    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+                                    {
+                                        if(d.liked == "post")
+                                        {
+                                            
+                                            db.collection("users").findOne({"activity.id": new ObjectId(d.activity)}, {"activity.$": 1}, function(err, data)
+                                            {
+                                                if(data != null)
+                                                {
+                                                    console.log(data)
+                                                    userData.details = data.activity;
+                                                    toGet--;
+
+                                                    alerts.push(userData);
+
+                                                    if(toGet == 0)
+                                                        callback(alerts)
+                                                }
+                                                else
+                                                {
+                                                    toGet--;
+                                                }
+                                            })
+                                        }
+                                        else if(d.liked == "basket")
+                                        {
+                                            //Operations to find basket
+                                            db.collection("buckets").findOne({"_id": new ObjectId(d.activity)}, {"name": 1}, function(err, data)
+                                            {
+                                                userData.details = data;
+                                                toGet--;
+
+                                                alerts.push(userData);
+
+                                                if(toGet == 0)
+                                                    callback(alerts)
+                                            })
+                                        }
+                                        else
+                                        {
+                                            toGet--;
+                                        }
+                                    })
+                                                                
+                                });
+                        }
 
     function checkActivityTable(callback)
     {
@@ -220,56 +299,23 @@ User.prototype.getFollowersRecentActivity = function(req, res)
         {
             db.collection("activity").find({"receiver": new ObjectId(req.session.user), "stamp" : {$gt : lastCheck}}).toArray(function(err, data)
             {
-                var toGet = data.length;
-
-                for(var i = 0; i < data.length; i++)
+                toGet = data.length;
+                console.log(data.length)
+                if(data.length > 0)
                 {
-                    (function () {
-                        var d = data[i];
-                        self.local.getName(data[i].creator, function(name)
+                    for(var i = 0; i < data.length; i++)
+                    {
+                        processAlerts(data, i, function(cbresp)
                         {
-
-                            var userData = {
-                                id : name._id, 
-                                activityID: d.activity,
-                                title : name.firstname + " " + name.surname + " likes your " + d.liked, 
-                                type : "LIKE"
-                            };
-
-                            if(d.liked == "status")
-                            {
-                                db.collection("users").findOne({"activity.id": new ObjectId(d.activity)}, {"activity.$": 1}, function(err, data)
-                                {
-                                    userData.details = data.activity[0];
-                                    toGet--;
-
-                                    alerts.push(userData);
-
-                                    if(toGet == 0)
-                                        callback(alerts)
-                                })
-                            }
-                            else if(d.liked == "basket")
-                            {
-                                //Operations to find basket
-                                db.collection("buckets").findOne({"_id": new ObjectId(d.activity)}, {"name": 1}, function(err, data)
-                                {
-                                    userData.details = data;
-                                    toGet--;
-
-                                    alerts.push(userData);
-
-                                    if(toGet == 0)
-                                        callback(alerts)
-                                })
-                            }
-                                                        
-                        });
-                    })();
-                }  
+                            callback(cbresp)
+                        })
+                    }  
+                }
             })
         })
     }
+
+                           
 
     function checkUpdates(id, lastCheck)
     {
@@ -293,6 +339,7 @@ User.prototype.getFollowersRecentActivity = function(req, res)
 
                     if(att_following == 0 && offers_checked == 0)
                     {
+                        db.collection("users").updateOne({_id : new ObjectId(req.session.user)}, {$set : {checked : new Date().getTime()}})
                         res.send(alerts)
                     }
                     
@@ -311,20 +358,26 @@ User.prototype.getFollowersRecentActivity = function(req, res)
                 if(err)
                     console.log(err)
 
-                db.collection("activity").findOne({"creator": new ObjectId(req.session.user), "receiver" : new ObjectId(id), "activity": new ObjectId(data.activity[0].ID)}, function(err, aData)
+                if(data.activity != undefined && data.activity.length > 0)
                 {
+                    db.collection("activity").findOne({"creator": new ObjectId(req.session.user), "receiver" : new ObjectId(id), "activity": new ObjectId(data.activity[0].id)}, function(err, aData)
+                    {   
 
-                    //aData ?
-                    data.activity[0].aData = aData;
-                    output.push(data)
+                        //aData ?
+                        data.activity[0].aData = aData;
+                        console.log(data)
+                        console.log(data.activity[0].aData)
+                        output.push(data)
+                        togo--;
+
+                        if(togo == 0)
+                        {
+                            res.send(output)
+                        }
+                    })
+                }
+                else
                     togo--;
-
-                    if(togo == 0)
-                    {
-                        res.send(output)
-                    }
-                })
-
                 
             })
         })
@@ -340,33 +393,37 @@ User.prototype.getFollowersRecentActivity = function(req, res)
                 console.log(err)
             else
             {
-                lastCheck = data.checked;
-                console.log(lastCheck)
-                //console.log(data.following)
-                togo = data.following.length;
-
-                if(req.query.type == "feed")
+                if(data != null)
                 {
-                    for(var i = 0; i < data.following.length; i++)
-                    {
-                        //console.log(data.following[i])
-                        fetchActivity(data.following[i]);
-                    }
-                }
-                else if(req.query.type == "alerts")
-                {
-                    checkActivityTable(function(likeAlerts)
-                    {
-                        //alerts = likeAlerts;
+                    lastCheck = data.checked != undefined ? data.checked : 0;
+                    console.log(lastCheck)
+                    //console.log(data.following)
+                    togo = data.following != undefined ? data.following.length : 0;
+                    var counter = data.following != undefined ? data.following.length : 0;
 
-                        att_following = data.following_attractions.length;
-
-                        for(var y = 0; y < data.following_attractions.length; y++)
+                    if(req.query.type == "feed")
+                    {
+                        for(var i = 0; i < counter; i++)
                         {
-                            checkUpdates(data.following_attractions[y], data.checked);
-                            att_following--;
+                            //console.log(data.following[i])
+                            fetchActivity(data.following[i]);
                         }
-                    });
+                    }
+                    else if(req.query.type == "alerts")
+                    {
+                        checkActivityTable(function(likeAlerts)
+                        {
+                            //alerts = likeAlerts;
+
+                            att_following = data.following_attractions.length;
+
+                            for(var y = 0; y < data.following_attractions.length; y++)
+                            {
+                                checkUpdates(data.following_attractions[y], data.checked);
+                                att_following--;
+                            }
+                        });
+                    }
                 }
             }
         })
@@ -399,7 +456,18 @@ User.prototype.updateProfilePicture = function(req, res)
 
 User.prototype.newStatus = function(req, res)
 {
-
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        db.collection("users").updateOne({"_id": new ObjectId(req.session.user)}, {$push: {activity : {id : new ObjectId(), Type: "Status", Text : req.body.statusText, Date : new Date().getTime()}}}, function(err, data)
+        {
+            if(err)
+                console.log(err)
+            else
+            {
+                res.send("Status Updated.");
+            }
+        })
+    });
 }
 
 User.prototype.deleteStatus = function(req, res)
@@ -697,14 +765,79 @@ User.prototype.newJourney = function(req, res)
                     db.collection("users").update({"_id" : new ObjectId(req.session.user)},{$push : {routes: routeID}}, function(err, data)
                     {
                         if(err)
-                            console.log(err)
+                            res.send({route_id : false})
                         else
-                            res.send("Route Created: " + req.body.uid);
+                            res.send({route_id : req.body.uid});
                     })
                 });
             });
         }
     }
+}
+
+User.prototype.follow = function(req, res)
+{
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        var type = req.body.type != undefined ? req.body.type : null;
+
+        if(type != null)
+        {
+            db.collection("users").updateOne({"_id": new ObjectId(req.session.user)}, {$push : {"following" : req.body.id}}, function(err, data)
+            {
+                res.send(data);
+            });
+        }
+        
+    });
+}
+
+User.prototype.unfollow = function(req, res)
+{
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        db.collection("users").updateOne({"_id": new ObjectId(req.session.user)}, {'$pull': {"following": req.body.id}}, function(err, data)
+        {
+            res.send(data);
+        });
+    });
+}
+
+/*
+*   Returns false is error has occured.
+*/
+User.prototype.getFollowersByUserId = function(user_id, callback)
+{
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        if(err)
+            callback(false)
+
+        db.collection("users").find({"following" : user_id.toString()}, {"firstname" : 1, "surname" : 1, "profile" : 1}).toArray(function(err, results)
+        {
+            if(err)
+                callback(false)
+            else
+                callback(results)
+        })
+    })
+}
+
+User.prototype.searchUser = function(req, res)
+{
+    mongo.connect("mongodb://localhost/tripcards", function(err, db)
+    {
+        if(err)
+            callback(false)
+
+        db.collection("users").find({}, {password : 0}).toArray(function(err, results)
+        {
+            if(err)
+                console.log(err)
+            else
+               res.send(results)
+        })
+    })
 }
 
 module.exports = User;

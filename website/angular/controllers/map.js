@@ -1,6 +1,7 @@
-portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $uibModal)
+portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $uibModal, $rootScope)
 {
 	var attractions = [];
+	var attractions_backup = [];
 
 	$scope.states = [
 	{
@@ -12,7 +13,7 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 		}
 	}];
 	$scope.selectedAttractionsText = 0;
-	$scope.selectedAttractionsCounter = 0;
+	$scope.selectedAttractionsCounter = 0
 
 	$scope.$on('filter', function(event, type, cb)
 	{
@@ -141,7 +142,27 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 								$scope.journey.places = places;
 								Map.savePlannedJourney($scope.journey, function(r)
 								{
-									alert("Check Console For response and put it into Alert.")
+									$uibModalStack.dismissAll();
+									if(r.route_id)
+									{
+										$uibModal.open(
+										{
+											animation: true,
+											ariaLabelledBy: 'modal-title-top',
+											ariaDescribedBy: 'modal-body-top',
+											templateUrl: 'success_route_generation.html',
+											size: 'lg',
+											controller: function($scope, $rootScope)
+											{
+												$scope.route_code = r.route_id;
+											}
+										});
+									}
+									else
+									{
+										$rootScope.$broadcast("pushAlert", {type : "warning", title : "Error" , message: "Couldn't save the route."});
+									}
+									
 									//Close all Modals on Success too.
 									console.log(r)
 								})
@@ -241,6 +262,14 @@ portal.controller("mapController", function($scope, Map, Geo, $uibModalStack, $u
 			else
 			{
 				delete attraction.selected;
+				for(var i = 0; i < attractions.length; i++)
+				{
+					if(attractions[i].markerID == attraction.markerID)
+					{
+						attractions.splice(i, 1);
+					}
+				}
+
 				Map.removeMarker(attraction.markerID)
 				$scope.selectedAttractionsCounter--;
 				if (typeof $scope.selectedAttractionsText === 'string')
@@ -381,6 +410,7 @@ portal.directive('rightClick', function($document, $uibModal, Attraction)
 
 					$scope.report = function(attraction)
 					{
+						console.log(attraction)
 						$uibModal.open(
 						{
 							animation: true,
@@ -388,11 +418,25 @@ portal.directive('rightClick', function($document, $uibModal, Attraction)
 							ariaDescribedBy: 'modal-body-top',
 							templateUrl: 'reportWindow.html',
 							size: 'sm',
-							controller: function($scope)
+							controller: function($scope, $uibModalStack, $rootScope, Requests)
 							{
-								$scope.alert = function()
+								$scope.reportType = {};
+								console.log(attraction)
+								$scope.report = function()
 								{
-									alert("Hello");
+									$uibModalStack.dismissAll()
+									var doc = {reporting : []};
+									for(var key in $scope.reportType)
+									{
+										doc.reporting.push(key.split(/(?=[A-Z])/).join(" "));
+									}
+
+									doc.attraction = attraction.attraction._id;
+									$rootScope.$root.$broadcast('pushAlert', {type : "success", title : "Report Created" , message: "Admin will shortly review your report. Thanks."})
+									Requests.createReport(doc, function(re)
+									{
+										console.log(re)
+									})
 								}
 							}
 						})
@@ -409,7 +453,7 @@ portal.directive('rightClick', function($document, $uibModal, Attraction)
 							ariaDescribedBy: 'modal-body-top',
 							templateUrl: 'selectBucket.html',
 							size: 'md',
-							controller: function($scope, Profile) {
+							controller: function($scope, Profile, $rootScope, $uibModalStack) {
 								$scope.baskets = [];
 								$scope.selected  = undefined;
 								$scope.selectedName = "Nothing Selected";
@@ -427,14 +471,23 @@ portal.directive('rightClick', function($document, $uibModal, Attraction)
 
 								$scope.save = function()
 								{
-									var data = {};
-									data.attraction = attraction._id;
-									data.bucket = $scope.selected._id;
-									Profile.addToBucket(data, function(resp)
+									if($scope.selected)
 									{
-										alert("Check Console For response and put it into Alert.")
-										console.log(resp);
-									})
+										var data = {};
+										data.attraction = attraction._id;
+										data.bucket = $scope.selected._id;
+										Profile.addToBucket(data, function(resp)
+										{
+											$uibModalStack.dismissAll();
+											$scope.$root.$broadcast('pushAlert', {type : "success", title : "Bucket Updated" , message: resp})
+											
+										})
+									}
+									else
+									{
+										//Emit Please select basket
+										alert("Please select basket first.")
+									}
 								}
 							}
 						})

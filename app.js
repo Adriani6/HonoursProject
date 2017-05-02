@@ -84,6 +84,9 @@ router.get("/geocode", api.data.geoCode)
 router.get("/user/getFollowers", api.user.fetchFollowers);
 router.get("/user/isFollowing", api.user.isFollowing);
 router.post("/user/updateProfile", api.user.updateProfileData);
+router.post("/user/follow", api.user.follow);
+router.post("/user/unfollow", api.user.unfollow);
+router.post("/user/status/create", api.user.newStatus);
 
 router.get("/reviews", api.data.gatherReviews);
 
@@ -93,6 +96,11 @@ router.post("/attraction/offer/get", api.attraction.fetchOffer);
 router.get("/attraction/getName", api.attraction.getName);
 
 router.post("/activity/createAction", api.user.createActivity);
+
+//Reports
+router.post("/report/new", api.data.createReport);
+router.get("/admin/reports/get", api.data.getReports)
+router.post("/admin/reports/resolve", api.data.resolveReport)
 
 // Buckets
 router.get("/user/retrieveBuckets", api.user.retrieveBuckets)
@@ -126,3 +134,5 @@ router.get("/route/retrieve", api.route.retrieveRoute);
 
 //Reverse Image Search
 router.post("/places/revSearch", api.upload.revSearchReq);
+
+router.post("/user/search", api.user.searchUser)

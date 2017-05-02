@@ -1,0 +1,14 @@
+<div ng-repeat="person in userList">
+    <div class="panel panel-default" style="margin-top: 20px; width: 600px; margin-left: auto; margin-right: auto;">
+    <div class="panel-body">
+        <div class="col-md-10 col-md-push-2" style="padding-left: 0; height: 60px;">
+            <dl>
+                <dt style="width: 100%;"><a href="#/profile/{{person['_id']}}">{{person.firstname + " " + person.surname}}</a></dt>
+            </dl>
+        </div>
+        <div class="col-md-2 col-md-pull-10">
+            <img ng-src="{{person.profile.photo ? '../uploads/profile/'+person.profile.photo : '../uploads/profile/default.png'}}" alt="..." class="img-rounded" style="height: 60px">
+        </div>
+    </div>
+    </div>
+</div>

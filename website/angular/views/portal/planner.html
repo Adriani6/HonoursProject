@@ -113,31 +113,31 @@
            <div class="form-group">
          <div class="checkbox">
            <label>
-             <input type="checkbox" value="">
+             <input type="checkbox" ng-model="reportType.WrongAddress">
              Wrong Address
            </label>
          </div>
          <div class="checkbox">
            <label>
-             <input type="checkbox" value="">
+             <input type="checkbox" ng-model="reportType.WrongPhoneNumber">
              Wrong Phone Number
            </label>
          </div>
          <div class="checkbox">
            <label>
-             <input type="checkbox" value="">
+             <input type="checkbox" ng-model="reportType.InaccurateMapPlacement">
              Inaccurate Map Placement
            </label>
          </div>
          <div class="checkbox">
            <label>
-             <input type="checkbox" value="">
+             <input type="checkbox" ng-model="reportType.Other">
              Other
            </label>
          </div>
          </div>
            <div class="form-group">
-         <button type="submit" class="btn btn-default">Send Report</button>
+         <button type="submit" class="btn btn-default" ng-click="report()">Send Report</button>
      </div>
    </form>
        </div>
@@ -169,6 +169,15 @@
 <script type="text/ng-template" id="writeReview.html">
     <div class="modal-body" id="modal-body">
       <textarea class="form-control" rows="10"></textarea>
+    </div>
+</script>
+
+<script type="text/ng-template" id="success_route_generation.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Route Generated</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <h4>Route has been saved. Please sync with your mobile using code: <span class="label label-default">{{route_code}}</span></h4>
     </div>
 </script>
 
@@ -204,7 +213,7 @@
                                 <h4>{{it.name}}</h4>
                             </div>
                             <div class="timeline-body">
-                                <p>3 Offers</p>
+                                
                             </div>
                             <div class="timeline-footer">
                                 <p class="text-right">{{it.distance}}</p>

@@ -49,4 +49,36 @@ portal.service('Requests', function($http, Upload) {
         });
     }
 
+    this.createReport = function(data, callback)
+    {
+        $http.post("/api/report/new", {data : data}).then(function(re)
+        {
+            console.log(re)
+            callback(re.data)
+        })
+    }
+
+    this.loadReports = function(callback)
+    {
+        $http.get("/api/admin/reports/get").then(function(data)
+        {
+            callback(data.data);
+        })
+    }
+
+    this.resolveReport = function(id, callback)
+    {
+        $http.post("/api/admin/reports/resolve", {data : id}).then(function(data)
+        {
+            callback(data);
+        })
+    }
+
+    this.searchUser = function(user, callback)
+    {
+        $http.post("/api/user/search", {name : user}).then(function(data)
+        {
+            callback(data.data);
+        })
+    }
 });

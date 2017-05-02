@@ -1,4 +1,4 @@
-index.controller("registerCtrl", function($scope, $http)
+index.controller("registerCtrl", function($scope, $http, $window)
 {
     $scope.errors = {};
 
@@ -66,19 +66,22 @@ index.controller("registerCtrl", function($scope, $http)
                     function succ(res)
                     {
                         console.log(res)
-                        alert("Check Console For response and put it into Alert.")
+                        $scope.$emit('pushAlert', res.data);
+
                     },
                     function err(err)
                     {
-                        alert(err);
+                        $scope.$emit('pushAlert', err.data);
+                        console.log(err);
                     }
                 )
             }
             else
-                alert("Nope")
+                $scope.$emit('pushAlert', {type : "warning", title : "Registration" , message: " has failed."})
         }
 
-        if(Object.keys($scope.errors).length)
+       /* if(Object.keys($scope.errors).length)
             alert("There are errors");
+            */
     }
 })

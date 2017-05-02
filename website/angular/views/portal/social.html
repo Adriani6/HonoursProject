@@ -1,14 +1,16 @@
-<div class="panel panel-default" style="margin-top: 20px; width: 600px; margin-left: auto; margin-right: auto;" ng-repeat="person in followers">
-   <div class="panel-body">
-      <div class="col-md-10 col-md-push-2" style="padding-left: 0; height: 60px;">
-         <dl>
-            <dt style="width: 100%;"><a href="#/profile/{{person['_id']}}">{{person.firstname + " " + person.surname}}</a> <span style="float: right; font-size: 24px;"><i class="fa" uib-tooltip="{{person.activity[0].tooltipTxt}}" ng-class="(person.activity[0].aData == null)? 'fa-paper-plane-o' : 'fa-paper-plane'" aria-hidden="true" style="cursor: pointer;" ng-click="like(person.activity[0], person, 'post')"></i></span></dt>
-            <dd style="font-size: 10px">{{person.activity[0].Date}}</dd>
-            <dd><i class="fa fa-plane" aria-hidden="true" style="font-size: 24px;"></i> Travelled to {{person.activity[0].Location}}</dd>
-         </dl>
-      </div>
-      <div class="col-md-2 col-md-pull-10">
-         <img ng-src="{{person.profile.photo}}" alt="..." class="img-rounded" style="height: 60px">
-      </div>
-   </div>
+<div ng-repeat="person in followers">
+    <div class="panel panel-default" style="margin-top: 20px; width: 600px; margin-left: auto; margin-right: auto;" ng-repeat="activity in person.activity">
+    <div class="panel-body">
+        <div class="col-md-10 col-md-push-2" style="padding-left: 0; height: 60px;">
+            <dl>
+                <dt style="width: 100%;"><a href="#/profile/{{person['_id']}}">{{person.firstname + " " + person.surname}}</a> <span style="float: right; font-size: 24px;"><i class="fa" uib-tooltip="{{activity.tooltipTxt}}" ng-class="(activity.aData == null)? 'fa-paper-plane-o' : 'fa-paper-plane'" aria-hidden="true" style="cursor: pointer;" ng-click="like(activity, person, 'post')"></i></span></dt>
+                <dd style="font-size: 10px">{{activity.Date}}</dd>
+                <dd><i class="fa fa-plane" aria-hidden="true" style="font-size: 24px;"></i> {{activity.Text}}</dd>
+            </dl>
+        </div>
+        <div class="col-md-2 col-md-pull-10">
+            <img ng-src="{{person.profile.photo ? '../uploads/profile/'+person.profile.photo : '../uploads/profile/default.png'}}" alt="..." class="img-rounded" style="height: 60px">
+        </div>
+    </div>
+    </div>
 </div>

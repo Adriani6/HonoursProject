@@ -32,9 +32,10 @@
                     <br><br>
                     <div align="center">
                         <div class="col-lg-12 col-md-12">
-                            <img class="img-thumbnail img-responsive" ng-src="../uploads/profile/{{user.profile.photo}}" style="width: 300px; height: 300px;" ngf-select ng-model="file" name="file" ngf-pattern="'image/*'" ngf-accept="'image/*'" ngf-max-size="20MB" ngf-min-height="100">
+                            <img class="img-thumbnail img-responsive" ng-src="{{user.profile.photo ? '../uploads/profile/'+user.profile.photo : '../uploads/profile/default.png'}}" style="width: 300px; height: 300px;" ngf-select ng-model="file" name="file" ngf-pattern="'image/*'" ngf-accept="'image/*'" ngf-max-size="20MB" ngf-min-height="100">
                         </div>
-                        <div class="col-lg-12 col-md-12">
+                        <div class="col-lg-6 col-md-6 col-lg-offset-3 col-md-offset-3" style="margin-top: 15px;">
+                            <uib-progressbar ng-if="uploadingInProcess" max="100" value="progress"><span style="color:white; white-space:nowrap;">{{progress}}% / 100%</span></uib-progressbar>
                             <button class="btn btn-primary" ng-click="changeProfilePic(file)"><i class="fa fa-upload" aria-hidden="true"></i> Upload a new profile photo!</button>
                         </div>
                     </div>
@@ -237,22 +238,7 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h3 class="panel-title pull-left">Profile settings</h3>
-                    <br><br>
-                    <h4>Search</h4>
-                    <div class="well checkbox">
-                        <label class="checkbox-inline" for="profile_searchable"><input type="checkbox" name="profile[searchable]" id="profile_searchable" value="true" checked="checked">
-                            Allow for people to search for you within diaspora*
-                        </label>
-                    </div>
-                    <br>
-                    <h4>NSFW</h4>
-                    <p>NSFW (“not safe for work”) is diaspora*’s self-governing community standard for content which may not be suitable to view while at work. If you plan to share such material frequently, please check this option so that everything you share will be hidden from people’s streams unless they choose to view them.</p>
-                    <div class="well checkbox">
-                        <label class="checkbox-inline" for="profile_nsfw"><input type="checkbox" name="profile[nsfw]" id="profile_nsfw" value="true">
-                            Mark everything I share as NSFW
-                        </label>
-                    </div>
-                    <p class="text-danger"><strong><i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i> If you choose not to select this option, please add the #nsfw tag each time you share such material.</strong></p>
+
                     <button class="btn btn-default"><i class="fa fa-fw fa-times" aria-hidden="true"></i> Cancel</button>
                     <button class="btn btn-primary" ng-click="updateProfile(data)"><i class="fa fa-fw fa-check" aria-hidden="true"></i> Update Profile</button>
                 </div>

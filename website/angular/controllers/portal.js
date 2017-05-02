@@ -2,10 +2,15 @@ var portal = angular.module("portal", ['ui.bootstrap', 'ngRoute', 'ngAnimate', '
 
 portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Session, $timeout)
 {
-  $scope.alerts = [{type : "info", title : "" , message: "Successfully logged in."}]
+  $scope.alerts = []
   $scope.followers = []
   $scope.user = ""
   $scope.alertsCount = Session.getAlertsCount();
+
+  $scope.searchPerson = function()
+  {
+    
+  }
   // Move Filter function and implement search function inside mapController
   $scope.removeAlert = function(alert)
   { 
@@ -19,10 +24,20 @@ portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Sessi
         }
       }, 5000);
   }
+
   $scope.$on('pushAlert', function(event, alert)
 	{
     alert.id = $scope.alerts.length;
     $scope.alerts.push(alert);   
+
+  })
+
+  $scope.$on('refreshSession', function(event)
+	{
+     Session.retrieve(function(r)
+    {
+      $scope.user = r.data;
+    })
 
   })
 
@@ -97,7 +112,7 @@ portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Sessi
   $scope.like = function(a, p, type)
   {
     var obj = {};
-    obj.activity =  a.ID;
+    obj.activity =  a.id;
     obj.receiver = p._id;
     obj.liked = type;
 
@@ -132,6 +147,42 @@ portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Sessi
     $scope.isCollapsedHorizontal = true;
     $scope.foundCount = 0;
 
+    var attractions_backup = [];
+
+    $scope.$on('applyFilters', function(event, filters)
+    {
+      if(filters.length > 0)
+      {
+        if(attractions_backup.length <= 0)
+        {
+          attractions_backup = $scope.attractions.slice();
+        }
+        
+        $scope.attractions.splice(0, $scope.attractions.length);
+        $scope.attractions = [];
+        
+        for(var i = 0; i < attractions_backup.length; i++)
+        {
+          for(var j = 0; j < filters.length; j++)
+          {
+            //console.log(attractions_backup[i].types, j)
+            if(attractions_backup[i].types.indexOf(filters[j]) > -1)
+            {
+              if($scope.attractions.indexOf(attractions_backup[i]) < 0)
+                $scope.attractions.push(attractions_backup[i]);
+            }
+          }
+          
+        }
+      }
+      else
+      {
+        $scope.attractions = attractions_backup.slice();
+      }
+
+
+    })
+
     Requests.getAttractionsByLocation("Aberdeen", function(data)
     {
       console.log(data)
@@ -158,9 +209,28 @@ portal.controller("GlobalCtrl", function($scope, $uibModal, Requests, Map, Sessi
           templateUrl: 'filtersPopup.html',
           size: 'sm',
           appendTo: parentElem,
-          controller: function($scope)
+          controller: function($scope, $rootScope)
           {
             $scope.filters = self.allFilters;
+            $scope.selectedFilters = {};
+            var filtersToSend = [];
+
+            $scope.filterResults = function()
+            {
+              for(var fil in $scope.selectedFilters)
+              {
+                if($scope.selectedFilters[fil])
+                  filtersToSend.push(fil)
+              }
+
+              $rootScope.$broadcast("applyFilters", filtersToSend)
+            }
+
+            $scope.filterClear = function()
+            {
+              $scope.selectedFilters = {};
+              $rootScope.$broadcast("applyFilters", {})
+            }
           }
 
         });

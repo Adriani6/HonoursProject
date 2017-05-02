@@ -131,7 +131,13 @@ portal.service('Map', function($http) {
 
     this.removeMarker = function(id) {
         vectorSource.removeFeature(markers[id]);
-        delete markers[id];
+        for(var i = 0; i < markers.length; i++)
+        {
+            if(markers[i].markerID == id)
+            {
+                markers.splice(i, 1);
+            }
+        }
     }
 
     this.apiDistance = function(flat, flng, tlat, tlng, callback)

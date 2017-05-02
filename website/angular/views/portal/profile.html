@@ -1,11 +1,11 @@
-<div class="col-md-8 col-md-offset-2">
+<div class="col-lg-10 col-lg-offset-1 col-md-12 col-md-offset-0">
   <div style="padding-top:50px;"> </div>
-  <div class="col-lg-3 col-md-3 hidden-sm hidden-xs">
+  <div class="col-lg-3 col-md-5 hidden-sm hidden-xs">
     <div class="panel panel-default">
         <div class="panel-body">
           <div class="media">
               <div align="center">
-                <img class="thumbnail img-responsive" ng-src="../uploads/profile/{{profileData.profile.photo}}" ng-click="changeProfilePhoto()" style="width: 300px; height: 300px;">
+                <img class="thumbnail img-responsive" src="../uploads/profile/default.png" ng-src="../uploads/profile/{{profileData.profile.photo}}" ng-click="changeProfilePhoto()" style="width: 300px; height: 300px;">
               </div>
               <div class="media-body" style="overflow-wrap: normal; width: 100%">
                 <div ng-if="profileData.profile.bio">
@@ -23,7 +23,7 @@
                   <h3><strong>Gender</strong></h3>
                   <p>{{profileData.profile.gender}}</p>
                 </div>
-                <div ng-if="profileData.profile.dob.day && profileData.profile.dob.month && profileData.profile.dob.year">
+                <div ng-if="profileData.profile && profileData.profile.dob && profileData.profile.dob.day && profileData.profile.dob.month && profileData.profile.dob.year">
                   <hr>
                   <h3><strong>Birthday</strong></h3>
                   <p>{{profileData.profile.dob.day +" "+ profileData.profile.dob.month +" "+ profileData.profile.dob.year}}</p>
@@ -33,11 +33,11 @@
         </div>
     </div>
   </div>
-  <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+  <div class="col-lg-9 col-md-7 col-sm-12 col-xs-12">
     <div class="panel panel-default">
         <div class="panel-body">
           <span>
-              <h1 class="panel-title pull-left" style="font-size:30px;">{{profileData.firstname + " " + profileData.surname}} <small>{{profileData.email}}</small> <i class="fa fa-check text-success" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="John Doe is sharing with you"></i></h1>                
+              <h1 class="panel-title pull-left" style="font-size:30px;">{{profileData.firstname + " " + profileData.surname}}</h1>                
               <div class="btn-group pull-right" uib-dropdown>
                 <button ng-if="!followBtn && followBtn != 'self'" ng-click="follow(profileData._id)" id="single-button " type="button" class="btn btn-primary">
                   <span ng-if="!followBtn && followBtn != 'self'">Follow</span>
@@ -57,18 +57,15 @@
           <br><br>
           {{profileData.profile.tags}}
           <br><br>
-          <input type="text" class="form-control" placeholder="Status Update" style="border: 0; border-bottom: 1px solid #ddd; border-radius: 0; -webkit-box-shadow: none;">
+          <form ng-submit="newStatus()">
+          <input type="text" name="statusText" ng-model="status.statusText" class="form-control" ng-if="followBtn == 'self'" placeholder="Status Update" style="border: 0; border-bottom: 1px solid #ddd; border-radius: 0; -webkit-box-shadow: none;">
+          </form>
           <span class="pull-left">
           <a href="javascript:void(0)" ng-click="active = 1" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-fw fa-files-o" aria-hidden="true"></i> Posts</a>
           <a href="javascript:void(0)" ng-click="active = 2" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-fw fa-picture-o" aria-hidden="true"></i> Photos <span class="badge">{{imageCount}}</span></a>
           <a href="javascript:void(0)" ng-click="active = 3" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-fw fa-users" aria-hidden="true"></i> Following <span class="badge">{{profileData.following.length + profileData.following_attractions.length}}</span></a>
           <a href="javascript:void(0)" ng-click="active = 4" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-user" aria-hidden="true"></i> Followers <span class="badge">{{followers.length}}</span></a>
           <a href="javascript:void(0)" ng-click="active = 5" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-suitcase" aria-hidden="true"></i> Routes <span class="badge">{{routeCounter}}</span></a>
-          </span>
-          <span class="pull-right">
-          <a href="#" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-lg fa-at" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Mention"></i></a>
-          <a href="#" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-lg fa-envelope-o" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Message"></i></a>
-          <a href="#" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-lg fa-ban" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Ignore"></i></a>
           </span>
         </div>
     </div>
@@ -77,7 +74,7 @@
       <uib-tabset active="active">
         <uib-tab index="1">
           <!-- Simple post content example. -->
-          <div class="panel panel-default" ng-repeat="activity in profileData.activity">
+          <div class="panel panel-default" ng-repeat="activity in profileData.activity" ng-if="activity.Text">
               <div class="panel-body">
                 <div class="pull-left">
                     <a href="#">
@@ -105,13 +102,11 @@
                 </span>
                 <hr>
                 <div class="post-content">
-                    <p><i class="fa fa-plane" aria-hidden="true"></i> Travelled to {{activity.Location}}</p>
+                    <p><i class="fa fa-plane" aria-hidden="true"></i> {{activity.Text}}</p>
                 </div>
                 <hr>
                 <div>
                     <div class="pull-right btn-group-xs">
-                      <a class="btn btn-default btn-xs"><i class="fa fa-heart" aria-hidden="true"></i> Like</a>
-                      <a class="btn btn-default btn-xs"><i class="fa fa-retweet" aria-hidden="true"></i> Reshare</a>
                       <a class="btn btn-default btn-xs"><i class="fa fa-comment" aria-hidden="true"></i> Comment</a>
                     </div>
                     <div class="pull-left">
@@ -121,11 +116,6 @@
                 </div>
                 <hr>
                 <div class="media">
-                    <div class="pull-left">
-                      <a href="#">
-                      <img class="media-object img-circle" ng-src="../uploads/profile/{{profileData.profile.photo}}" width="35px" height="35px" style="margin-left:3px; margin-right:-5px;">
-                      </a>
-                    </div>
                     <div class="media-body">
                       <div class="col-md-2">
                         <textarea class="form-control" rows="1" placeholder="Comment" style="width: 70%;"></textarea>
@@ -169,10 +159,10 @@
               <div class="update-card-body">
                 <div class="update-card-body">
                   <div class="col-xs-3">
-                    <img src="https://scontent-lhr3-1.xx.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=f4a3bfa198b93ebed661599f3850b31a&oe=59519DC0" style="width: 100%;">
+                    <img ng-src="{{fol.profile.photo ? '../uploads/profile/'+fol.profile.photo : '../uploads/profile/default.png'}}" style="width: 100%;">
                   </div>
                   <div class="col-xs-9">
-                    <h4>{{fol.name}}</h4>
+                    <h4><a href="#/profile/{{fol._id}}">{{fol.name}}</a></h4>
                     <p>User <span ng-if="fol.location">from {{fol.location}}</span></p>
                   </div>
                   
@@ -191,10 +181,10 @@
               <div class="update-card-body">
                 <div class="update-card-body">
                   <div class="col-xs-3">
-                    <img src="https://scontent-lhr3-1.xx.fbcdn.net/v/t31.0-8/q84/s960x960/16797156_1653912594625914_8836844879869293276_o.jpg?oh=f4a3bfa198b93ebed661599f3850b31a&oe=59519DC0" style="width: 100%;">
+                    <img  ng-src="{{fol.profile.photo ? '../uploads/profile/'+fol.profile.photo : '../uploads/profile/default.png'}}" style="width: 100%;">
                   </div>
                   <div class="col-xs-9">
-                    <h4>{{fol.name}}</h4>
+                    <h4><a href="#/profile/{{fol._id}}">{{fol.firstname + " " + fol.surname}}</a></h4>
                     <p>User <span ng-if="fol.location">from {{fol.location}}</span></p>
                   </div>
                   
@@ -216,15 +206,16 @@
           <div ng-repeat="photo in album.photos">
             <div class="col-xs-6 col-md-3">
               <a href="javascript:void(0)" class="thumbnail">
-                <img src="../uploads/photos/{{photo.file}}" alt="..." ng-click="showImage(photo)">
+                <img ng-src="{{photo.file ? '../uploads/photos/'+photo.file : ''}}" alt="..." ng-click="showImage(photo)">
               </a>
             </div>
             
           </div>
         </uib-tab>
         <uib-tab index="5">
-          <uib-accordion close-others="oneAtATime">
-            <div ng-repeat="route in routes" uib-accordion-group class="panel-default" heading="{{route.name + ' ('+route.places.length+' places)'}}" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
+          <uib-accordion>
+            <div ng-repeat="route in routes" uib-accordion-group class="panel-default" heading="{{route.name + ' ('+route.places.length+' places)'}}">
+              Sync Code : {{route.uid}}
               <div class="timeline timeline-line-dotted">
                       <span class="timeline-label">
                           <span class="label label-primary">Distances are approximate</span>
@@ -280,7 +271,7 @@
 
 <script type="text/ng-template" id="showImage.html">
   <div class="modal-body" id="modal-body">
-    <img ng-src="../uploads/photos/{{photo.file}}" class="center-block" style="height: 90%;">
+    <img ng-src="{{photo ? '../uploads/photos/'+photo.file : ''}}" class="center-block" style="height: 90%;">
   </div>
   <div class="modal-footer">
     {{photo.time}}

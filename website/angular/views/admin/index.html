@@ -1,0 +1,87 @@
+<!-- Main -->
+<div class="container">
+<div class="row">
+    <div class="col-md-3">
+      
+      <hr>
+      
+      <ul class="nav nav-pills nav-stacked">
+        <li class="nav-header"></li>
+        <li><a href="#/admin"><i class="glyphicon glyphicon-list"></i> Dashboard</a></li>
+        <li class="disabled"><a href="#/admin/users"><i class="glyphicon glyphicon-link"></i> Users</a></li>
+        <li><a href="#/admin/reports"><i class="glyphicon glyphicon-list-alt"></i> Reports</a></li>
+      </ul>
+      
+      <hr>
+
+      <hr>
+  	</div><!-- /col-3 -->
+    <div class="col-md-9">
+      	
+      <!-- column 2 -->	 
+      
+      	<hr>
+      
+		<div class="row">
+           
+            
+          
+            <!-- center left-->	
+         	<div class="col-md-6">
+			  <div class="well">Open Reports: <span class="badge pull-right">{{reports.length}}</span></div>
+              
+              <hr>
+                            
+              <hr>
+              
+              <div class="panel panel-default">
+                  <div class="panel-heading"><h4>Reports</h4></div>
+                  <div class="panel-body">
+                    
+                    <small>Wrong Phone Number</small>
+                    <div class="progress">
+                      {{phone}}
+                    </div>
+                    <small>Wrong Address</small>
+                    <div class="progress">
+                      {{address}}
+                    </div>
+                    <small>Inaccurate Map Placement</small>
+                    <div class="progress">
+                      {{map}}
+                    </div>
+                    <small>Other</small>
+                    <div class="progress">
+                      {{other}}
+                    </div>
+
+                  </div><!--/panel-body-->
+              </div><!--/panel-->
+	
+			  <hr>              
+         
+              <hr>
+   
+          	</div><!--/col-->
+        	<div class="col-md-6">
+                <table class="table table-striped">
+                      <thead>
+                        <tr><th>City</th><th>Attractions</th><th>Claimed</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr><td>Aberdeen</td><td>112</td><td>1</td></tr>
+                        <tr><td>..</td><td>..</td><td>..</td></tr>
+                        <tr><td>..</td><td>..</td><td>..</td></tr>
+                      </tbody>
+               	</table>
+                                          
+			</div><!--/col-span-6-->
+     
+      </div><!--/row-->
+      
+      <hr>
+
+  	</div><!--/col-span-9-->
+</div>
+</div>
+<!-- /Main -->

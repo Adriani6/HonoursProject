@@ -2,10 +2,13 @@ portal.controller("bucketCtrl", function($scope, $uibModal, $document, Profile)
 {
     $scope.buckets = [];
 
-    Profile.getBuckets(function(buckets)
+    function loadBuckets()
     {
-        $scope.buckets = buckets;
-    })
+        Profile.getBuckets(function(buckets)
+        {
+            $scope.buckets = buckets;
+        })
+    }
 
     $scope.open = function (size, parentSelector) {
         var parentElem = parentSelector ? 
@@ -15,25 +18,41 @@ portal.controller("bucketCtrl", function($scope, $uibModal, $document, Profile)
         ariaDescribedBy: 'modal-body',
         templateUrl: 'newBucket.html',
         controller: 'ModalInstanceCtrl',
+        scope:$scope,
         controllerAs: '$ctrl',
         size: size,
         appendTo: parentElem
         });
     }
 
+    $scope.finishedCreating = function()
+    {
+        $scope.$emit('pushAlert', {type : "success", title : "Basket Created" , message: " has been created."})
+        loadBuckets()
+    }
+
+    loadBuckets()
+
 })
 
-portal.controller("ModalInstanceCtrl", function($scope, $uibModalInstance, Profile)
+portal.controller("ModalInstanceCtrl", function($scope, $uibModalInstance, Profile, $uibModalStack, $rootScope)
 {
     $scope.create = function(bucketName)
     {
         Profile.newBucket(bucketName, function(r)
         {
             //Close All modals
-            alert("Check Console For response and put it into Alert.")
+            //alert("Check Console For response and put it into Alert.")
             console.log(r);
         })
 
+        
+        
+        $uibModalStack.dismissAll();
+        
+
+        $scope.finishedCreating();
+        
     }
 
 });

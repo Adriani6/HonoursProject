@@ -1,8 +1,15 @@
 var index = angular.module("index", ['ui.bootstrap', 'ngRoute']);
 
-index.controller('LoginCtrl', function ($uibModal, $document, Session) {
+index.controller('LoginCtrl', function ($scope, $uibModal, $document, Session) {
   var $ctrl = this;
   $ctrl.alerts = [];
+
+  $scope.$on('pushAlert', function(event, alert)
+	{
+    alert.id = $ctrl.alerts.length;
+    $ctrl.alerts.push({timeout: 5000, msg : alert});   
+
+  })
 
   $ctrl.closeAlert = function(index) {
         $ctrl.alerts.splice(index, 1);

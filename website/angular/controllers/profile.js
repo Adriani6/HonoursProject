@@ -1,12 +1,14 @@
-portal.controller("profile", function($scope, Profile, $routeParams, $uibModalStack, $uibModal, Upload, Session, Attraction, Route, Tool)
+portal.controller("profile", function($scope, Profile, $routeParams, $uibModalStack, $uibModal, Upload, Session, Attraction, Route, Tool, $rootScope)
 {
     $scope.active = 1;
     $scope.profileData = {};
+    $scope.followers = [];
     $scope.album = undefined;
     $scope.imageCount = 0;
     var userid = $routeParams.id;
     $scope.selectedFilter = "Users";
     $scope.followingList = undefined;
+    $scope.status = {};
 
     $uibModalStack.dismissAll();
 
@@ -35,7 +37,7 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
     {
         $scope.active = 2;
     }
-
+    
     $scope.showImage = function(img)
     {
         $uibModal.open({
@@ -60,7 +62,7 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
             ariaDescribedBy: 'modal-body-top',
             templateUrl: 'uploadPhotos.html',
             size: 'md',
-            controller: function($scope, Profile) {
+            controller: function($scope, Profile, $rootScope) {
                 $scope.uploadImages = function(images)
                 {
                     if (images && images.length) {
@@ -80,83 +82,105 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
                     }
 
                     //Create a loading toolbar
-                    alert("Check Console For response and put it into Alert.")
+                    $rootScope.$emit('pushAlert', {type : "success", title : "Images" , message: " have been successfully uploaded."})
                 }
             }
         }); 
     }
 
-    Profile.getProfileData(userid, function(data)
+    function loadProfile()
     {
-        data.profile.dob.month = Tool.getMonthText(data.profile.dob.month);
-        function setAttractionName(i, id)
+        Profile.getProfileData(userid, function(data)
         {
-            Attraction.getData(data.following_attractions[i], function(data)
+            console.log(data.followers)
+            $scope.followers = data.followers;
+
+            if(data.activity && data.activity.length > 0)
+                data.activity.reverse();
+
+            if(data.profile != undefined && data.profile.dob != undefined)
             {
-                $scope.profileData.following_attractions[i] = data;
+                data.profile.dob.month = Tool.getMonthText(data.profile.dob.month);
+            }
+
+            function setAttractionName(i, id)
+            {
+                Attraction.getData(data.following_attractions[i], function(data)
+                {
+                    $scope.profileData.following_attractions[i] = data;
+                })
+            }
+
+            function setUserName(i, id)
+            {
+                Profile.getProfileData(data.following[i], function(data)
+                {
+                    var d = {};
+                    d.name = data.firstname + " " + data.surname;
+                    
+                    if(data.profile && data.profile.photo)
+                        d.photo = data.profile.photo;
+
+                    d._id = data._id;
+                    d.location = data.location;
+                    $scope.profileData.following[i] = d;
+                })
+            }
+
+            $scope.profileData = data;
+
+            if(data.following_attractions != undefined)
+            {
+                for(var i = 0; i < data.following_attractions.length; i++)
+                {
+                    setAttractionName(i, data.following_attractions[i])
+                }
+            }
+
+            if(data.following != undefined)
+            {
+                for(var i = 0; i < data.following.length; i++)
+                {
+                    setUserName(i, data.following[i]);
+                }
+            }
+
+            $scope.followingList = data.following;
+            Profile.fetchAlbums(userid, function(data)
+            {
+                $scope.albums = data;
+                for(var i = 0; i < data.length; i++)
+                {
+                    if(data[i].photos != undefined)
+                        $scope.imageCount += data[i].photos.length;
+                }
             })
-        }
 
-        function setUserName(i, id)
-        {
-            Profile.getProfileData(data.following[i], function(data)
+            /*Profile.fetchFollowers(userid, function(data)
             {
-                var d = {};
-                d.name = data.firstname + " " + data.surname;
-                d.location = data.location;
-                $scope.profileData.following[i] = d;
+                //= data;
+                for(var i = 0; i < data.length; i++)
+                {
+                    if(userid != data[i]._id)
+                    {
+                        //$scope.followers.push(data[i]);
+                    }
+                }
+            })*/
+
+            Profile.isFollowing(userid, function(is)
+            {
+                $scope.followBtn = is;
             })
-        }
 
-        $scope.profileData = data;
-
-        if(data.following_attractions != undefined)
-        {
-            for(var i = 0; i < data.following_attractions.length; i++)
+            // Get Data for Routes
+            Route.getAllUsersRoutes(userid, function(data)
             {
-                setAttractionName(i, data.following_attractions[i])
-            }
-        }
-
-        if(data.following != undefined)
-        {
-            for(var i = 0; i < data.following.length; i++)
-            {
-                setUserName(i, data.following[i]);
-            }
-        }
-
-        $scope.followingList = data.following;
-        Profile.fetchAlbums(userid, function(data)
-        {
-            $scope.albums = data;
-            console.log(data);
-            for(var i = 0; i < data.length; i++)
-            {
-                if(data[i].photos != undefined)
-                    $scope.imageCount += data[i].photos.length;
-            }
+                $scope.routeCounter = data.length;
+                $scope.routes = data;
+            })
         })
-
-        Profile.fetchFollowers(userid, function(data)
-        {
-            $scope.followers = data;
-        })
-
-        Profile.isFollowing(userid, function(is)
-        {
-            $scope.followBtn = is;
-        })
-
-        // Get Data for Routes
-        Route.getAllUsersRoutes(userid, function(data)
-        {
-            $scope.routeCounter = data.length;
-            $scope.routes = data;
-        })
-
-            console.log($scope.profileData)
-    })
+    }
 
     $scope.showRoute = function(route)
     {
@@ -213,13 +237,32 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
     $scope.unfollow = function(id)
     {
         //Implement Function
-        alert(id);
+        Profile.Unfollow(id, function(resp)
+        {
+            if(resp.nModified == 1)
+            {
+                $rootScope.$broadcast("pushAlert", {type : "info", title : "Success" , message: "User unfollowed."});
+                loadProfile();
+            }
+        })
     }
 
     $scope.follow = function(id)
     {
         //Implement Function
-        alert(id);
+        if(id != undefined)
+        {
+            Profile.follow(id, function(data)
+            {
+                if(data.nModified == 1)
+                {
+                    $rootScope.$broadcast("pushAlert", {type : "info", title : "Success" , message: "You're following this user now."});
+                    loadProfile();
+                }
+                
+            })
+        }
+        //alert(id);
     }
 
     $scope.newAlbum = function()
@@ -264,11 +307,22 @@ portal.controller("profile", function($scope, Profile, $routeParams, $uibModalSt
                     Profile.uploadProfilePicture($scope.file, function(d)
                     {
                         console.log(d);
-                        alert("Check Console For response and put it into Alert.")
+                        $rootScope.$broadcast("pushAlert", {type : "info", title : "Success" , message: "Profile Photo Changed"});
                     })
                 }
             }
         });
     }
 
+    $scope.newStatus = function(status)
+    {
+        Profile.newStatus($scope.status.statusText, function(response)
+        {
+            $rootScope.$broadcast("pushAlert", {type : "info", title : "Success" , message: response});
+            $scope.status.statusText = "";
+            loadProfile();
+        })
+    }
+
+    loadProfile();
 })
